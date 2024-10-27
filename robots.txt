@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://itskoi.github.io/sitemap.xml
