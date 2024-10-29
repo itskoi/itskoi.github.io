@@ -1,14 +1,34 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Homepage on Khoi&#39;s Blog</title>
+    <title>Khoi&#39;s Blog on Koi&#39;log</title>
     <link>http://localhost:1313/</link>
-    <description>Recent content in Homepage on Khoi&#39;s Blog</description>
+    <description>Recent content in Khoi&#39;s Blog on Koi&#39;log</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <managingEditor>itskoiwork@gmail.com (Bach-Khoi Vo)</managingEditor>
     <webMaster>itskoiwork@gmail.com (Bach-Khoi Vo)</webMaster>
     <copyright>© 2024 Bach-Khoi Vo</copyright>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 29 Oct 2024 21:27:51 +0700</lastBuildDate><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Resume</title>
+      <link>http://localhost:1313/resume/</link>
+      <pubDate>Tue, 29 Oct 2024 21:27:51 +0700</pubDate>
+      <author>itskoiwork@gmail.com (Bach-Khoi Vo)</author>
+      <guid>http://localhost:1313/resume/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Text Retrieval Series #1: Fundamentals and the Big Picture</title>
+      <link>http://localhost:1313/posts/text-retrieval-series-%231-fundamentals-and-the-big-picture/</link>
+      <pubDate>Tue, 15 Oct 2024 20:48:02 +0700</pubDate>
+      <author>itskoiwork@gmail.com (Bach-Khoi Vo)</author>
+      <guid>http://localhost:1313/posts/text-retrieval-series-%231-fundamentals-and-the-big-picture/</guid>
+      <description></description>
+      
+    </item>
+    
   </channel>
 </rss>

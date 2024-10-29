@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" class="scroll-smooth" data-default-appearance="light"
+<html lang="en" dir="ltr" class="scroll-smooth" data-default-appearance="dark"
   data-auto-appearance="true"><head>
 	<meta name="generator" content="Hugo 0.136.5"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
   <meta charset="utf-8" />
@@ -9,18 +9,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   
-  <title>Khoi&#39;s Blog</title>
-  <meta name="title" content="Khoi&#39;s Blog" />
+  <title>Koi&#39;log</title>
+  <meta name="title" content="Koi&#39;log" />
   
-  <meta name="description" content="This is a homepage." />
+  <meta name="description" content="Welcome to my website! I&#39;m really happy you stopped by." />
   
   
   
   <link rel="canonical" href="http://localhost:1313/" />
   
-  <link rel="alternate" type="application/rss+xml" href="/index.xml" title="Khoi's Blog" />
+  <link rel="alternate" type="application/rss+xml" href="/index.xml" title="Koi'log" />
   
-  <link rel="alternate" type="application/json" href="/index.json" title="Khoi's Blog" />
+  <link rel="alternate" type="application/json" href="/index.json" title="Koi'log" />
   
   
   
@@ -69,16 +69,16 @@
   
   
   <meta property="og:url" content="http://localhost:1313/">
-  <meta property="og:site_name" content="Khoi&#39;s Blog">
-  <meta property="og:title" content="Homepage">
-  <meta property="og:description" content="This is a homepage.">
+  <meta property="og:site_name" content="Koi&#39;log">
+  <meta property="og:title" content="Khoi&#39;s Blog">
+  <meta property="og:description" content="Welcome to my website! I&#39;m really happy you stopped by.">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
 
   
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Homepage">
-  <meta name="twitter:description" content="This is a homepage.">
+  <meta name="twitter:title" content="Khoi&#39;s Blog">
+  <meta name="twitter:description" content="Welcome to my website! I&#39;m really happy you stopped by.">
 
   
   <script type="application/ld+json">
@@ -86,7 +86,7 @@
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": "http:\/\/localhost:1313\/",
-    "name": "Khoi\u0027s Blog",
+    "name": "Koi\u0027log",
     
     "inLanguage": "en",
     "url": "http:\/\/localhost:1313\/",
@@ -167,7 +167,7 @@
         <nav class="flex space-x-3">
 
             
-            <a href="/" class="text-base font-medium text-gray-500 hover:text-gray-900">Khoi&rsquo;s Blog</a>
+            <a href="/" class="text-base font-medium text-gray-500 hover:text-gray-900">Koi&rsquo;log</a>
             
 
         </nav>
@@ -176,7 +176,7 @@
             
             
             
-  <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+  <a href="/posts/"  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
     
     <p class="text-base font-medium" title="">
         Posts
@@ -331,7 +331,7 @@
 
                     
   <li class="mt-1">
-    <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+    <a href="/posts/"  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
         
         <p class="text-bg font-bg" title="">
             Posts
@@ -371,6 +371,16 @@
 
 
 
+<script>
+    (function () {
+        var $mainmenu = $('.main-menu');
+        var path = window.location.pathname;
+        $mainmenu.find('a[href="' + path + '"]').each(function (i, e) {
+            $(e).children('p').addClass('active');
+        });
+    })();
+</script>
+
 
   
   <div class="relative flex flex-col grow">
@@ -383,9 +393,8 @@
     <div class="relative">
         <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gray-100"></div>
         <div class="mx-auto max-w-7xl p-0">
-            <div class="relative shadow-xl sm:overflow-hidden rounded-2xl">
-                <div class="absolute inset-0">
-                    
+            <div class="relative sm:overflow-hidden">
+                <div class="fixed inset-x-0 top-0" style="z-index:-10">
                     
                     
                         
@@ -393,13 +402,21 @@
                         
                     
                     
-                    <img class="h-full w-full object-cover m-0 nozoom" src="/img/banner.png">
+                        
+                            
+                        
+                    
+                    
+                    <img class="w-full h-[1000px] object-cover m-0 nozoom" src="/img/banner.png" role="presentation">
                     <div
-                        class="absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-600 dark:from-primary-600 dark:to-secondary-800 mix-blend-multiply">
+                        class="absolute inset-0 h-[1000px] bg-gradient-to-t from-neutral dark:from-neutral-800 to-transparent mix-blend-normal">
+                    </div>
+                    <div
+                        class="opacity-60 absolute inset-0 h-[1000px] bg-gradient-to-t from-neutral dark:from-neutral-800 to-neutral-100 dark:to-neutral-800 mix-blend-normal">
                     </div>
                     
                 </div>
-                <div class="relative px-4 py-16 sm:px-6 sm:py-24 lg:py-32 lg:px-8 flex flex-col items-center justify-center text-center">
+                <div class="relative px-1 py-1 flex flex-col items-center justify-center text-center">
                     
                         
                         
@@ -413,11 +430,11 @@
                                 alt="Bach-Khoi Vo" src="/img/avatar_hu5371998211372562580.png" />
                         
                     
-                    <h1 class="mb-2 text-4xl font-extrabold text-neutral-200">
+                    <h1 class="mb-2 text-4xl font-extrabold text-neutral-800 dark:text-neutral-200">
                         Bach-Khoi Vo
                     </h1>
                     
-                    <h2 class="mt-0 mb-0 text-xl text-neutral-300">
+                    <h2 class="mt-0 mb-0 text-xl text-neutral-800 dark:text-neutral-300">
                         AI Engineer @ Uniquify
                     </h2>
                     
@@ -426,7 +443,7 @@
                         <div class="flex flex-wrap">
                             
                             
-                            <a class="px-1 hover:text-primary-400 text-primary-300" href="mailto:itskoiwork@gmail.com" target="_blank"
+                            <a class="px-1 hover:text-primary-400 text-primary-800 dark:text-primary-200" href="mailto:itskoiwork@gmail.com" target="_blank"
                                 aria-label="Email" rel="me noopener noreferrer">
 
   <span class="relative block icon">
@@ -438,7 +455,7 @@
                             
                             
                             
-                            <a class="px-1 hover:text-primary-400 text-primary-300" href="https://github.com/itskoi" target="_blank"
+                            <a class="px-1 hover:text-primary-400 text-primary-800 dark:text-primary-200" href="https://github.com/itskoi" target="_blank"
                                 aria-label="Github" rel="me noopener noreferrer">
 
   <span class="relative block icon">
@@ -450,7 +467,7 @@
                             
                             
                             
-                            <a class="px-1 hover:text-primary-400 text-primary-300" href="https://linkedin.com/in/bachkhoivo" target="_blank"
+                            <a class="px-1 hover:text-primary-400 text-primary-800 dark:text-primary-200" href="https://linkedin.com/in/bachkhoivo" target="_blank"
                                 aria-label="Linkedin" rel="me noopener noreferrer">
 
   <span class="relative block icon">
@@ -464,7 +481,7 @@
                         </div>
                         
                     </div>
-                    <section class="prose prose-invert"><p><em>“Learning is the only thing the mind never exhausts, never fears, and never regrets.”</em> - <strong>Leonardo da Vinci</strong></p>
+                    <section class="prose dark:prose-invert"><p><em>“Learning is the only thing the mind never exhausts, never fears, and never regrets.”</em> - <strong>Leonardo da Vinci</strong></p>
 </section>
                 </div>
             </div>
@@ -484,7 +501,89 @@
   
 
 
-<section class="space-y-10 w-full">
+<section class="w-full grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+  
+  
+
+  <a href="/posts/text-retrieval-series-%231-fundamentals-and-the-big-picture/" class="min-w-full">
+    
+    <div class="min-h-full border border-neutral-200 dark:border-neutral-700 border-2 rounded overflow-hidden shadow-2xl relative">
+
+      <div class="px-6 py-4">
+
+        
+        <div class="font-bold text-xl text-neutral-800 decoration-primary-500 hover:underline hover:underline-offset-2 dark:text-neutral"
+          href="/posts/text-retrieval-series-%231-fundamentals-and-the-big-picture/">Text Retrieval Series #1: Fundamentals and the Big Picture</div>
+        
+
+        <div class="text-sm text-neutral-500 dark:text-neutral-400">
+          
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="flex flex-row flex-wrap items-center">
+  
+  
+  <time datetime="2024-10-15T20:48:02&#43;07:00">15 October 2024</time><span class="px-2 text-primary-500">&middot;</span><span>1122 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">6 mins</span>
+  
+
+  
+  
+</div>
+
+
+
+
+
+
+
+
+        </div>
+
+        
+        <div class="py-1 prose dark:prose-invert">
+          
+        </div>
+        
+      </div>
+      <div class="px-6 pt-4 pb-2">
+
+      </div>
+    </div>
+  </a>
+
   
 </section>
 
@@ -493,6 +592,16 @@
 
 
 </section>
+
+<div id="background-blur" class="fixed opacity-0 inset-x-0 top-0 h-full single_hero_background nozoom backdrop-blur-2xl"></div>
+<script>
+    window.addEventListener('scroll', function (e) {
+        var scroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        var background_blur = document.getElementById('background-blur');
+        background_blur.style.opacity = (scroll / 300)
+    });
+</script>
+
 
   
 

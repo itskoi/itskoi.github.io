@@ -2,7 +2,7 @@ disabled = false
 languageCode = "en"
 languageName = "English"
 weight = 1
-title = "Khoi's Blog"
+title = "Koi'log"
 
 [params]
   displayName = "EN"
@@ -20,7 +20,7 @@ title = "Khoi's Blog"
   image = "img/avatar.png"
   imageQuality = 100
   headline = "AI Engineer @ Uniquify"
-  bio = "Hi, I’m Bach-Khoi Vo! I’m an AI engineer with a love for building practical, production-ready AI systems, especially around Large Language Models (LLMs) and MLOps. I enjoy exploring the latest in Retrieval-Augmented Generation, NLP, and multi-modal AI. My journey has taken me from research and hands-on projects to sharing insights through open-source contributions and technical writing. Whether it’s developing new models, designing pipelines, or diving into cloud tech, I’m always eager to learn and connect with others in the AI space!"
+  bio = "Hi 👋 I’m an AI engineer with a love for building practical, production-ready AI systems, especially around Large Language Models (LLMs) and MLOps. I enjoy exploring the latest in Retrieval-Augmented Generation, NLP, and multi-modal AI. My journey has taken me from research and hands-on projects to sharing insights through open-source contributions and technical writing. Whether it’s developing new models, designing pipelines, or diving into cloud tech, I’m always eager to learn and connect with others in the AI space!"
   links = [
     { email = "mailto:itskoiwork@gmail.com" },
 #     { link = "https://link-to-some-website.com/" },

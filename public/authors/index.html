@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" class="scroll-smooth" data-default-appearance="light"
+<html lang="en" dir="ltr" class="scroll-smooth" data-default-appearance="dark"
   data-auto-appearance="true"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
   <meta charset="utf-8" />
   
@@ -8,8 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   
-  <title>Authors &middot; Khoi&#39;s Blog</title>
-  <meta name="title" content="Authors &middot; Khoi&#39;s Blog" />
+  <title>Authors &middot; Koi&#39;log</title>
+  <meta name="title" content="Authors &middot; Koi&#39;log" />
   
   
   
@@ -17,7 +17,7 @@
   
   <link rel="canonical" href="http://localhost:1313/authors/" />
   
-  <link rel="alternate" type="application/rss+xml" href="/authors/index.xml" title="Khoi's Blog" />
+  <link rel="alternate" type="application/rss+xml" href="/authors/index.xml" title="Koi'log" />
   
   
   
@@ -66,7 +66,7 @@
   
   
   <meta property="og:url" content="http://localhost:1313/authors/">
-  <meta property="og:site_name" content="Khoi&#39;s Blog">
+  <meta property="og:site_name" content="Koi&#39;log">
   <meta property="og:title" content="Authors">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
@@ -146,7 +146,7 @@
         <nav class="flex space-x-3">
 
             
-            <a href="/" class="text-base font-medium text-gray-500 hover:text-gray-900">Khoi&rsquo;s Blog</a>
+            <a href="/" class="text-base font-medium text-gray-500 hover:text-gray-900">Koi&rsquo;log</a>
             
 
         </nav>
@@ -155,7 +155,7 @@
             
             
             
-  <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+  <a href="/posts/"  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
     
     <p class="text-base font-medium" title="">
         Posts
@@ -310,7 +310,7 @@
 
                     
   <li class="mt-1">
-    <a href=""  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
+    <a href="/posts/"  class="flex items-center text-gray-500 hover:text-primary-600 dark:hover:text-primary-400">
         
         <p class="text-bg font-bg" title="">
             Posts
@@ -349,6 +349,16 @@
 
 
 
+
+<script>
+    (function () {
+        var $mainmenu = $('.main-menu');
+        var path = window.location.pathname;
+        $mainmenu.find('a[href="' + path + '"]').each(function (i, e) {
+            $(e).children('p').addClass('active');
+        });
+    })();
+</script>
 
 
   
