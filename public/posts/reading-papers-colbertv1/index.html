@@ -8,14 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   
-  <title>Text Retrieval Series #1: Fundamentals and the Big Picture &middot; Koi&#39;log</title>
-  <meta name="title" content="Text Retrieval Series #1: Fundamentals and the Big Picture &middot; Koi&#39;log" />
+  <title>Reading Papers: ColBERTv1 &middot; Koi&#39;log</title>
+  <meta name="title" content="Reading Papers: ColBERTv1 &middot; Koi&#39;log" />
   
   
   
   
   
-  <link rel="canonical" href="http://localhost:1313/posts/text-retrieval-series-%231-fundamentals-and-the-big-picture/" />
+  <link rel="canonical" href="http://localhost:1313/posts/reading-papers-colbertv1/" />
   
   
   
@@ -63,18 +63,18 @@
   
   
   
-  <meta property="og:url" content="http://localhost:1313/posts/text-retrieval-series-%231-fundamentals-and-the-big-picture/">
+  <meta property="og:url" content="http://localhost:1313/posts/reading-papers-colbertv1/">
   <meta property="og:site_name" content="Koi&#39;log">
-  <meta property="og:title" content="Text Retrieval Series #1: Fundamentals and the Big Picture">
+  <meta property="og:title" content="Reading Papers: ColBERTv1">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2024-10-15T20:48:02+07:00">
-    <meta property="article:modified_time" content="2024-10-15T20:48:02+07:00">
+    <meta property="article:published_time" content="2024-10-30T16:36:30+07:00">
+    <meta property="article:modified_time" content="2024-10-30T16:36:30+07:00">
 
   
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Text Retrieval Series #1: Fundamentals and the Big Picture">
+  <meta name="twitter:title" content="Reading Papers: ColBERTv1">
 
   
   <script type="application/ld+json">
@@ -82,26 +82,26 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "articleSection": "Posts",
-    "name": "Text Retrieval Series #1: Fundamentals and the Big Picture",
-    "headline": "Text Retrieval Series #1: Fundamentals and the Big Picture",
+    "name": "Reading Papers: ColBERTv1",
+    "headline": "Reading Papers: ColBERTv1",
     
     
     "inLanguage": "en",
-    "url" : "http:\/\/localhost:1313\/posts\/text-retrieval-series-%231-fundamentals-and-the-big-picture\/",
+    "url" : "http:\/\/localhost:1313\/posts\/reading-papers-colbertv1\/",
     "author" : {
       "@type": "Person",
       "name": "Bach-Khoi Vo"
     },
     "copyrightYear": "2024",
-    "dateCreated": "2024-10-15T20:48:02\u002b07:00",
-    "datePublished": "2024-10-15T20:48:02\u002b07:00",
+    "dateCreated": "2024-10-30T16:36:30\u002b07:00",
+    "datePublished": "2024-10-30T16:36:30\u002b07:00",
     
-    "dateModified": "2024-10-15T20:48:02\u002b07:00",
+    "dateModified": "2024-10-30T16:36:30\u002b07:00",
     
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "1119"
+    "wordCount": "1197"
   }]
   </script>
 
@@ -575,7 +575,7 @@
   <header id="single_header" class="mt-5 max-w-prose">
     
     <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
-      Text Retrieval Series #1: Fundamentals and the Big Picture
+      Reading Papers: ColBERTv1
     </h1>
     <div class="mt-1 mb-6 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
       
@@ -620,7 +620,7 @@
 <div class="flex flex-row flex-wrap items-center">
   
   
-  <time datetime="2024-10-15T20:48:02&#43;07:00">15 October 2024</time><span class="px-2 text-primary-500">&middot;</span><span>1119 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">6 mins</span>
+  <time datetime="2024-10-30T16:36:30&#43;07:00">30 October 2024</time><span class="px-2 text-primary-500">&middot;</span><span>1197 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">6 mins</span>
   
 
   
@@ -664,18 +664,18 @@
     class="min-w-[220px] py-2 border-dotted ltr:-ml-5 ltr:border-l ltr:pl-5 rtl:-mr-5 rtl:border-r rtl:pr-5 dark:border-neutral-600">
     <nav id="TableOfContents">
   <ul>
-    <li><a href="#objective">Objective</a></li>
-    <li><a href="#formulate-the-problem">Formulate the problem</a></li>
-    <li><a href="#text-representation">Text Representation</a>
+    <li><a href="#summary">Summary</a></li>
+    <li><a href="#before-colbert">Before ColBERT</a></li>
+    <li><a href="#colberts-novel-approach">ColBERT’s Novel Approach</a>
       <ul>
-        <li><a href="#word-matching">Word matching</a></li>
-        <li><a href="#sparse-embeddings">Sparse Embeddings</a></li>
-        <li><a href="#dense-embeddings">Dense Embeddings</a></li>
-        <li><a href="#bi-encoder-or-two-tower">Bi-encoder or Two-tower</a></li>
-        <li><a href="#cross-encoder">Cross-encoder</a></li>
+        <li><a href="#understanding-maxsim-operation">Understanding MaxSim operation</a></li>
+        <li><a href="#why-colbert-stands-out">Why ColBERT stands out?</a></li>
+        <li><a href="#colbert-performance">ColBERT performance</a></li>
       </ul>
     </li>
+    <li><a href="#short-answer-quiz">Short-Answer Quiz</a></li>
     <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
   </div>
@@ -689,18 +689,18 @@
     class="py-2 border-dotted border-neutral-300 ltr:-ml-5 ltr:border-l ltr:pl-5 rtl:-mr-5 rtl:border-r rtl:pr-5 dark:border-neutral-600">
     <nav id="TableOfContents">
   <ul>
-    <li><a href="#objective">Objective</a></li>
-    <li><a href="#formulate-the-problem">Formulate the problem</a></li>
-    <li><a href="#text-representation">Text Representation</a>
+    <li><a href="#summary">Summary</a></li>
+    <li><a href="#before-colbert">Before ColBERT</a></li>
+    <li><a href="#colberts-novel-approach">ColBERT’s Novel Approach</a>
       <ul>
-        <li><a href="#word-matching">Word matching</a></li>
-        <li><a href="#sparse-embeddings">Sparse Embeddings</a></li>
-        <li><a href="#dense-embeddings">Dense Embeddings</a></li>
-        <li><a href="#bi-encoder-or-two-tower">Bi-encoder or Two-tower</a></li>
-        <li><a href="#cross-encoder">Cross-encoder</a></li>
+        <li><a href="#understanding-maxsim-operation">Understanding MaxSim operation</a></li>
+        <li><a href="#why-colbert-stands-out">Why ColBERT stands out?</a></li>
+        <li><a href="#colbert-performance">ColBERT performance</a></li>
       </ul>
     </li>
+    <li><a href="#short-answer-quiz">Short-Answer Quiz</a></li>
     <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
   </div>
@@ -786,177 +786,172 @@
         <div class="article-content max-w-prose mb-20">
           
 
-<p><strong>Information Retrieval (IR)</strong> is a well-established field, and text retrieval is one of its core tasks. With the growing applications of IR in the digital era, efficient <strong>text retrieval</strong> has become essential. The rise of Retrieval-Augmented Generation (RAG) has heightened the demand for fast, accurate retrievers.</p>
-<p>In developing RAG systems, this series of posts serves as my notes and reflections on building effective system. Let&rsquo;s delve into <strong>text retrieval</strong>!</p>
+<p><strong>TL;DR:</strong> ColBERT combines the efficiency of a Bi-encoder, allowing fast embedding and precomputing, with a late interaction mechanism to learn cross-information between query and document. The result? Near-BERT performance at a fraction of BERT’s runtime!</p>
 <blockquote>
-<p><strong>Note:</strong> These are my personal learning notes, so <strong>some points may not be entirely accurate</strong>. I strive to improve my understanding and will correct any errors I find. If you spot any inaccuracies, please feel free to share your insights to help enhance the content 😊.</p>
+<p><strong>Note:</strong> This my personal learning note, so <strong>some points may not be entirely accurate</strong>. I strive to improve my understanding and will correct any errors I find. If you spot any inaccuracies, please feel free to share your insights to help enhance the content 😊.</p>
 </blockquote>
 
 
-<h2 class="relative group">Objective 
-    <div id="objective" class="anchor"></div>
+<h2 class="relative group">Summary 
+    <div id="summary" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
         <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#objective" aria-label="Anchor">#</a>
+            style="text-decoration-line: none !important;" href="#summary" aria-label="Anchor">#</a>
     </span>        
     
 </h2>
-<p>In this post, I’ll cover the fundamental terms and concepts you&rsquo;ll encounter in text retrieval, giving a big-picture overview rather than fine-grained details. This will help you understand the essential ideas and terminology needed to explore the field further.</p>
+<p><strong>ColBERT</strong> leverages independent encodings for queries and documents to generate fine-grained embeddings. It then applies a lightweight interaction mechanism to compute relevance scores. This innovative approach retains the expressiveness of BERT while significantly accelerating query processing. ColBERT, therefore, achieves comparable results to BERT-based models while drastically reducing computational overhead.</p>
 
 
-<h2 class="relative group">Formulate the problem 
-    <div id="formulate-the-problem" class="anchor"></div>
+<h2 class="relative group">Before ColBERT 
+    <div id="before-colbert" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
         <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#formulate-the-problem" aria-label="Anchor">#</a>
+            style="text-decoration-line: none !important;" href="#before-colbert" aria-label="Anchor">#</a>
     </span>        
     
 </h2>
-<p>Given a set of queries <code>q</code> and documents <code>d</code>, the task is to identify the most relevant document for each query based on the &ldquo;similarity score&rdquo; between them.</p>
-<p>To tackle this, we need to address two key questions:</p>
-<ul>
-<li>How should we represent the text?</li>
-<li>Based on these representations, how can we calculate a meaningful similarity score between queries and documents?</li>
-</ul>
-<p>A basic approach to text retrieval is <strong>word matching</strong> or term matching. Initially, we can represent text using a <strong>Bag-of-Words (BoW)</strong> model, where each word occupies a dimension in a sparse, high-dimensional vector space. However, this high-dimensional approach can be <strong>computationally intensive</strong>. To make retrieval more efficient, we can transform the text into <strong>lower-dimensional dense embeddings</strong>—compact representations that retain semantic meaning.</p>
-<p>Once we have these embeddings, our task is to calculate similarity scores between these vectors effectively.</p>
-<p>Let’s explore each part in more detail.</p>
-
-
-<h2 class="relative group">Text Representation 
-    <div id="text-representation" class="anchor"></div>
-    
-    <span
-        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
-        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#text-representation" aria-label="Anchor">#</a>
-    </span>        
-    
-</h2>
-
-
-<h3 class="relative group">Word matching 
-    <div id="word-matching" class="anchor"></div>
-    
-    <span
-        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
-        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#word-matching" aria-label="Anchor">#</a>
-    </span>        
-    
-</h3>
-<p>The naive approach is to match words between a query and a document. Using a basic algorithm, we start with a similarity score of zero and increase it each time a matching word is found between query and document.</p>
-<p>This approach has a time complexity of \(O(|q| * |d| * l_q * l_d)\) on average, where |q| and |d| are the number of queries and documents, respectively, and \(l_q\), \(l_d\) are the average words in a query and document. By pre-processing documents into sets of words, we can reduce lookup operations to \(O(1)\) on average, decreasing time complexity to \(O(|q| * |d| * l_q)\). For long documents, this improvement significantly reduces runtime.</p>
-
-
-<h3 class="relative group">Sparse Embeddings 
-    <div id="sparse-embeddings" class="anchor"></div>
-    
-    <span
-        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
-        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#sparse-embeddings" aria-label="Anchor">#</a>
-    </span>        
-    
-</h3>
-<p>Building on word matching, we can create <strong>one-hot vector embeddings</strong> for each document with dimensions equal to the vocabulary size, \(|v|\). This <strong>Bag-of-Words</strong> representation, or sparse embedding, contains mostly zeros since only a small fraction of the vocabulary appears in any single text.</p>
-<p>For each query, we create a one-hot vector and compute similarity scores across documents. Although this method has similar time complexity to word matching, it allows for <strong>parallel computing techniques like matrix multiplication</strong> on GPU/TPU, often used in machine learning to improve efficiency.</p>
-<blockquote>
-<p><strong>&#x1f4a1;Key insight:</strong> Embedding text information into vectors enables efficient computation of similarity scores.</p>
-</blockquote>
-<p>By introducing weighting (e.g., using TF-IDF or BM25), we assign greater significance to key terms, enhancing retrieval quality while retaining simplicity.</p>
-<p>Sparse embeddings, however, have limitations, especially in distinguishing synonyms, handling ambiguous terms, and still lack semantic awareness, pushing us toward <strong>dense embeddings</strong>.</p>
-
-
-<h3 class="relative group">Dense Embeddings 
-    <div id="dense-embeddings" class="anchor"></div>
-    
-    <span
-        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
-        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#dense-embeddings" aria-label="Anchor">#</a>
-    </span>        
-    
-</h3>
-<p>Dense embeddings focus on capturing semantic meaning by encoding text into low-dimensional vectors. Two common approaches are:</p>
-<ul>
-<li><strong>Word embeddings</strong>: Combine embeddings for each word in the text (e.g., Word2Vec, GloVe, etc).</li>
-<li><strong>Sentence embeddings</strong>: Represent entire text passages, capturing not only word meanings but also relationships between them, typically using transformer-based models.</li>
-</ul>
-<p>Using dense embeddings also addresses the problem of high-dimensional, sparse vectors in Bag-of-Words, reducing the vector space while retaining richer semantic context.</p>
 <p>
     <figure>
-      <img class="my-0 rounded-md" loading="lazy" src="./denseencoder.png" alt="Dense Encoder" />
+      <img class="my-0 rounded-md" loading="lazy" src="./paradigms.png" alt="paradigms" />
       
     </figure>
 </p>
-<p><strong>Word embedding</strong>
-Common approaches for word embedding include Word2Vec, GloVe,etc. In these methods, embeddings are generated for <strong>individual words</strong> and then <strong>combined</strong> using <strong>linear projections</strong> or similar techniques. However, because information is extracted independently from each word and then fused with a general merging approach, the final text embedding often <strong>lacks a coherent relationship</strong> between words, resulting in suboptimal representations.</p>
-<p>
-    <figure>
-      <img class="my-0 rounded-md" loading="lazy" src="./wordembedding.png" alt="Word embedding" />
-      
-    </figure>
-</p>
-<p><strong>Sentence embedding</strong>
-Unlike word embeddings, sentence embeddings capture not only the meaning of individual words but also the relationships between them within a sentence. This holistic approach provides better performance compared to combining individual word embeddings. Transformer-based models are currently the most popular choice for generating these embeddings, as they excel at capturing semantic and syntactic relationships within the text.</p>
-<p>Initially, a single encoder might be used to embed both queries and documents without distinction. However, this poses two main issues:</p>
+<p>Prior to ColBERT, ranking models could be grouped into three main paradigms:</p>
 <ol>
-<li><strong>Structural Mismatch</strong>: Queries and documents often differ in structure, with queries, for example, frequently being Wh-questions.</li>
-<li><strong>Lack of Relevance Modeling</strong>: When each document and query is embedded independently, the context and meaning are isolated, lacking a shared relevance between them.</li>
+<li><strong>No Interaction</strong>: Queries and documents have separate, independent encoders that capture the meaning of their respective inputs. However, embedding each query and document independently results in isolated representations, with no cross-information to link the two. This is known as the <strong>bi-encoder</strong> or <strong>two-tower</strong> paradigm.</li>
+<li><strong>Partial Interaction</strong>: This approach attempts to capture relationships between the query and document but lacks the internal self-information of each input, effectively acting as an &ldquo;inverted&rdquo; version of the no-interaction paradigm.</li>
+<li><strong>Full Interaction</strong>: Transformer-based models like BERT capture both self and cross information between the query and document. Although BERT-based models offer strong performance, their <strong>high computational costs</strong> pose challenges, especially in latency-sensitive applications.</li>
 </ol>
-<p>Let’s explore how to address these issues.</p>
 
 
-<h3 class="relative group">Bi-encoder or Two-tower 
-    <div id="bi-encoder-or-two-tower" class="anchor"></div>
+<h2 class="relative group">ColBERT’s Novel Approach 
+    <div id="colberts-novel-approach" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
         <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#bi-encoder-or-two-tower" aria-label="Anchor">#</a>
+            style="text-decoration-line: none !important;" href="#colberts-novel-approach" aria-label="Anchor">#</a>
     </span>        
     
-</h3>
-<p>To better <strong>capture structural differences</strong> between queries and documents, we can use a <strong>bi-encoder</strong> or <strong>dual-encoder</strong> or <strong>two-tower</strong> approach, where two independent encoders process queries and documents. For instance, BERT can serve as the backbone for both encoders, fine-tuned using contrastive learning. This setup significantly improves retrieval performance compared to using a single encoder for all input.</p>
+</h2>
+<p>ColBERT bridges the gap between effectiveness and efficiency in models that leverage deep language models like BERT.</p>
 <p>
     <figure>
-      <img class="my-0 rounded-md" loading="lazy" src="./biencoder.png" alt="Bi-encoder" />
+      <img class="my-0 rounded-md" loading="lazy" src="./late_interaction.png" alt="late interaction" />
       
     </figure>
 </p>
-<p>After having embeddings for both query and document, we need to compute the similarity between them. In common, we have 3 methods:</p>
+<p>ColBERT introduces a <strong>&ldquo;late interaction&rdquo; paradigm</strong>, where queries and documents are independently encoded into sets of contextualized embeddings using BERT. A lightweight interaction mechanism, the <strong>MaxSim</strong> operation, then models fine-grained similarity between the query and document representations.</p>
+
+
+<h3 class="relative group">Understanding MaxSim operation 
+    <div id="understanding-maxsim-operation" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#understanding-maxsim-operation" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>For each word vector embedding in the query <strong>bag embeddings</strong> \(E_q\), <strong>ColBERT</strong> finds the <strong>maximum word similarity score</strong> with the word embeddings in the document \(E_d\). This is done through the <strong>MaxSim</strong> operator.</p>
 <ul>
-<li><strong>L2 Distance (Euclidean Distance)</strong>: measures the <strong>straight-line distance</strong> between two vectors in a multidimensional space.</li>
-<li><strong>Cosine Similarity</strong>: measures the cosine of the <strong>angle between two vectors</strong>, which reflects their orientation rather than their magnitude.</li>
-<li><strong>Dot Product</strong>: represents the <em>magnitude of alignment</em> between two vectors in terms of both their <strong>magnitudes</strong> and the <strong>cosine of the angle between them</strong>.</li>
+<li>The <strong>MaxSim</strong> operator calculates the <strong>cosine similarity</strong> between a single query embedding and all embeddings in document&rsquo;s bag embedding.</li>
+<li>The <strong>highest similarity score</strong> is then selected as the &ldquo;match&rdquo; for that specific query term.</li>
 </ul>
-<p>Use any measure that clearly distinguishes dissimilar vectors while strongly emphasizing when two vectors are identical.</p>
+<p>This process is repeated for all embeddings in \(E_q\). The individual term scores are then summed to estimate the overall relevance of the document to the query.</p>
 
 
-<h3 class="relative group">Cross-encoder 
-    <div id="cross-encoder" class="anchor"></div>
+<h3 class="relative group">Why ColBERT stands out? 
+    <div id="why-colbert-stands-out" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
         <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#cross-encoder" aria-label="Anchor">#</a>
+            style="text-decoration-line: none !important;" href="#why-colbert-stands-out" aria-label="Anchor">#</a>
     </span>        
     
 </h3>
-<p>To address the <strong>lack of semantic interaction</strong> in bi-encoders, <strong>cross-encoders</strong> combine both the query and document into a <strong>single input</strong> separated by a special token (e.g., <code>query&lt;sep&gt;document</code>).</p>
+<p>ColBERT&rsquo;s late interaction architecture for ranking documents in response to search queries relies on the MaxSim operator, which finds the highest cosine similarity score between each query term embedding and all document embeddings. Here’s why ColBERT is both effective and efficient:</p>
+<ul>
+<li><strong>Computational Efficiency</strong>: MaxSim avoids the heavy computational requirements of attention mechanisms:
+<ul>
+<li><strong>MaxSim</strong> involves calculating cosine similarity between query and document embeddings and then selecting the highest score per query term.</li>
+<li>In contrast, <strong>Attention mechanisms</strong> require multiple matrix multiplications and normalization steps, which are computationally expensive.</li>
+<li><strong>Pre-computing document embeddings</strong> further accelerates ColBERT, as seen in no-interaction paradigms.</li>
+</ul>
+</li>
+<li><strong>Pruning Capability</strong>: MaxSim allows vector-similarity search indexes to efficiently identify documents with terms highly similar (top-k) to the query, <strong>without scoring every document</strong> in the collection. Attention mechanisms, on the other hand, don’t lend themselves to such pruning. Although simple, MaxSim achieves state-of-the-art results when paired with BERT’s contextualized embeddings.</li>
+</ul>
+
+
+<h3 class="relative group">ColBERT performance 
+    <div id="colbert-performance" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#colbert-performance" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
 <p>
     <figure>
-      <img class="my-0 rounded-md" loading="lazy" src="./crossencoder.png" alt="Cross-encoder" />
+      <img class="my-0 rounded-md" loading="lazy" src="./ranking_result.png" alt="reranking_result" />
       
     </figure>
 </p>
-<p>This setup allows the model to learn complex relationships between queries and documents, often leading to more accurate retrieval. However, the <strong>trade-off is speed</strong>, making cross-encoders less practical for large document collections.</p>
-<p>As a result, <strong>cross-encoders</strong> are often used as <strong>rerankers</strong> in two-stage retrieval systems, with <strong>bi-encoders</strong> serving as the <strong>initial retrievers</strong>.</p>
+<p>In <code>Table 1</code> of the referenced article, ColBERT demonstrates competitive performance on ranking tasks compared to BERT, but with a significant reduction in runtime.</p>
+<p>
+    <figure>
+      <img class="my-0 rounded-md" loading="lazy" src="./flops_result.png" alt="flops_result" />
+      
+    </figure>
+</p>
+<p>The <code>Figure 4</code> highlights ColBERT’s runtime efficiency: as the number of candidate documents (k) increases, ColBERT’s runtime remains relatively stable, underscoring its scalability and speed advantage over BERT.</p>
+
+
+<h2 class="relative group">Short-Answer Quiz 
+    <div id="short-answer-quiz" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#short-answer-quiz" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p><strong>Questions</strong></p>
+<ol>
+<li>What is the main challenge that ColBERT addresses in the context of neural ranking models?</li>
+<li>Describe the &ldquo;late interaction&rdquo; paradigm introduced by ColBERT.</li>
+<li>How does ColBERT&rsquo;s architecture differ from traditional interaction-focused rankers (e.g., DRMM, KNRM)?</li>
+<li>Explain the role of query augmentation in ColBERT&rsquo;s query encoder.</li>
+<li>How does ColBERT&rsquo;s document encoder process document text and generate embeddings?</li>
+<li>Describe the late interaction mechanism in ColBERT and how it calculates the relevance score.</li>
+<li>What are the benefits of using a MaxSim-based interaction mechanism in ColBERT?</li>
+<li>How does ColBERT achieve efficiency in terms of offline indexing and query processing?</li>
+<li>Explain how ColBERT supports end-to-end retrieval from a large document collection.</li>
+<li>What are the key findings from the experimental evaluation of ColBERT on MS MARCO and TREC CAR datasets?</li>
+</ol>
+<p><strong>Answer Key</strong></p>
+<ol>
+<li>ColBERT addresses the challenge of high computational cost associated with BERT-based ranking models, aiming to improve their efficiency without sacrificing effectiveness.</li>
+<li>Late interaction refers to the independent encoding of queries and documents into sets of contextualized embeddings followed by a lightweight interaction step to compute the relevance score. This allows for efficient pre-computation of document representations offline, reducing the online computational burden.</li>
+<li>Unlike traditional interaction-focused rankers that compute a single relevance score based on pairwise interactions between all query and document terms, ColBERT separates query and document encoding and relies on MaxSim to identify the most relevant document terms for each query term and aggregates these matches.</li>
+<li>Query augmentation involves padding the query with masked tokens, allowing BERT to generate query-based embeddings at these positions. This mechanism serves as a differentiable way to expand queries with new terms or re-weight existing terms based on their importance for matching.</li>
+<li>The document encoder segments the document into tokens, prepends special tokens, and passes the sequence through BERT. After applying a linear layer, it filters out embeddings corresponding to punctuation symbols to reduce the number of embeddings per document.</li>
+<li>ColBERT&rsquo;s late interaction mechanism computes the maximum similarity (cosine or L2 distance) between each query embedding and all document embeddings. The resulting maximum similarity scores are summed across all query terms to obtain the overall relevance score for the document.</li>
+<li>The MaxSim operation offers efficiency by enabling pruning for top-k retrieval. It allows using vector-similarity search indexes to efficiently retrieve the most promising document candidates without exhaustively scoring all documents.</li>
+<li>ColBERT pre-computes document representations offline, reducing the online computational load. During query processing, it encodes the query only once and interacts with the pre-computed document representations, further minimizing the cost.</li>
+<li>ColBERT leverages its pruning-friendly MaxSim operation to support end-to-end retrieval. It employs a vector-similarity search index (e.g., Faiss) to retrieve a subset of candidate documents based on the similarity of individual query embeddings to all document embeddings. This candidate set is then re-ranked using ColBERT&rsquo;s full scoring mechanism.</li>
+<li>Experimental results on MS MARCO and TREC CAR show that ColBERT achieves competitive effectiveness compared to state-of-the-art BERT-based models while being significantly more efficient. It outperforms other non-BERT baselines and demonstrates a considerable speedup and reduction in FLOPs compared to BERT.</li>
+</ol>
 
 
 <h2 class="relative group">Conclusion 
@@ -969,8 +964,24 @@ Unlike word embeddings, sentence embeddings capture not only the meaning of indi
     </span>        
     
 </h2>
-<p>In this post, we introduced the text retrieval problem and covered techniques ranging from simple text matching to sophisticated cross-encoder models for capturing query-document relationships.</p>
-<p>In future posts, we’ll dive into the bi-encoder, cross-encoder, two-stage retrieval paradigm, examining the components, challenges, and optimizations in detail. Stay tuned! 😊</p>
+<p><strong>ColBERT</strong> offers a powerful ==balance between speed and accuracy== in information retrieval by combining the efficiency of a Bi-encoder with a novel late interaction mechanism.
+Its <strong>MaxSim operator</strong> allows for fine-grained similarity matching without the high computational costs of full attention, making it ideal for latency-sensitive applications. ColBERT’s performance, ==close to BERT but at a fraction of the runtime==, demonstrates the potential of innovative interaction mechanisms in neural IR.</p>
+
+
+<h2 class="relative group">References 
+    <div id="references" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#references" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<ul>
+<li><a href="https://arxiv.org/pdf/2004.12832" target="_blank">https://arxiv.org/pdf/2004.12832</a></li>
+<li><a href="https://jina.ai/news/what-is-colbert-and-late-interaction-and-why-they-matter-in-search/" target="_blank">https://jina.ai/news/what-is-colbert-and-late-interaction-and-why-they-matter-in-search/</a></li>
+</ul>
 
           
           
@@ -1090,7 +1101,7 @@ Unlike word embeddings, sentence embeddings capture not only the meaning of indi
       <a
       target="_blank"
       class="m-1 rounded bg-neutral-300 p-1.5 text-neutral-700 hover:bg-primary-500 hover:text-neutral dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-400 dark:hover:text-neutral-800"
-      href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:1313/posts/text-retrieval-series-%231-fundamentals-and-the-big-picture/&amp;title=Text%20Retrieval%20Series%20#1:%20Fundamentals%20and%20the%20Big%20Picture"
+      href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:1313/posts/reading-papers-colbertv1/&amp;title=Reading%20Papers:%20ColBERTv1"
       title="Share on LinkedIn"
       aria-label="Share on LinkedIn"
       >
@@ -1109,7 +1120,7 @@ Unlike word embeddings, sentence embeddings capture not only the meaning of indi
       <a
       target="_blank"
       class="m-1 rounded bg-neutral-300 p-1.5 text-neutral-700 hover:bg-primary-500 hover:text-neutral dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-400 dark:hover:text-neutral-800"
-      href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/text-retrieval-series-%231-fundamentals-and-the-big-picture/&amp;quote=Text%20Retrieval%20Series%20#1:%20Fundamentals%20and%20the%20Big%20Picture"
+      href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/reading-papers-colbertv1/&amp;quote=Reading%20Papers:%20ColBERTv1"
       title="Share on Facebook"
       aria-label="Share on Facebook"
       >
@@ -1138,8 +1149,8 @@ Unlike word embeddings, sentence embeddings capture not only the meaning of indi
           
         
       <script>
-        var oid = "views_posts\/Text Retrieval Series #1: Fundamentals and the Big Picture\/index.md"
-        var oid_likes = "likes_posts\/Text Retrieval Series #1: Fundamentals and the Big Picture\/index.md"
+        var oid = "views_posts\/Reading Papers: ColBERTv1\/index.md"
+        var oid_likes = "likes_posts\/Reading Papers: ColBERTv1\/index.md"
       </script>
       
       
@@ -1159,30 +1170,30 @@ Unlike word embeddings, sentence embeddings capture not only the meaning of indi
       <div class="flex justify-between pt-3">
         <span>
           
-        </span>
-        <span>
-          
-            <a class="flex text-right group ml-3" href="/posts/reading-papers-colbertv1/">
+            <a class="flex group mr-3" href="/posts/text-retrieval-series-%231-fundamentals-and-the-big-picture/">
+              <span
+                class="mr-3 text-neutral-700 group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
+                >&larr;</span
+              >
+              <span
+                class="ml-3 text-neutral-700 group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
+                >&rarr;</span
+              >
               <span class="flex flex-col">
                 <span
                   class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
-                  >Reading Papers: ColBERTv1</span
+                  >Text Retrieval Series #1: Fundamentals and the Big Picture</span
                 >
                 <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
                   
-                    <time datetime="2024-10-30T16:36:30&#43;07:00">30 October 2024</time>
+                    <time datetime="2024-10-15T20:48:02&#43;07:00">15 October 2024</time>
                   
                 </span>
               </span>
-              <span
-                class="ml-3 text-neutral-700 group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
-                >&rarr;</span
-              >
-              <span
-                class="mr-3 text-neutral-700 group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
-                >&larr;</span
-              >
             </a>
+          
+        </span>
+        <span>
           
         </span>
       </div>

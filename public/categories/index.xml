@@ -11,9 +11,19 @@
     <copyright>© 2024 Bach-Khoi Vo</copyright>
     <lastBuildDate>Tue, 29 Oct 2024 21:21:33 +0700</lastBuildDate><atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Reading Papers</title>
+      <link>http://localhost:1313/categories/reading-papers/</link>
+      <pubDate>Wed, 30 Oct 2024 16:36:30 +0700</pubDate>
+      <author>itskoiwork@gmail.com (Bach-Khoi Vo)</author>
+      <guid>http://localhost:1313/categories/reading-papers/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
       <title>Text Retrieval</title>
       <link>http://localhost:1313/categories/text-retrieval/</link>
-      <pubDate>Tue, 15 Oct 2024 20:48:02 +0700</pubDate>
+      <pubDate>Wed, 30 Oct 2024 16:36:30 +0700</pubDate>
       <author>itskoiwork@gmail.com (Bach-Khoi Vo)</author>
       <guid>http://localhost:1313/categories/text-retrieval/</guid>
       <description></description>
