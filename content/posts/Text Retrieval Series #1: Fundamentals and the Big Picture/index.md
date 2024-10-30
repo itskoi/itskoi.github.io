@@ -96,7 +96,7 @@ After having embeddings for both query and document, we need to compute the simi
 - **Cosine Similarity**: measures the cosine of the **angle between two vectors**, which reflects their orientation rather than their magnitude.
 - **Dot Product**: represents the _magnitude of alignment_ between two vectors in terms of both their **magnitudes** and the **cosine of the angle between them**.
 
-Use whatever you like if it differentiate if the 2 vectors is not similar and emphasize if 2 vector
+Use any measure that clearly distinguishes dissimilar vectors while strongly emphasizing when two vectors are identical.
 
 ### Cross-encoder
 To address the **lack of semantic interaction** in bi-encoders, **cross-encoders** combine both the query and document into a **single input** separated by a special token (e.g., `query<sep>document`). 
