@@ -15,8 +15,8 @@ categories: ["Reading Papers", "Text Retrieval"]
 
 **ColBERT** leverages independent encodings for queries and documents to generate fine-grained embeddings. It then applies a lightweight interaction mechanism to compute relevance scores. This innovative approach retains the expressiveness of BERT while significantly accelerating query processing. ColBERT, therefore, achieves comparable results to BERT-based models while drastically reducing computational overhead.
 
-
-
+## Motivation
+**ColBERT** was created to address the **trade-off between quality and cost** in neural IR models, particularly for deep language models like BERT. While **BERT** has shown state-of-the-art effectiveness in passage search tasks, it is **computationally expensive**, making it difficult to deploy in real-world scenarios where low latency is crucial.
 
 ## Before ColBERT
 
