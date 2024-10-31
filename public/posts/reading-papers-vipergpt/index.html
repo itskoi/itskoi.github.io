@@ -8,14 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   
-  <title>Reading Papers: ColBERTv1 &middot; Koi&#39;log</title>
-  <meta name="title" content="Reading Papers: ColBERTv1 &middot; Koi&#39;log" />
+  <title>Reading Papers: ViperGPT &middot; Koi&#39;log</title>
+  <meta name="title" content="Reading Papers: ViperGPT &middot; Koi&#39;log" />
   
   
   
   
   
-  <link rel="canonical" href="http://localhost:1313/posts/reading-papers-colbertv1/" />
+  <link rel="canonical" href="http://localhost:1313/posts/reading-papers-vipergpt/" />
   
   
   
@@ -63,18 +63,18 @@
   
   
   
-  <meta property="og:url" content="http://localhost:1313/posts/reading-papers-colbertv1/">
+  <meta property="og:url" content="http://localhost:1313/posts/reading-papers-vipergpt/">
   <meta property="og:site_name" content="Koi&#39;log">
-  <meta property="og:title" content="Reading Papers: ColBERTv1">
+  <meta property="og:title" content="Reading Papers: ViperGPT">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2024-10-30T16:36:30+07:00">
-    <meta property="article:modified_time" content="2024-10-30T16:36:30+07:00">
+    <meta property="article:published_time" content="2024-10-31T10:41:23+07:00">
+    <meta property="article:modified_time" content="2024-10-31T10:41:23+07:00">
 
   
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Reading Papers: ColBERTv1">
+  <meta name="twitter:title" content="Reading Papers: ViperGPT">
 
   
   <script type="application/ld+json">
@@ -82,26 +82,26 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "articleSection": "Posts",
-    "name": "Reading Papers: ColBERTv1",
-    "headline": "Reading Papers: ColBERTv1",
+    "name": "Reading Papers: ViperGPT",
+    "headline": "Reading Papers: ViperGPT",
     
     
     "inLanguage": "en",
-    "url" : "http:\/\/localhost:1313\/posts\/reading-papers-colbertv1\/",
+    "url" : "http:\/\/localhost:1313\/posts\/reading-papers-vipergpt\/",
     "author" : {
       "@type": "Person",
       "name": "Bach-Khoi Vo"
     },
     "copyrightYear": "2024",
-    "dateCreated": "2024-10-30T16:36:30\u002b07:00",
-    "datePublished": "2024-10-30T16:36:30\u002b07:00",
+    "dateCreated": "2024-10-31T10:41:23\u002b07:00",
+    "datePublished": "2024-10-31T10:41:23\u002b07:00",
     
-    "dateModified": "2024-10-30T16:36:30\u002b07:00",
+    "dateModified": "2024-10-31T10:41:23\u002b07:00",
     
     
     
     "mainEntityOfPage": "true",
-    "wordCount": "1248"
+    "wordCount": "765"
   }]
   </script>
 
@@ -575,7 +575,7 @@
   <header id="single_header" class="mt-5 max-w-prose">
     
     <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
-      Reading Papers: ColBERTv1
+      Reading Papers: ViperGPT
     </h1>
     <div class="mt-1 mb-6 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
       
@@ -620,7 +620,7 @@
 <div class="flex flex-row flex-wrap items-center">
   
   
-  <time datetime="2024-10-30T16:36:30&#43;07:00">30 October 2024</time><span class="px-2 text-primary-500">&middot;</span><span>1248 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">6 mins</span>
+  <time datetime="2024-10-31T10:41:23&#43;07:00">31 October 2024</time><span class="px-2 text-primary-500">&middot;</span><span>765 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">4 mins</span>
   
 
   
@@ -666,17 +666,18 @@
   <ul>
     <li><a href="#summary">Summary</a></li>
     <li><a href="#motivation">Motivation</a></li>
-    <li><a href="#before-colbert">Before ColBERT</a></li>
-    <li><a href="#colberts-novel-approach">ColBERT’s Novel Approach</a>
+    <li><a href="#before-vipergpt">Before ViperGPT</a></li>
+    <li><a href="#vipergpt">ViperGPT</a>
       <ul>
-        <li><a href="#understanding-maxsim-operation">Understanding MaxSim operation</a></li>
-        <li><a href="#why-colbert-stands-out">Why ColBERT stands out?</a></li>
-        <li><a href="#colbert-performance">ColBERT performance</a></li>
+        <li><a href="#problem-formulation">Problem formulation</a></li>
+        <li><a href="#program-generator">Program generator</a></li>
+        <li><a href="#api-specification">API Specification</a></li>
+        <li><a href="#program-executor">Program Executor</a></li>
       </ul>
     </li>
-    <li><a href="#short-answer-quiz">Short-Answer Quiz</a></li>
+    <li><a href="#why-vipergpt-stands-out">Why ViperGPT stands out?</a></li>
     <li><a href="#conclusion">Conclusion</a></li>
-    <li><a href="#references">References</a></li>
+    <li><a href="#reference">Reference</a></li>
   </ul>
 </nav>
   </div>
@@ -692,17 +693,18 @@
   <ul>
     <li><a href="#summary">Summary</a></li>
     <li><a href="#motivation">Motivation</a></li>
-    <li><a href="#before-colbert">Before ColBERT</a></li>
-    <li><a href="#colberts-novel-approach">ColBERT’s Novel Approach</a>
+    <li><a href="#before-vipergpt">Before ViperGPT</a></li>
+    <li><a href="#vipergpt">ViperGPT</a>
       <ul>
-        <li><a href="#understanding-maxsim-operation">Understanding MaxSim operation</a></li>
-        <li><a href="#why-colbert-stands-out">Why ColBERT stands out?</a></li>
-        <li><a href="#colbert-performance">ColBERT performance</a></li>
+        <li><a href="#problem-formulation">Problem formulation</a></li>
+        <li><a href="#program-generator">Program generator</a></li>
+        <li><a href="#api-specification">API Specification</a></li>
+        <li><a href="#program-executor">Program Executor</a></li>
       </ul>
     </li>
-    <li><a href="#short-answer-quiz">Short-Answer Quiz</a></li>
+    <li><a href="#why-vipergpt-stands-out">Why ViperGPT stands out?</a></li>
     <li><a href="#conclusion">Conclusion</a></li>
-    <li><a href="#references">References</a></li>
+    <li><a href="#reference">Reference</a></li>
   </ul>
 </nav>
   </div>
@@ -788,7 +790,7 @@
         <div class="article-content max-w-prose mb-20">
           
 
-<p><strong>TL;DR:</strong> ColBERT combines the efficiency of a Bi-encoder, allowing fast embedding and precomputing, with a late interaction mechanism to learn cross-information between query and document. The result? Near-BERT performance at a fraction of BERT’s runtime!</p>
+<p><strong>TL;DR:</strong> ViperGPT proposes a simple framework for solving complex visual queries by integrating code-generation models into vision with an API and the Python interpreter.</p>
 <blockquote>
 <p><strong>Note:</strong> This my personal learning note, so <strong>some points may not be entirely accurate</strong>. I strive to improve my understanding and will correct any errors I find. If you spot any inaccuracies, please feel free to share your insights to help enhance the content 😊.</p>
 </blockquote>
@@ -804,7 +806,7 @@
     </span>        
     
 </h2>
-<p><strong>ColBERT</strong> leverages independent encodings for queries and documents to generate fine-grained embeddings. It then applies a lightweight interaction mechanism to compute relevance scores. This innovative approach retains the expressiveness of BERT while significantly accelerating query processing. ColBERT, therefore, achieves comparable results to BERT-based models while drastically reducing computational overhead.</p>
+<p>The framework&rsquo;s ability to generate and execute Python code, coupled with its access to a diverse set of pre-trained vision and language models through a well-defined API, enables ViperGPT to achieve impressive zero-shot performance on a wide range of visual reasoning tasks.</p>
 
 
 <h2 class="relative group">Motivation 
@@ -817,156 +819,115 @@
     </span>        
     
 </h2>
-<p><strong>ColBERT</strong> was created to address the <strong>trade-off between quality and cost</strong> in neural IR models, particularly for deep language models like BERT. While <strong>BERT</strong> has shown state-of-the-art effectiveness in passage search tasks, it is <strong>computationally expensive</strong>, making it difficult to deploy in real-world scenarios where low latency is crucial.</p>
+<p><strong>ViperGPT</strong> is motivated by the limitations of <strong>end-to-end models</strong>, which are the dominant approach for answering visual queries. While end-to-end models have made significant progress in individual tasks such as object recognition and depth estimation, they struggle with more <strong>complex tasks that require both visual processing and reasoning</strong>. ViperGPT seeks to overcome these limitations by introducing a <strong>modular and interpretable approach</strong> to visual reasoning.</p>
 
 
-<h2 class="relative group">Before ColBERT 
-    <div id="before-colbert" class="anchor"></div>
+<h2 class="relative group">Before ViperGPT 
+    <div id="before-vipergpt" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
         <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#before-colbert" aria-label="Anchor">#</a>
+            style="text-decoration-line: none !important;" href="#before-vipergpt" aria-label="Anchor">#</a>
     </span>        
     
 </h2>
-<p>
-    <figure>
-      <img class="my-0 rounded-md" loading="lazy" src="./paradigms.png" alt="paradigms" />
-      
-    </figure>
-</p>
-<p>Prior to ColBERT, ranking models could be grouped into three main paradigms:</p>
-<ol>
-<li><strong>No Interaction</strong>: Queries and documents have separate, independent encoders that capture the meaning of their respective inputs. However, embedding each query and document independently results in isolated representations, with no cross-information to link the two. This is known as the <strong>bi-encoder</strong> or <strong>two-tower</strong> paradigm.</li>
-<li><strong>Partial Interaction</strong>: This approach attempts to capture relationships between the query and document but lacks the internal self-information of each input, effectively acting as an &ldquo;inverted&rdquo; version of the no-interaction paradigm.</li>
-<li><strong>Full Interaction</strong>: Transformer-based models like BERT capture both self and cross information between the query and document. Although BERT-based models offer strong performance, their <strong>high computational costs</strong> pose challenges, especially in latency-sensitive applications.</li>
-</ol>
+<ul>
+<li><strong>Lack of Compositional Reasoning</strong>: End-to-end models do not explicitly <strong>differentiate between visual processing and reasoning</strong>, making it difficult for them to handle complex, multi-step tasks. People naturally <strong>decompose visual tasks into smaller steps</strong>, but end-to-end models lack this inherent compositional reasoning ability.</li>
+<li><strong>Limited Interpretability</strong>: End-to-end models offer little insight into their decision-making process, making it <strong>difficult to understand why they succeed or fail</strong>. This lack of interpretability, described as having no way to audit the result of each step to diagnose failure, becomes increasingly problematic as models become more complex and data-hungry.</li>
+<li><strong>Inability to Leverage Existing Models and Tools</strong>: End-to-end models necessitate <strong>training a new model for every new task</strong>, failing to capitalize on the advancements in fundamental vision tasks and readily available tools like mathematical operations. Ideally, new tasks should be tackled by recombining existing models and tools in innovative ways without requiring additional training3.</li>
+</ul>
 
 
-<h2 class="relative group">ColBERT’s Novel Approach 
-    <div id="colberts-novel-approach" class="anchor"></div>
+<h2 class="relative group">ViperGPT 
+    <div id="vipergpt" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
         <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#colberts-novel-approach" aria-label="Anchor">#</a>
+            style="text-decoration-line: none !important;" href="#vipergpt" aria-label="Anchor">#</a>
     </span>        
     
 </h2>
-<p>ColBERT bridges the gap between effectiveness and efficiency in models that leverage deep language models like BERT.</p>
-<p>
-    <figure>
-      <img class="my-0 rounded-md" loading="lazy" src="./late_interaction.png" alt="late interaction" />
-      
-    </figure>
-</p>
-<p>ColBERT introduces a <strong>&ldquo;late interaction&rdquo; paradigm</strong>, where queries and documents are independently encoded into sets of contextualized embeddings using BERT. A lightweight interaction mechanism, the <strong>MaxSim</strong> operation, then models fine-grained similarity between the query and document representations.</p>
 
 
-<h3 class="relative group">Understanding MaxSim operation 
-    <div id="understanding-maxsim-operation" class="anchor"></div>
+<h3 class="relative group">Problem formulation 
+    <div id="problem-formulation" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
         <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#understanding-maxsim-operation" aria-label="Anchor">#</a>
+            style="text-decoration-line: none !important;" href="#problem-formulation" aria-label="Anchor">#</a>
     </span>        
     
 </h3>
-<p>For each word vector embedding in the query <strong>bag embeddings</strong> \(E_q\), <strong>ColBERT</strong> finds the <strong>maximum word similarity score</strong> with the word embeddings in the document \(E_d\). This is done through the <strong>MaxSim</strong> operator.</p>
-<ul>
-<li>The <strong>MaxSim</strong> operator calculates the <strong>cosine similarity</strong> between a single query embedding and all embeddings in document&rsquo;s bag embedding.</li>
-<li>The <strong>highest similarity score</strong> is then selected as the &ldquo;match&rdquo; for that specific query term.</li>
-</ul>
-<p>This process is repeated for all embeddings in \(E_q\). The individual term scores are then summed to estimate the overall relevance of the document to the query.</p>
-
-
-<h3 class="relative group">Why ColBERT stands out? 
-    <div id="why-colbert-stands-out" class="anchor"></div>
-    
-    <span
-        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
-        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#why-colbert-stands-out" aria-label="Anchor">#</a>
-    </span>        
-    
-</h3>
-<p>ColBERT&rsquo;s late interaction architecture for ranking documents in response to search queries relies on the MaxSim operator, which finds the highest cosine similarity score between each query term embedding and all document embeddings. Here’s why ColBERT is both effective and efficient:</p>
-<ul>
-<li><strong>Computational Efficiency</strong>: MaxSim avoids the heavy computational requirements of attention mechanisms:
-<ul>
-<li><strong>MaxSim</strong> involves calculating cosine similarity between query and document embeddings and then selecting the highest score per query term.</li>
-<li>In contrast, <strong>Attention mechanisms</strong> require multiple matrix multiplications and normalization steps, which are computationally expensive.</li>
-<li><strong>Pre-computing document embeddings</strong> further accelerates ColBERT, as seen in no-interaction paradigms.</li>
-</ul>
-</li>
-<li><strong>Pruning Capability</strong>: MaxSim allows vector-similarity search indexes to efficiently identify documents with terms highly similar (top-k) to the query, <strong>without scoring every document</strong> in the collection. Attention mechanisms, on the other hand, don’t lend themselves to such pruning. Although simple, MaxSim achieves state-of-the-art results when paired with BERT’s contextualized embeddings.</li>
-</ul>
-
-
-<h3 class="relative group">ColBERT performance 
-    <div id="colbert-performance" class="anchor"></div>
-    
-    <span
-        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
-        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#colbert-performance" aria-label="Anchor">#</a>
-    </span>        
-    
-</h3>
+<p>Given a visual input <code>x</code> and a textual query <code>q</code> about its contents, it first synthesizes a program <code>z = π(q)</code> with a program generator <code>π</code> given the query. It then applies the execution engine<code> r = ϕ(x, z)</code> to execute the program <code>z</code> on the input <code>x</code> and produce a result <code>r</code>. This framework is flexible, supporting image or videos as inputs <code>x</code>, questions or descriptions as queries <code>q</code>, and any type (e.g., text or image crops) as outputs <code>r</code>.</p>
 <p>
     <figure>
-      <img class="my-0 rounded-md" loading="lazy" src="./ranking_result.png" alt="reranking_result" />
+      <img class="my-0 rounded-md" loading="lazy" src="./vipergpt.png" alt="vipergpt" />
       
     </figure>
 </p>
-<p>In <code>Table 1</code> of the referenced article, ColBERT demonstrates competitive performance on ranking tasks compared to BERT, but with a significant reduction in runtime.</p>
-<p>
-    <figure>
-      <img class="my-0 rounded-md" loading="lazy" src="./flops_result.png" alt="flops_result" />
-      
-    </figure>
-</p>
-<p>The <code>Figure 4</code> highlights ColBERT’s runtime efficiency: as the number of candidate documents (k) increases, ColBERT’s runtime remains relatively stable, underscoring its scalability and speed advantage over BERT.</p>
 
 
-<h2 class="relative group">Short-Answer Quiz 
-    <div id="short-answer-quiz" class="anchor"></div>
+<h3 class="relative group">Program generator 
+    <div id="program-generator" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
         <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#short-answer-quiz" aria-label="Anchor">#</a>
+            style="text-decoration-line: none !important;" href="#program-generator" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>This process uses a <strong>large language model (LLM)</strong> called <strong>Codex</strong> to create Python programs that can answer a given query using various vision and language modules. The LLM is provided with an API specifying the available modules and their functionalities1. This process requires no training for specific tasks</p>
+
+
+<h3 class="relative group">API Specification 
+    <div id="api-specification" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#api-specification" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>The API specification plays a crucial role in ViperGPT by serving as a bridge between the code-generating LLM (Codex) and the various vision and language modules that it uses to answer visual queries. Instead of directly implementing the API, the authors of ViperGPT made the design decision to provide Codex with a specification of the API, including <strong>function signatures, docstrings, and examples</strong>.</p>
+
+
+<h3 class="relative group">Program Executor 
+    <div id="program-executor" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#program-executor" aria-label="Anchor">#</a>
+    </span>        
+    
+</h3>
+<p>The generated Python programs are then executed by the Python interpreter, which utilizes pre-trained models to carry out the instructions within the program. This execution engine allows the model to perform <strong>logical operations</strong> through <strong>Python</strong> and <strong>perceptual tasks</strong> through <strong>pre-trained models</strong>. This process ensures the program&rsquo;s interpretability as each step is explicitly outlined with code function calls and intermediate values that can be examined.</p>
+
+
+<h2 class="relative group">Why ViperGPT stands out? 
+    <div id="why-vipergpt-stands-out" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#why-vipergpt-stands-out" aria-label="Anchor">#</a>
     </span>        
     
 </h2>
-<p><strong>Questions</strong></p>
-<ol>
-<li>What is the main challenge that ColBERT addresses in the context of neural ranking models?</li>
-<li>Describe the &ldquo;late interaction&rdquo; paradigm introduced by ColBERT.</li>
-<li>How does ColBERT&rsquo;s architecture differ from traditional interaction-focused rankers (e.g., DRMM, KNRM)?</li>
-<li>Explain the role of query augmentation in ColBERT&rsquo;s query encoder.</li>
-<li>How does ColBERT&rsquo;s document encoder process document text and generate embeddings?</li>
-<li>Describe the late interaction mechanism in ColBERT and how it calculates the relevance score.</li>
-<li>What are the benefits of using a MaxSim-based interaction mechanism in ColBERT?</li>
-<li>How does ColBERT achieve efficiency in terms of offline indexing and query processing?</li>
-<li>Explain how ColBERT supports end-to-end retrieval from a large document collection.</li>
-<li>What are the key findings from the experimental evaluation of ColBERT on MS MARCO and TREC CAR datasets?</li>
-</ol>
-<p><strong>Answer Key</strong></p>
-<ol>
-<li>ColBERT addresses the challenge of high computational cost associated with BERT-based ranking models, aiming to improve their efficiency without sacrificing effectiveness.</li>
-<li>Late interaction refers to the independent encoding of queries and documents into sets of contextualized embeddings followed by a lightweight interaction step to compute the relevance score. This allows for efficient pre-computation of document representations offline, reducing the online computational burden.</li>
-<li>Unlike traditional interaction-focused rankers that compute a single relevance score based on pairwise interactions between all query and document terms, ColBERT separates query and document encoding and relies on MaxSim to identify the most relevant document terms for each query term and aggregates these matches.</li>
-<li>Query augmentation involves padding the query with masked tokens, allowing BERT to generate query-based embeddings at these positions. This mechanism serves as a differentiable way to expand queries with new terms or re-weight existing terms based on their importance for matching.</li>
-<li>The document encoder segments the document into tokens, prepends special tokens, and passes the sequence through BERT. After applying a linear layer, it filters out embeddings corresponding to punctuation symbols to reduce the number of embeddings per document.</li>
-<li>ColBERT&rsquo;s late interaction mechanism computes the maximum similarity (cosine or L2 distance) between each query embedding and all document embeddings. The resulting maximum similarity scores are summed across all query terms to obtain the overall relevance score for the document.</li>
-<li>The MaxSim operation offers efficiency by enabling pruning for top-k retrieval. It allows using vector-similarity search indexes to efficiently retrieve the most promising document candidates without exhaustively scoring all documents.</li>
-<li>ColBERT pre-computes document representations offline, reducing the online computational load. During query processing, it encodes the query only once and interacts with the pre-computed document representations, further minimizing the cost.</li>
-<li>ColBERT leverages its pruning-friendly MaxSim operation to support end-to-end retrieval. It employs a vector-similarity search index (e.g., Faiss) to retrieve a subset of candidate documents based on the similarity of individual query embeddings to all document embeddings. This candidate set is then re-ranked using ColBERT&rsquo;s full scoring mechanism.</li>
-<li>Experimental results on MS MARCO and TREC CAR show that ColBERT achieves competitive effectiveness compared to state-of-the-art BERT-based models while being significantly more efficient. It outperforms other non-BERT baselines and demonstrates a considerable speedup and reduction in FLOPs compared to BERT.</li>
-</ol>
+<ul>
+<li><strong>Interpretability</strong>: Every step of the reasoning process is explicit and can be inspected, as it is represented in the form of code.</li>
+<li><strong>Compositionality</strong>: Tasks are decomposed into smaller sub-tasks, promoting a more human-like approach to visual reasoning.</li>
+<li><strong>Logical Reasoning</strong>: ViperGPT leverages built-in Python logical and mathematical operators, enabling clear and explicit logical reasoning.</li>
+<li><strong>Flexibility</strong>: ViperGPT seamlessly incorporates any vision or language module by simply adding its specification to the API.</li>
+<li><strong>Adaptability</strong>: Improvements in individual modules directly enhance ViperGPT&rsquo;s performance.</li>
+<li><strong>Training-free</strong>: ViperGPT eliminates the need for retraining or fine-tuning for every new task.</li>
+<li><strong>Generality</strong>: A single system unifies various visual tasks.</li>
+</ul>
 
 
 <h2 class="relative group">Conclusion 
@@ -979,23 +940,21 @@
     </span>        
     
 </h2>
-<p><strong>ColBERT</strong> offers a powerful ==balance between speed and accuracy== in information retrieval by combining the efficiency of a Bi-encoder with a novel late interaction mechanism.
-Its <strong>MaxSim operator</strong> allows for fine-grained similarity matching without the high computational costs of full attention, making it ideal for latency-sensitive applications. ColBERT’s performance, ==close to BERT but at a fraction of the runtime==, demonstrates the potential of innovative interaction mechanisms in neural IR.</p>
+<p>ViperGPT presents a compelling alternative to end-to-end models for complex visual tasks. By leveraging the power of programmatic composition and pre-trained modules, it achieves strong zero-shot performance while maintaining interpretability and flexibility. As the field of vision and language models continues to advance, ViperGPT&rsquo;s ability to readily incorporate these advancements makes it a promising direction for future research.</p>
 
 
-<h2 class="relative group">References 
-    <div id="references" class="anchor"></div>
+<h2 class="relative group">Reference 
+    <div id="reference" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
         <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#references" aria-label="Anchor">#</a>
+            style="text-decoration-line: none !important;" href="#reference" aria-label="Anchor">#</a>
     </span>        
     
 </h2>
 <ul>
-<li><a href="https://arxiv.org/pdf/2004.12832" target="_blank">https://arxiv.org/pdf/2004.12832</a></li>
-<li><a href="https://jina.ai/news/what-is-colbert-and-late-interaction-and-why-they-matter-in-search/" target="_blank">https://jina.ai/news/what-is-colbert-and-late-interaction-and-why-they-matter-in-search/</a></li>
+<li><a href="https://viper.cs.columbia.edu/" target="_blank">https://viper.cs.columbia.edu/</a></li>
 </ul>
 
           
@@ -1116,7 +1075,7 @@ Its <strong>MaxSim operator</strong> allows for fine-grained similarity matching
       <a
       target="_blank"
       class="m-1 rounded bg-neutral-300 p-1.5 text-neutral-700 hover:bg-primary-500 hover:text-neutral dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-400 dark:hover:text-neutral-800"
-      href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:1313/posts/reading-papers-colbertv1/&amp;title=Reading%20Papers:%20ColBERTv1"
+      href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:1313/posts/reading-papers-vipergpt/&amp;title=Reading%20Papers:%20ViperGPT"
       title="Share on LinkedIn"
       aria-label="Share on LinkedIn"
       >
@@ -1135,7 +1094,7 @@ Its <strong>MaxSim operator</strong> allows for fine-grained similarity matching
       <a
       target="_blank"
       class="m-1 rounded bg-neutral-300 p-1.5 text-neutral-700 hover:bg-primary-500 hover:text-neutral dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-400 dark:hover:text-neutral-800"
-      href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/reading-papers-colbertv1/&amp;quote=Reading%20Papers:%20ColBERTv1"
+      href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/reading-papers-vipergpt/&amp;quote=Reading%20Papers:%20ViperGPT"
       title="Share on Facebook"
       aria-label="Share on Facebook"
       >
@@ -1164,8 +1123,8 @@ Its <strong>MaxSim operator</strong> allows for fine-grained similarity matching
           
         
       <script>
-        var oid = "views_posts\/Reading Papers: ColBERTv1\/index.md"
-        var oid_likes = "likes_posts\/Reading Papers: ColBERTv1\/index.md"
+        var oid = "views_posts\/Reading Papers: ViperGPT\/index.md"
+        var oid_likes = "likes_posts\/Reading Papers: ViperGPT\/index.md"
       </script>
       
       
@@ -1185,7 +1144,7 @@ Its <strong>MaxSim operator</strong> allows for fine-grained similarity matching
       <div class="flex justify-between pt-3">
         <span>
           
-            <a class="flex group mr-3" href="/posts/text-retrieval-series-%231-fundamentals-and-the-big-picture/">
+            <a class="flex group mr-3" href="/posts/reading-papers-colbertv1/">
               <span
                 class="mr-3 text-neutral-700 group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
                 >&larr;</span
@@ -1197,11 +1156,11 @@ Its <strong>MaxSim operator</strong> allows for fine-grained similarity matching
               <span class="flex flex-col">
                 <span
                   class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
-                  >Text Retrieval Series #1: Fundamentals and the Big Picture</span
+                  >Reading Papers: ColBERTv1</span
                 >
                 <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
                   
-                    <time datetime="2024-10-15T20:48:02&#43;07:00">15 October 2024</time>
+                    <time datetime="2024-10-30T16:36:30&#43;07:00">30 October 2024</time>
                   
                 </span>
               </span>
@@ -1209,28 +1168,6 @@ Its <strong>MaxSim operator</strong> allows for fine-grained similarity matching
           
         </span>
         <span>
-          
-            <a class="flex text-right group ml-3" href="/posts/reading-papers-vipergpt/">
-              <span class="flex flex-col">
-                <span
-                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
-                  >Reading Papers: ViperGPT</span
-                >
-                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
-                  
-                    <time datetime="2024-10-31T10:41:23&#43;07:00">31 October 2024</time>
-                  
-                </span>
-              </span>
-              <span
-                class="ml-3 text-neutral-700 group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
-                >&rarr;</span
-              >
-              <span
-                class="mr-3 text-neutral-700 group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
-                >&larr;</span
-              >
-            </a>
           
         </span>
       </div>
