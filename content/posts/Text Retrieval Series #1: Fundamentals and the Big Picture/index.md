@@ -4,6 +4,7 @@ date: 2024-10-15T20:48:02+07:00
 draft: false
 description: ""
 categories: ["Text Retrieval"]
+tags: ["llm", "retrieval", "text"]
 ---
 {{< katex >}}
 

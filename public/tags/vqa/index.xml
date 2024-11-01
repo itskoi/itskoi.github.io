@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Vqa on Koi&#39;Log</title>
+    <link>http://localhost:1313/tags/vqa/</link>
+    <description>Recent content in Vqa on Koi&#39;Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>itskoiwork@gmail.com (Bach-Khoi Vo)</managingEditor>
+    <webMaster>itskoiwork@gmail.com (Bach-Khoi Vo)</webMaster>
+    <copyright>© 2024 Bach-Khoi Vo</copyright>
+    <lastBuildDate>Thu, 31 Oct 2024 10:41:23 +0700</lastBuildDate><atom:link href="http://localhost:1313/tags/vqa/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Reading Papers: ViperGPT</title>
+      <link>http://localhost:1313/posts/reading-papers-vipergpt/</link>
+      <pubDate>Thu, 31 Oct 2024 10:41:23 +0700</pubDate>
+      <author>itskoiwork@gmail.com (Bach-Khoi Vo)</author>
+      <guid>http://localhost:1313/posts/reading-papers-vipergpt/</guid>
+      <description></description>
+      
+    </item>
+    
+  </channel>
+</rss>

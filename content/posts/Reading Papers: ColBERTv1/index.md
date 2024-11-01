@@ -1,9 +1,10 @@
 ---
-title: "Reading Papers: ColBERTv1"
+title: "Reading Papers: ColBERTv1 (SIGIR 2020)"
 date: 2024-10-30T16:36:30+07:00
 draft: false
 description: ""
 categories: ["Reading Papers", "Text Retrieval"]
+tags: ["llm", "ranking", "rag", "retrieval"]
 ---
 {{< katex >}}
 

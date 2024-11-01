@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on Koi&#39;log</title>
+    <title>Categories on Koi&#39;Log</title>
     <link>http://localhost:1313/categories/</link>
-    <description>Recent content in Categories on Koi&#39;log</description>
+    <description>Recent content in Categories on Koi&#39;Log</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <managingEditor>itskoiwork@gmail.com (Bach-Khoi Vo)</managingEditor>
@@ -13,7 +13,7 @@
     <item>
       <title>Reading Papers</title>
       <link>http://localhost:1313/categories/reading-papers/</link>
-      <pubDate>Wed, 30 Oct 2024 16:36:30 +0700</pubDate>
+      <pubDate>Thu, 31 Oct 2024 20:28:53 +0700</pubDate>
       <author>itskoiwork@gmail.com (Bach-Khoi Vo)</author>
       <guid>http://localhost:1313/categories/reading-papers/</guid>
       <description></description>

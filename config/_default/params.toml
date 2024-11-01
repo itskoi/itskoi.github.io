@@ -23,7 +23,7 @@ backgroundImageWidth = 1920
 
 # defaultBackgroundImage = "img/background.jpg" # used as default for background images 
 defaultBackgroundImage = "img/banner.png" # used as default for background images 
-# defaultFeaturedImage = "IMAGE.jpg" # used as default for featured images in all articles
+# defaultFeaturedImage = "img/background.jpg" # used as default for featured images in all articles
 
 highlightCurrentMenuArea = true
 smartTOC = true
@@ -46,10 +46,10 @@ forgejoDefaultServer = "https://v8.next.forgejo.org"
   layout = "background" # valid options: page, profile, hero, card, background, custom
   homepageImage = "img/banner.png" # used in: hero, and card
   showRecent = true 
-  showRecentItems = 5
+  showRecentItems = 6
   showMoreLink = false
   showMoreLinkDest = "/posts/"
-  cardView = true
+  cardView = true  
   cardViewScreenWidth = false
   layoutBackgroundBlur = true # only used when layout equals background
 
@@ -82,7 +82,7 @@ forgejoDefaultServer = "https://v8.next.forgejo.org"
   showAuthorsBadges = false
   showWordCount = true
   sharingLinks = [ "linkedin", "facebook"]
-  showZenMode = false
+  showZenMode = true
 
 [list]
   showHero = true
@@ -94,7 +94,7 @@ forgejoDefaultServer = "https://v8.next.forgejo.org"
   showViews = false
   showLikes = false
   showTableOfContents = true 
-  showCards = true
+  showCards = true 
   orderByWeight = false
   groupByYear = true
   cardView = true

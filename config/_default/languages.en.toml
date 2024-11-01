@@ -2,7 +2,7 @@ disabled = false
 languageCode = "en"
 languageName = "English"
 weight = 1
-title = "Koi'log"
+title = "Koi'Log"
 
 [params]
   displayName = "EN"

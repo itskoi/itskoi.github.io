@@ -1,9 +1,10 @@
 ---
-title: "Reading Papers: ViperGPT"
+title: "Reading Papers: ViperGPT (ICCV 2023)"
 date: 2024-10-31T10:41:23+07:00
 draft: false
 description: ""
-categories: []
+categories: ["Reading papers"]
+tags: ["agent", "llm", "vqa"]
 ---
 {{< katex >}}
 
@@ -17,7 +18,7 @@ The framework's ability to generate and execute Python code, coupled with its ac
 
 ## Motivation
 
-**ViperGPT** is motivated by the limitations of **end-to-end models**, which are the dominant approach for answering visual queries. While end-to-end models have made significant progress in individual tasks such as object recognition and depth estimation, they struggle with more **complex tasks that require both visual processing and reasoning**. ViperGPT seeks to overcome these limitations by introducing a **modular and interpretable approach** to visual reasoning.
+**ViperGPT** is motivated by the limitations of **end-to-end models**, which are the dominant approach for **answering visual queries**. While end-to-end models have made significant progress in individual tasks such as object recognition and depth estimation, they struggle with more **complex tasks that require both visual processing and reasoning**. ViperGPT seeks to overcome these limitations by introducing a **modular and interpretable approach** to visual reasoning.
 
 ## Before ViperGPT
 - **Lack of Compositional Reasoning**: End-to-end models do not explicitly **differentiate between visual processing and reasoning**, making it difficult for them to handle complex, multi-step tasks. People naturally **decompose visual tasks into smaller steps**, but end-to-end models lack this inherent compositional reasoning ability. 
