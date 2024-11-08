@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Llm on Koi&#39;Log</title>
+    <link>http://localhost:1313/categories/llm/</link>
+    <description>Recent content in Llm on Koi&#39;Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>itskoiwork@gmail.com (Bach-Khoi Vo)</managingEditor>
+    <webMaster>itskoiwork@gmail.com (Bach-Khoi Vo)</webMaster>
+    <copyright>© 2024 Bach-Khoi Vo</copyright>
+    <lastBuildDate>Fri, 08 Nov 2024 16:23:37 +0700</lastBuildDate><atom:link href="http://localhost:1313/categories/llm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Reading Papers: VisProg (Best Paper CVPR 2023)</title>
+      <link>http://localhost:1313/posts/reading-papers-visprog/</link>
+      <pubDate>Fri, 08 Nov 2024 16:23:37 +0700</pubDate>
+      <author>itskoiwork@gmail.com (Bach-Khoi Vo)</author>
+      <guid>http://localhost:1313/posts/reading-papers-visprog/</guid>
+      <description></description>
+      
+    </item>
+    
+  </channel>
+</rss>

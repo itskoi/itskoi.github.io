@@ -9,7 +9,17 @@
     <managingEditor>itskoiwork@gmail.com (Bach-Khoi Vo)</managingEditor>
     <webMaster>itskoiwork@gmail.com (Bach-Khoi Vo)</webMaster>
     <copyright>© 2024 Bach-Khoi Vo</copyright>
-    <lastBuildDate>Thu, 31 Oct 2024 20:28:53 +0700</lastBuildDate><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 08 Nov 2024 16:23:37 +0700</lastBuildDate><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Reading Papers: VisProg (Best Paper CVPR 2023)</title>
+      <link>http://localhost:1313/posts/reading-papers-visprog/</link>
+      <pubDate>Fri, 08 Nov 2024 16:23:37 +0700</pubDate>
+      <author>itskoiwork@gmail.com (Bach-Khoi Vo)</author>
+      <guid>http://localhost:1313/posts/reading-papers-visprog/</guid>
+      <description></description>
+      
+    </item>
+    
     <item>
       <title>Reading Papers: CIReVL (ICLR 2024)</title>
       <link>http://localhost:1313/posts/reading-papers-cirevl/</link>

@@ -8,14 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   
-  <title>Reading Papers: CIReVL (ICLR 2024) &middot; Koi&#39;Log</title>
-  <meta name="title" content="Reading Papers: CIReVL (ICLR 2024) &middot; Koi&#39;Log" />
+  <title>Reading Papers: VisProg (Best Paper CVPR 2023) &middot; Koi&#39;Log</title>
+  <meta name="title" content="Reading Papers: VisProg (Best Paper CVPR 2023) &middot; Koi&#39;Log" />
+  
+  <meta name="description" content="Reading papers" />
   
   
-  <meta name="keywords" content="CIR, llm, visual, " />
   
-  
-  <link rel="canonical" href="http://localhost:1313/posts/reading-papers-cirevl/" />
+  <link rel="canonical" href="http://localhost:1313/posts/reading-papers-visprog/" />
   
   
   
@@ -63,21 +63,20 @@
   
   
   
-  <meta property="og:url" content="http://localhost:1313/posts/reading-papers-cirevl/">
+  <meta property="og:url" content="http://localhost:1313/posts/reading-papers-visprog/">
   <meta property="og:site_name" content="Koi&#39;Log">
-  <meta property="og:title" content="Reading Papers: CIReVL (ICLR 2024)">
+  <meta property="og:title" content="Reading Papers: VisProg (Best Paper CVPR 2023)">
+  <meta property="og:description" content="Reading papers">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2024-10-31T20:28:53+07:00">
-    <meta property="article:modified_time" content="2024-10-31T20:28:53+07:00">
-    <meta property="article:tag" content="CIR">
-    <meta property="article:tag" content="Llm">
-    <meta property="article:tag" content="Visual">
+    <meta property="article:published_time" content="2024-11-08T16:23:37+07:00">
+    <meta property="article:modified_time" content="2024-11-08T16:23:37+07:00">
 
   
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Reading Papers: CIReVL (ICLR 2024)">
+  <meta name="twitter:title" content="Reading Papers: VisProg (Best Paper CVPR 2023)">
+  <meta name="twitter:description" content="Reading papers">
 
   
   <script type="application/ld+json">
@@ -85,26 +84,26 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "articleSection": "Posts",
-    "name": "Reading Papers: CIReVL (ICLR 2024)",
-    "headline": "Reading Papers: CIReVL (ICLR 2024)",
-    
+    "name": "Reading Papers: VisProg (Best Paper CVPR 2023)",
+    "headline": "Reading Papers: VisProg (Best Paper CVPR 2023)",
+    "description": "Reading papers",
     
     "inLanguage": "en",
-    "url" : "http:\/\/localhost:1313\/posts\/reading-papers-cirevl\/",
+    "url" : "http:\/\/localhost:1313\/posts\/reading-papers-visprog\/",
     "author" : {
       "@type": "Person",
       "name": "Bach-Khoi Vo"
     },
     "copyrightYear": "2024",
-    "dateCreated": "2024-10-31T20:28:53\u002b07:00",
-    "datePublished": "2024-10-31T20:28:53\u002b07:00",
+    "dateCreated": "2024-11-08T16:23:37\u002b07:00",
+    "datePublished": "2024-11-08T16:23:37\u002b07:00",
     
-    "dateModified": "2024-10-31T20:28:53\u002b07:00",
+    "dateModified": "2024-11-08T16:23:37\u002b07:00",
     
-    "keywords": ["CIR","llm","visual"],
+    
     
     "mainEntityOfPage": "true",
-    "wordCount": "359"
+    "wordCount": "724"
   }]
   </script>
 
@@ -604,7 +603,7 @@
   <header id="single_header" class="mt-5 max-w-prose">
     
     <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
-      Reading Papers: CIReVL (ICLR 2024)
+      Reading Papers: VisProg (Best Paper CVPR 2023)
     </h1>
     <div class="mt-1 mb-6 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
       
@@ -651,7 +650,7 @@
 <div class="flex flex-row flex-wrap items-center">
   
   
-  <time datetime="2024-10-31T20:28:53&#43;07:00">31 October 2024</time><span class="px-2 text-primary-500">&middot;</span><span>359 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">2 mins</span><span class="px-2 text-primary-500">&middot;</span>
+  <time datetime="2024-11-08T16:23:37&#43;07:00">8 November 2024</time><span class="px-2 text-primary-500">&middot;</span><span>724 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">4 mins</span><span class="px-2 text-primary-500">&middot;</span>
 
 
 <script type="text/javascript" src="/js/zen-mode.min.63c8a202661f4a2063fdc2706685d668e8ea3da613da2224e9da527e5876e4f53dcac39ab60732626fb4151feae5d430d0cf44731e5d3c726522fcc1519c1547.js" integrity="sha512-Y8iiAmYfSiBj/cJwZoXWaOjqPaYT2iIk6dpSflh25PU9ysOatgcyYm&#43;0FR/q5dQw0M9Ecx5dPHJlIvzBUZwVRw=="></script>
@@ -719,9 +718,11 @@
     <li><a href="#summary">Summary</a></li>
     <li><a href="#motivation">Motivation</a></li>
     <li><a href="#methodology">Methodology</a></li>
-    <li><a href="#why-cirevl-stands-out">Why CIReVL Stands Out</a></li>
+    <li><a href="#benchmarks">Benchmarks</a></li>
+    <li><a href="#strengths">Strengths</a></li>
+    <li><a href="#weaknesses">Weaknesses</a></li>
+    <li><a href="#future-work">Future Work</a></li>
     <li><a href="#conclusion">Conclusion</a></li>
-    <li><a href="#reference">Reference</a></li>
   </ul>
 </nav>
   </div>
@@ -738,9 +739,11 @@
     <li><a href="#summary">Summary</a></li>
     <li><a href="#motivation">Motivation</a></li>
     <li><a href="#methodology">Methodology</a></li>
-    <li><a href="#why-cirevl-stands-out">Why CIReVL Stands Out</a></li>
+    <li><a href="#benchmarks">Benchmarks</a></li>
+    <li><a href="#strengths">Strengths</a></li>
+    <li><a href="#weaknesses">Weaknesses</a></li>
+    <li><a href="#future-work">Future Work</a></li>
     <li><a href="#conclusion">Conclusion</a></li>
-    <li><a href="#reference">Reference</a></li>
   </ul>
 </nav>
   </div>
@@ -826,10 +829,19 @@
         <div class="article-content max-w-prose mb-20">
           
 
-<p><strong>TL;DR</strong>: A training-free, modular, and interpretable approach that leverages LLMs to enhance text-based queries for compositional image retrieval.</p>
-<blockquote>
-<p><strong>Note:</strong> This is my personal learning note, so <strong>some points may not be entirely accurate</strong>. I strive to improve my understanding and will correct any errors I find. If you spot any inaccuracies, please feel free to share your insights to help enhance the content 😊.</p>
-</blockquote>
+
+
+<h1 class="relative group">VISPROG: A Neuro-Symbolic Approach to Visual Reasoning 
+    <div id="visprog-a-neuro-symbolic-approach-to-visual-reasoning" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#visprog-a-neuro-symbolic-approach-to-visual-reasoning" aria-label="Anchor">#</a>
+    </span>        
+    
+</h1>
+<p><strong>TL;DR</strong>: Concurrent work with <a href="https://itskoi.github.io/posts/reading-papers-vipergpt/" target="_blank">ViperGPT</a>. Similar to ViperGPT but generates pseudo code rather than Python code.</p>
 
 
 <h2 class="relative group">Summary 
@@ -842,7 +854,13 @@
     </span>        
     
 </h2>
-<p>The paper introduces <strong>CIReVL</strong> (Compositional Image Retrieval through Vision-by-Language), a novel zero-shot compositional image retrieval (ZS-CIR) method. CIReVL leverages existing pre-trained vision-language models (VLMs) and large language models (LLMs) to <strong>perform CIR without any additional training</strong>.</p>
+<p>
+    <figure>
+      <img class="my-0 rounded-md" loading="lazy" src="./visprog.png" alt="visprog" />
+      
+    </figure>
+</p>
+<p>The paper introduces VISPROG, a neuro-symbolic system that tackles complex visual tasks by leveraging large language models (LLMs) to generate executable Python-like programs. These programs compose various off-the-shelf computer vision models, image processing routines, and logical operators to solve diverse visual tasks described in natural language.</p>
 
 
 <h2 class="relative group">Motivation 
@@ -855,7 +873,7 @@
     </span>        
     
 </h2>
-<p>Traditional CIR approaches rely on <strong>supervised training</strong> with annotated triplets (query image, modifying text, target image), which are <strong>expensive and time-consuming</strong> to obtain. Existing ZS-CIR methods often still require training task-specific modules on large image-caption datasets. <strong>CIReVL</strong> addresses these limitations by using <strong>only pre-trained models</strong> in a <strong>modular, interpretable</strong> fashion, offering a more accessible alternative.</p>
+<p>Traditional end-to-end trained vision and language models struggle to address the vast range of complex tasks users desire, as training such models requires extensive, curated datasets for each specific task. The authors propose VISPROG as an alternative approach to handle the &ldquo;long tail&rdquo; of complex tasks by decomposing them into simpler steps manageable by existing specialized modules.</p>
 
 
 <h2 class="relative group">Methodology 
@@ -868,35 +886,95 @@
     </span>        
     
 </h2>
-<p>
+<ul>
+<li><strong>Program Generation via In-Context Learning:</strong> VISPROG utilizes the in-context learning capabilities of LLMs (specifically GPT-3) to generate programs. It prompts the LLM with a natural language instruction and a few examples of similar instructions paired with their corresponding programs. The LLM then generates a program for the new instruction.</li>
+<li><strong>Modular Structure:</strong> VISPROG relies on a diverse set of modules (currently 20) that encompass:
+
     <figure>
-      <img class="my-0 rounded-md" loading="lazy" src="./cirevl.png" alt="CIReVL Workflow" />
+      <img class="my-0 rounded-md" loading="lazy" src="./modules.png" alt="modules" />
       
     </figure>
-</p>
-<p>CIReVL operates through three main steps:</p>
-<ol>
-<li><strong>Captioning:</strong> A pre-trained VLM (e.g., BLIP-2) generates a detailed caption for the query image.</li>
-<li><strong>Reasoning:</strong> An LLM (e.g., GPT-3.5-turbo) processes the generated caption and modification instruction to produce a target caption that reflects the intended changes.</li>
-<li><strong>Retrieval:</strong> A second VLM (e.g., CLIP) encodes the target caption and the database images to retrieve the image most similar to the target description.</li>
-</ol>
+
+<ul>
+<li>Computer vision models (e.g., object detectors, image classifiers, image generators)</li>
+<li>Image processing subroutines (e.g., cropping, resizing, filtering)</li>
+<li>Python functions for arithmetic and logical operations.</li>
+</ul>
+</li>
+<li><strong>Program Execution and State Management:</strong> An interpreter executes the generated program line by line, invoking the appropriate modules with the specified inputs. The interpreter maintains a program state (a dictionary) to track variable names and their values, ensuring the flow of information between program steps.</li>
+<li><strong>Visual Rationale Generation:</strong> Each module provides an HTML snippet summarizing its inputs and outputs, which the interpreter assembles into a comprehensive visual rationale. This rationale offers insights into the program&rsquo;s execution and facilitates error analysis and user intervention.</li>
+</ul>
 
 
-<h2 class="relative group">Why CIReVL Stands Out 
-    <div id="why-cirevl-stands-out" class="anchor"></div>
+<h2 class="relative group">Benchmarks 
+    <div id="benchmarks" class="anchor"></div>
     
     <span
         class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
         <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#why-cirevl-stands-out" aria-label="Anchor">#</a>
+            style="text-decoration-line: none !important;" href="#benchmarks" aria-label="Anchor">#</a>
     </span>        
     
 </h2>
 <ul>
-<li><strong>Training-Free:</strong> CIReVL doesn’t require any additional training, relying entirely on off-the-shelf pre-trained models, which enhances efficiency and scalability.</li>
-<li><strong>Modular Design:</strong> This modular approach allows easy replacement or scaling of individual components, enabling exploration of different VLMs and LLMs.</li>
-<li><strong>Human-Interpretable:</strong> Most of the compositional processing occurs in the language domain, making it interpretable and allowing for human intervention in case of potential errors.</li>
-<li><strong>State-of-the-Art Performance:</strong> CIReVL matches or surpasses existing training-based and zero-shot methods on several CIR benchmarks, including CIRCO, CIRR, FashionIQ, and GeneCIS.</li>
+<li><strong>GQA:</strong> VISPROG demonstrates improved accuracy over a baseline VQA model on a subset of the GQA dataset for compositional visual question answering.</li>
+<li><strong>NLVRV2:</strong> VISPROG achieves strong zero-shot performance on the NLVRV2 benchmark for visual reasoning on image pairs, even without training on image pairs.</li>
+<li><strong>Factual Knowledge Object Tagging:</strong> The authors create a dataset for knowledge tagging and show promising results, highlighting VISPROG&rsquo;s ability to combine object detection with knowledge retrieval.</li>
+<li><strong>Language-Guided Image Editing:</strong> VISPROG effectively handles a variety of image editing instructions, including object manipulation, style transfer, and context replacement.</li>
+</ul>
+
+
+<h2 class="relative group">Strengths 
+    <div id="strengths" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#strengths" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<ul>
+<li><strong>Training-Free Adaptability:</strong> VISPROG does not require training any of its components for new tasks. Adapting to a new task merely involves providing a few in-context examples of instructions and corresponding programs.</li>
+<li><strong>Modular and Interpretable:</strong> The use of explicit programs and visual rationales enhances transparency and understandability. Users can inspect individual program steps and their outcomes, making the reasoning process clear and auditable.</li>
+<li><strong>Compositional Power:</strong> VISPROG&rsquo;s modular design allows for flexible composition of diverse capabilities. The ability to combine various modules in a programmatic manner enables VISPROG to address complex tasks that would be challenging for single end-to-end trained models.</li>
+<li><strong>Handles Diverse Tasks:</strong> The authors demonstrate VISPROG&rsquo;s versatility on four distinct tasks: compositional visual question answering, zero-shot reasoning on image pairs, factual knowledge object tagging, and language-guided image editing.</li>
+</ul>
+
+
+<h2 class="relative group">Weaknesses 
+    <div id="weaknesses" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#weaknesses" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p>Several areas could be improved to strengthen the work:</p>
+<ul>
+<li><strong>Limited Evaluation on Real-World Tasks:</strong> Further evaluation on more diverse and realistic datasets would strengthen the paper&rsquo;s claims of generalizability and practical applicability.</li>
+<li><strong>Dependence on Manually Crafted Instructions:</strong> Developing methods for automatically generating or learning effective prompts would enhance the system&rsquo;s autonomy and practicality.</li>
+<li><strong>No Feedback/Verification Pipeline:</strong> Although visual rationales are used for error analysis, there is currently no automated pipeline for improving instructions based on correct or incorrect cases.</li>
+</ul>
+
+
+<h2 class="relative group">Future Work 
+    <div id="future-work" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#future-work" aria-label="Anchor">#</a>
+    </span>        
+    
+</h2>
+<p>The paper focuses on demonstrating the feasibility and flexibility of the VISPROG approach. Future work may explore:</p>
+<ul>
+<li>Optimizing prompt engineering for improved program generation.</li>
+<li>Incorporating user feedback to refine program generation and enhance system performance.</li>
+<li>Expanding the module library to broaden VISPROG&rsquo;s capabilities.</li>
 </ul>
 
 
@@ -910,22 +988,7 @@
     </span>        
     
 </h2>
-<p>CIReVL presents a promising new direction for zero-shot CIR research. Its training-free, modular, and interpretable design, along with its high performance, makes it a compelling approach for future work in ZS-CIR.</p>
-
-
-<h2 class="relative group">Reference 
-    <div id="reference" class="anchor"></div>
-    
-    <span
-        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
-        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
-            style="text-decoration-line: none !important;" href="#reference" aria-label="Anchor">#</a>
-    </span>        
-    
-</h2>
-<ul>
-<li><a href="https://arxiv.org/abs/2310.09291" target="_blank">Vision-by-Language for Training-Free Compositional Image Retrieval | ICLR 2024</a></li>
-</ul>
+<p>VISPROG represents a promising neuro-symbolic approach to tackling complex visual reasoning tasks by combining LLM-driven program generation with modular execution of specialized vision and processing functions. Through its flexible and interpretable design, VISPROG shows the potential to handle a broad range of tasks without retraining. With further improvements in prompt engineering, feedback integration, and module expansion, VISPROG could offer a scalable, adaptable solution for many practical applications in visual reasoning.</p>
 
           
           
@@ -1045,7 +1108,7 @@
       <a
       target="_blank"
       class="m-1 rounded bg-neutral-300 p-1.5 text-neutral-700 hover:bg-primary-500 hover:text-neutral dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-400 dark:hover:text-neutral-800"
-      href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:1313/posts/reading-papers-cirevl/&amp;title=Reading%20Papers:%20CIReVL%20%28ICLR%202024%29"
+      href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:1313/posts/reading-papers-visprog/&amp;title=Reading%20Papers:%20VisProg%20%28Best%20Paper%20CVPR%202023%29"
       title="Share on LinkedIn"
       aria-label="Share on LinkedIn"
       >
@@ -1064,7 +1127,7 @@
       <a
       target="_blank"
       class="m-1 rounded bg-neutral-300 p-1.5 text-neutral-700 hover:bg-primary-500 hover:text-neutral dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-400 dark:hover:text-neutral-800"
-      href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/reading-papers-cirevl/&amp;quote=Reading%20Papers:%20CIReVL%20%28ICLR%202024%29"
+      href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/reading-papers-visprog/&amp;quote=Reading%20Papers:%20VisProg%20%28Best%20Paper%20CVPR%202023%29"
       title="Share on Facebook"
       aria-label="Share on Facebook"
       >
@@ -1093,8 +1156,8 @@
           
         
       <script>
-        var oid = "views_posts\/Reading Papers: CIReVL\/index.md"
-        var oid_likes = "likes_posts\/Reading Papers: CIReVL\/index.md"
+        var oid = "views_posts\/Reading Papers: VisProg\/index.md"
+        var oid_likes = "likes_posts\/Reading Papers: VisProg\/index.md"
       </script>
       
       
@@ -1114,7 +1177,7 @@
       <div class="flex justify-between pt-3">
         <span>
           
-            <a class="flex group mr-3" href="/posts/reading-papers-vipergpt/">
+            <a class="flex group mr-3" href="/posts/reading-papers-cirevl/">
               <span
                 class="mr-3 text-neutral-700 group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
                 >&larr;</span
@@ -1126,11 +1189,11 @@
               <span class="flex flex-col">
                 <span
                   class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
-                  >Reading Papers: ViperGPT (ICCV 2023)</span
+                  >Reading Papers: CIReVL (ICLR 2024)</span
                 >
                 <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
                   
-                    <time datetime="2024-10-31T10:41:23&#43;07:00">31 October 2024</time>
+                    <time datetime="2024-10-31T20:28:53&#43;07:00">31 October 2024</time>
                   
                 </span>
               </span>
@@ -1138,28 +1201,6 @@
           
         </span>
         <span>
-          
-            <a class="flex text-right group ml-3" href="/posts/reading-papers-visprog/">
-              <span class="flex flex-col">
-                <span
-                  class="mt-[0.1rem] leading-6 group-hover:underline group-hover:decoration-primary-500"
-                  >Reading Papers: VisProg (Best Paper CVPR 2023)</span
-                >
-                <span class="mt-[0.1rem] text-xs text-neutral-500 dark:text-neutral-400">
-                  
-                    <time datetime="2024-11-08T16:23:37&#43;07:00">8 November 2024</time>
-                  
-                </span>
-              </span>
-              <span
-                class="ml-3 text-neutral-700 group-hover:text-primary-600 ltr:inline rtl:hidden dark:text-neutral dark:group-hover:text-primary-400"
-                >&rarr;</span
-              >
-              <span
-                class="mr-3 text-neutral-700 group-hover:text-primary-600 ltr:hidden rtl:inline dark:text-neutral dark:group-hover:text-primary-400"
-                >&larr;</span
-              >
-            </a>
           
         </span>
       </div>

@@ -15,6 +15,7 @@ tags: ["agent", "llm", "vqa"]
 ## Summary
 The framework's ability to generate and execute Python code, coupled with its access to a diverse set of pre-trained vision and language models through a well-defined API, enables ViperGPT to achieve impressive zero-shot performance on a wide range of visual reasoning tasks.
 
+![examples](./examples.png)
 
 ## Motivation
 
@@ -51,6 +52,12 @@ The generated Python programs are then executed by the Python interpreter, which
 -   **Adaptability**: Improvements in individual modules directly enhance ViperGPT's performance.
 -   **Training-free**: ViperGPT eliminates the need for retraining or fine-tuning for every new task.
 -   **Generality**: A single system unifies various visual tasks.
+
+## Weaknesses
+There are several weaknesses that could be addressed to strengthen the work:
+-   **Limited Evaluation** on Real-World Tasks: further evaluation on more diverse and realistic datasets would strengthen the paper's claims of generalizability and practical applicability.
+-   Dependence on **Manually Crafted Prompts/Instruction**: Developing methods for automatically generating or learning effective prompts would enhance the system's autonomy and practicality
+-   **No Feedback/Verification Pipeline**: Although visual rationales are used for error analysis, there is currently no automated pipeline for improving instructions based on correct or incorrect cases.
 
 ## Conclusion
 ViperGPT presents a compelling alternative to end-to-end models for complex visual tasks. By leveraging the power of programmatic composition and pre-trained modules, it achieves strong zero-shot performance while maintaining interpretability and flexibility. As the field of vision and language models continues to advance, ViperGPT's ability to readily incorporate these advancements makes it a promising direction for future research.
