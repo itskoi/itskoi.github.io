@@ -4,9 +4,14 @@ date: 2024-10-31T10:41:23+07:00
 draft: false
 description: ""
 categories: ["Reading papers"]
-tags: ["agent", "llm", "vqa"]
+tags: ["agent", "llm", "vqa", "visual reasoning"]
 ---
 {{< katex >}}
+
+# ViperGPT: Visual Inference via Python Execution for Reasoning
+- Project page: https://viper.cs.columbia.edu/
+- ArXiv: https://arxiv.org/abs/2303.08128
+- GitHub: https://github.com/cvlab-columbia/viper
 
 **TL;DR:** ViperGPT proposes a simple framework for solving complex visual queries by integrating code-generation models into vision with an API and the Python interpreter.
 
@@ -56,8 +61,8 @@ The generated Python programs are then executed by the Python interpreter, which
 ## Weaknesses
 There are several weaknesses that could be addressed to strengthen the work:
 -   **Limited Evaluation** on Real-World Tasks: further evaluation on more diverse and realistic datasets would strengthen the paper's claims of generalizability and practical applicability.
--   Dependence on **Manually Crafted Prompts/Instruction**: Developing methods for automatically generating or learning effective prompts would enhance the system's autonomy and practicality
--   **No Feedback/Verification Pipeline**: Although visual rationales are used for error analysis, there is currently no automated pipeline for improving instructions based on correct or incorrect cases.
+-   Dependence on **Manually Crafted  Instruction and API Specifications**: Developing methods for automatically generating or learning effective prompts would enhance the system's autonomy and practicality
+-   **No Feedback/Verification Pipeline**: there is currently no automated pipeline for improving instructions based on correct or incorrect cases.
 
 ## Conclusion
 ViperGPT presents a compelling alternative to end-to-end models for complex visual tasks. By leveraging the power of programmatic composition and pre-trained modules, it achieves strong zero-shot performance while maintaining interpretability and flexibility. As the field of vision and language models continues to advance, ViperGPT's ability to readily incorporate these advancements makes it a promising direction for future research.

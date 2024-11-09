@@ -8,6 +8,9 @@ categories: ["agent", "llm", "vqa", "visual reasoning"]
 {{< katex >}}
 
 # VISPROG: A Neuro-Symbolic Approach to Visual Reasoning
+- Project page: https://prior.allenai.org/projects/visprog
+- ArXiv: https://arxiv.org/abs/2211.11559
+- GitHub: https://github.com/allenai/visprog
 
 **TL;DR**: Concurrent work with [ViperGPT](https://itskoi.github.io/posts/reading-papers-vipergpt/). Similar to ViperGPT but generates pseudo code rather than Python code.
 

@@ -7,6 +7,10 @@ categories: ["Reading Papers", "Text Retrieval"]
 tags: ["llm", "ranking", "rag", "retrieval"]
 ---
 {{< katex >}}
+# ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT
+
+- ArXiv: https://arxiv.org/abs/2004.12832
+- GitHub: https://github.com/stanford-futuredata/ColBERT
 
 **TL;DR:** ColBERT combines the efficiency of a Bi-encoder, allowing fast embedding and precomputing, with a late interaction mechanism to learn cross-information between query and document. The result? Near-BERT performance at a fraction of BERT’s runtime!
 

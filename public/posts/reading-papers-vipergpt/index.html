@@ -12,7 +12,7 @@
   <meta name="title" content="Reading Papers: ViperGPT (ICCV 2023) &middot; Koi&#39;Log" />
   
   
-  <meta name="keywords" content="agent, llm, vqa, " />
+  <meta name="keywords" content="agent, llm, vqa, visual reasoning, " />
   
   
   <link rel="canonical" href="http://localhost:1313/posts/reading-papers-vipergpt/" />
@@ -74,6 +74,7 @@
     <meta property="article:tag" content="Agent">
     <meta property="article:tag" content="Llm">
     <meta property="article:tag" content="Vqa">
+    <meta property="article:tag" content="Visual Reasoning">
 
   
   <meta name="twitter:card" content="summary">
@@ -101,10 +102,10 @@
     
     "dateModified": "2024-10-31T10:41:23\u002b07:00",
     
-    "keywords": ["agent","llm","vqa"],
+    "keywords": ["agent","llm","vqa","visual reasoning"],
     
     "mainEntityOfPage": "true",
-    "wordCount": "849"
+    "wordCount": "860"
   }]
   </script>
 
@@ -651,7 +652,7 @@
 <div class="flex flex-row flex-wrap items-center">
   
   
-  <time datetime="2024-10-31T10:41:23&#43;07:00">31 October 2024</time><span class="px-2 text-primary-500">&middot;</span><span>849 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">4 mins</span><span class="px-2 text-primary-500">&middot;</span>
+  <time datetime="2024-10-31T10:41:23&#43;07:00">31 October 2024</time><span class="px-2 text-primary-500">&middot;</span><span>860 words</span><span class="px-2 text-primary-500">&middot;</span><span title="Reading time">5 mins</span><span class="px-2 text-primary-500">&middot;</span>
 
 
 <script type="text/javascript" src="/js/zen-mode.min.63c8a202661f4a2063fdc2706685d668e8ea3da613da2224e9da527e5876e4f53dcac39ab60732626fb4151feae5d430d0cf44731e5d3c726522fcc1519c1547.js" integrity="sha512-Y8iiAmYfSiBj/cJwZoXWaOjqPaYT2iIk6dpSflh25PU9ysOatgcyYm&#43;0FR/q5dQw0M9Ecx5dPHJlIvzBUZwVRw=="></script>
@@ -844,6 +845,23 @@
         <div class="article-content max-w-prose mb-20">
           
 
+
+
+<h1 class="relative group">ViperGPT: Visual Inference via Python Execution for Reasoning 
+    <div id="vipergpt-visual-inference-via-python-execution-for-reasoning" class="anchor"></div>
+    
+    <span
+        class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+        <a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+            style="text-decoration-line: none !important;" href="#vipergpt-visual-inference-via-python-execution-for-reasoning" aria-label="Anchor">#</a>
+    </span>        
+    
+</h1>
+<ul>
+<li>Project page: <a href="https://viper.cs.columbia.edu/" target="_blank">https://viper.cs.columbia.edu/</a></li>
+<li>ArXiv: <a href="https://arxiv.org/abs/2303.08128" target="_blank">https://arxiv.org/abs/2303.08128</a></li>
+<li>GitHub: <a href="https://github.com/cvlab-columbia/viper" target="_blank">https://github.com/cvlab-columbia/viper</a></li>
+</ul>
 <p><strong>TL;DR:</strong> ViperGPT proposes a simple framework for solving complex visual queries by integrating code-generation models into vision with an API and the Python interpreter.</p>
 <blockquote>
 <p><strong>Note:</strong> This my personal learning note, so <strong>some points may not be entirely accurate</strong>. I strive to improve my understanding and will correct any errors I find. If you spot any inaccuracies, please feel free to share your insights to help enhance the content 😊.</p>
@@ -1003,8 +1021,8 @@
 <p>There are several weaknesses that could be addressed to strengthen the work:</p>
 <ul>
 <li><strong>Limited Evaluation</strong> on Real-World Tasks: further evaluation on more diverse and realistic datasets would strengthen the paper&rsquo;s claims of generalizability and practical applicability.</li>
-<li>Dependence on <strong>Manually Crafted Prompts/Instruction</strong>: Developing methods for automatically generating or learning effective prompts would enhance the system&rsquo;s autonomy and practicality</li>
-<li><strong>No Feedback/Verification Pipeline</strong>: Although visual rationales are used for error analysis, there is currently no automated pipeline for improving instructions based on correct or incorrect cases.</li>
+<li>Dependence on <strong>Manually Crafted  Instruction and API Specifications</strong>: Developing methods for automatically generating or learning effective prompts would enhance the system&rsquo;s autonomy and practicality</li>
+<li><strong>No Feedback/Verification Pipeline</strong>: there is currently no automated pipeline for improving instructions based on correct or incorrect cases.</li>
 </ul>
 
 

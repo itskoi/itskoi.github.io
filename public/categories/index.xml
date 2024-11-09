@@ -11,6 +11,46 @@
     <copyright>© 2024 Bach-Khoi Vo</copyright>
     <lastBuildDate>Tue, 29 Oct 2024 21:21:33 +0700</lastBuildDate><atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Agent</title>
+      <link>http://localhost:1313/categories/agent/</link>
+      <pubDate>Fri, 08 Nov 2024 16:23:37 +0700</pubDate>
+      <author>itskoiwork@gmail.com (Bach-Khoi Vo)</author>
+      <guid>http://localhost:1313/categories/agent/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Llm</title>
+      <link>http://localhost:1313/categories/llm/</link>
+      <pubDate>Fri, 08 Nov 2024 16:23:37 +0700</pubDate>
+      <author>itskoiwork@gmail.com (Bach-Khoi Vo)</author>
+      <guid>http://localhost:1313/categories/llm/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Visual Reasoning</title>
+      <link>http://localhost:1313/categories/visual-reasoning/</link>
+      <pubDate>Fri, 08 Nov 2024 16:23:37 +0700</pubDate>
+      <author>itskoiwork@gmail.com (Bach-Khoi Vo)</author>
+      <guid>http://localhost:1313/categories/visual-reasoning/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Vqa</title>
+      <link>http://localhost:1313/categories/vqa/</link>
+      <pubDate>Fri, 08 Nov 2024 16:23:37 +0700</pubDate>
+      <author>itskoiwork@gmail.com (Bach-Khoi Vo)</author>
+      <guid>http://localhost:1313/categories/vqa/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
       <title>Reading Papers</title>
       <link>http://localhost:1313/categories/reading-papers/</link>
       <pubDate>Thu, 31 Oct 2024 20:28:53 +0700</pubDate>

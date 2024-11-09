@@ -8,6 +8,11 @@ tags: ["CIR", "llm", "visual"]
 ---
 {{< katex >}}
 
+# Vision-by-Language for Training-Free Compositional Image Retrieval
+
+- ArXiv: https://arxiv.org/abs/2310.09291
+- GitHub: https://github.com/ExplainableML/Vision_by_Language
+
 **TL;DR**: A training-free, modular, and interpretable approach that leverages LLMs to enhance text-based queries for compositional image retrieval.
 
 > **Note:** This is my personal learning note, so **some points may not be entirely accurate**. I strive to improve my understanding and will correct any errors I find. If you spot any inaccuracies, please feel free to share your insights to help enhance the content 😊.
