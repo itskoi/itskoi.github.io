@@ -1,0 +1,67 @@
+.nav {
+  position: fixed;
+  left: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 10;
+  padding: 0.5rem 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.link {
+  position: relative;
+  padding-left: 1.1rem;
+  color: var(--color-fg);
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  opacity: 0.65;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease;
+}
+
+.link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.3;
+  transform: translateY(-50%);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.link:hover,
+.link:focus-visible {
+  opacity: 1;
+  color: var(--color-accent-2);
+  outline: none;
+}
+
+.link:hover::before,
+.link:focus-visible::before {
+  opacity: 0.8;
+}
+
+.link.active {
+  opacity: 1;
+  color: var(--color-accent-2);
+}
+
+.link.active::before {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.6);
+}

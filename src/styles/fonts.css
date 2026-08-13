@@ -1,0 +1,9 @@
+/* Self-hosted via @fontsource-variable: Vite bundles the woff2, so there is no
+   runtime request to a font CDN. Metric-matched fallbacks in global.css keep the
+   first paint stable while the variable files stream in.
+
+   Fraunces pulls the `opsz` subset (weight + optical-size axis) so
+   `font-optical-sizing: auto` actually shapes the headlines. Geist ships weight only. */
+@import "@fontsource-variable/fraunces/opsz.css";
+@import "@fontsource-variable/geist/index.css";
+@import "@fontsource-variable/geist-mono/index.css";

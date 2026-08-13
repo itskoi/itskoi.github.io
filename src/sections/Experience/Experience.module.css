@@ -1,0 +1,151 @@
+.section {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+
+.heading {
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 3rem;
+}
+
+/* Center-spine timeline: a faint base rail + an accent fill that grows on scroll,
+   with entries alternating left/right of the spine. */
+.timeline {
+  position: relative;
+  isolation: isolate;
+}
+
+.spine,
+.spineFill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 999px;
+}
+
+.spine {
+  background: var(--color-border);
+}
+
+.spineFill {
+  background: var(--color-accent);
+  transform-origin: top;
+  z-index: 1;
+}
+
+.entries {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.entry {
+  position: relative;
+  width: 50%;
+}
+
+.entry:nth-child(odd) {
+  left: 0;
+  padding-right: 2.5rem;
+}
+
+.entry:nth-child(even) {
+  left: 50%;
+  padding-left: 2.5rem;
+}
+
+.marker {
+  position: absolute;
+  top: 0.4rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  /* Punch the marker out of the spine so it reads as a node, not a blob on the line. */
+  box-shadow: 0 0 0 4px var(--color-bg);
+  z-index: 1;
+}
+
+.entry:nth-child(odd) .marker {
+  right: -0.375rem;
+}
+
+.entry:nth-child(even) .marker {
+  left: -0.375rem;
+}
+
+.period {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+}
+
+.entryHeader {
+  margin-bottom: 0.75rem;
+}
+
+.role {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.company {
+  margin: 0.25rem 0 0;
+  color: var(--color-accent);
+}
+
+.company a {
+  color: inherit;
+}
+
+.highlights {
+  margin: 0;
+  padding-left: 1.25rem;
+  max-width: 32rem;
+}
+
+.highlights li {
+  margin-bottom: 0.4rem;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+/* Narrow screens: collapse to a left rail. */
+@media (max-width: 640px) {
+  .entries {
+    gap: 2rem;
+  }
+
+  .spine,
+  .spineFill {
+    left: 0.5rem;
+    margin-left: 0;
+  }
+
+  .entry,
+  .entry:nth-child(odd),
+  .entry:nth-child(even) {
+    left: 0;
+    width: 100%;
+    padding-right: 0;
+    padding-left: 2.5rem;
+  }
+
+  .entry:nth-child(odd) .marker,
+  .entry:nth-child(even) .marker {
+    left: 0.125rem;
+    right: auto;
+  }
+}
