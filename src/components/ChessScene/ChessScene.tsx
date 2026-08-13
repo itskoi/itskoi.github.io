@@ -371,7 +371,7 @@ export function ChessScene() {
           THREE.MathUtils.lerp(-bend - bob, 0, groupConv),
           0,
         )
-        king.rotation.y = THREE.MathUtils.lerp(-uSwap * Math.PI * 1.5 - idle, idle, groupConv)
+        king.rotation.y = THREE.MathUtils.lerp(-uSwap * Math.PI * 2 - idle, idle, groupConv)
         for (const s of allShards) {
           // assembled-cloud offset (scatterPos) + explode/gather offset (scatterDir * transitionMag)
           s.obj.position
