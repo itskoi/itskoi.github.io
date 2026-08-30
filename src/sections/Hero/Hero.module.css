@@ -1,57 +1,93 @@
+/* Flush-left, bottom-anchored poster: huge type anchored to the grid, the
+   specimen caption labeling the fixed scene in the right field. */
 .hero {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-  text-align: center;
+  grid-template-rows: 1fr auto;
+  align-content: end;
+  padding-top: 7rem; /* clears the fixed top nav */
+  padding-bottom: 3.5rem;
+  text-align: left;
+}
+
+/* Specimen plate: the FIG. 1 label for the wireframe study (the fixed canvas). */
+.caption {
+  grid-column: 7 / 13;
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  max-width: 22rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-fg-muted);
+}
+
+.poster {
+  grid-column: 1 / 13;
+  grid-row: 2;
 }
 
 .name {
-  margin: 0;
   font-size: var(--fs-display);
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.045em;
 }
 
 .role {
-  margin-top: 1rem;
-  font-size: clamp(1.25rem, 3vw, 2rem);
-  color: var(--color-accent);
+  margin-top: 0.75rem;
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--color-accent); /* large text — red meets the AA-large bar on paper */
 }
 
-.location {
-  margin-top: 0.5rem;
-  opacity: 0.7;
-}
-
-.links {
+.meta {
   margin-top: 1.5rem;
   display: flex;
-  gap: 1.25rem;
-  justify-content: center;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.75rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-fg-muted);
 }
 
-.links a {
-  display: inline-flex;
+.metaItem {
+  color: inherit;
+}
+
+.metaLink {
   color: var(--color-fg);
-  opacity: 0.8;
-  transition:
-    color 0.2s ease,
-    opacity 0.2s ease;
 }
 
-.links a svg {
-  display: block;
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-.links a:hover,
-.links a:focus-visible {
-  color: var(--color-accent);
-  opacity: 1;
+.metaLink:hover,
+.metaLink:focus-visible {
+  color: var(--color-accent-strong);
   outline: none;
+}
+
+/* Narrow screens: the caption docks under the nav, the poster stays anchored
+   to the bottom of the viewport. */
+@media (max-width: 768px) {
+  .hero {
+    grid-template-rows: auto 1fr;
+  }
+
+  .caption {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    justify-self: start;
+    margin-top: 4rem;
+  }
+
+  .poster {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    align-self: end;
+  }
 }

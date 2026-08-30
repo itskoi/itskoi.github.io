@@ -3,53 +3,35 @@ import { useHeroIntro } from '@/hooks/useHeroIntro'
 import styles from './Hero.module.css'
 
 export function Hero() {
-  const introRef = useHeroIntro<HTMLDivElement>()
+  const introRef = useHeroIntro<HTMLElement>()
 
   return (
-    <section className={styles.hero}>
-      <div ref={introRef}>
+    <section ref={introRef} className={`${styles.hero} section-grid`} aria-label="Introduction">
+      <p className={styles.caption} data-intro>
+        FIG. 1 — chess → lattice, wireframe study
+      </p>
+      <div className={styles.poster}>
         <h1 className={styles.name} data-intro>
           {profile.name}
         </h1>
         <p className={styles.role} data-intro>
           {profile.role}
         </p>
-        <p className={styles.location} data-intro>
-          {profile.location}
-        </p>
-        <p className={styles.links} data-intro>
+        <p className={styles.meta} data-intro>
+          <span className={styles.metaItem}>{profile.location}</span>
           <a
+            className={styles.metaLink}
             href={profile.linkedin.href}
             target="_blank"
             rel="noreferrer noopener"
-            aria-label={profile.linkedin.label}
           >
-            <LinkedInIcon />
+            {profile.linkedin.label}
           </a>
-          <a href={profile.email.href} aria-label={profile.email.label}>
-            <MailIcon />
+          <a className={styles.metaLink} href={profile.email.href}>
+            {profile.email.label}
           </a>
         </p>
       </div>
     </section>
-  )
-}
-
-function LinkedInIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-      <path
-        transform="translate(3 3) scale(0.75)"
-        d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
-      />
-    </svg>
-  )
-}
-
-function MailIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
-    </svg>
   )
 }

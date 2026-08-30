@@ -81,6 +81,47 @@ describe('global token contract', () => {
     })
   })
 
+  describe('chrome: hero poster + nav bar', () => {
+    const heroCss = read('src/sections/Hero/Hero.module.css')
+    const heroTsx = read('src/sections/Hero/Hero.tsx')
+    const navCss = read('src/components/Nav/Nav.module.css')
+    const toggleCss = read('src/components/ThemeToggle/ThemeToggle.module.css')
+
+    it('hero is flush-left and bottom-anchored on the grid', () => {
+      expect(heroCss).toMatch(/\.hero\s*\{[\s\S]*?text-align:\s*left/)
+      expect(heroCss).toMatch(/align-content:\s*end/)
+      expect(heroCss).not.toMatch(/text-align:\s*center/)
+    })
+
+    it('hero name carries the poster display treatment (scale + tight tracking)', () => {
+      expect(heroCss).toMatch(
+        /\.name\s*\{[\s\S]*?var\(--fs-display\)[\s\S]*?letter-spacing:\s*-0\.045em/,
+      )
+      expect(heroCss).toMatch(/line-height:\s*1;/)
+    })
+
+    it('hero meta (location + links) is mono; the caption is the specimen label', () => {
+      expect(heroCss).toMatch(/\.meta\s*\{[\s\S]*?var\(--font-mono\)/)
+      expect(heroCss).toMatch(/\.caption\s*\{[\s\S]*?var\(--font-mono\)/)
+      expect(heroTsx).toMatch(/FIG\. 1/)
+    })
+
+    it('nav is a fixed top bar with mono uppercase labels', () => {
+      expect(navCss).toMatch(/\.nav\s*\{[\s\S]*?position:\s*fixed[\s\S]*?top:\s*0/)
+      expect(navCss).toMatch(/border-bottom:\s*1px solid var\(--color-border\)/)
+      expect(navCss).toMatch(
+        /\.link\s*\{[\s\S]*?var\(--font-mono\)[\s\S]*?text-transform:\s*uppercase/,
+      )
+    })
+
+    it('chrome carries no rounded corners and no gradients', () => {
+      for (const sheet of [heroCss, navCss, toggleCss]) {
+        expect(sheet).not.toMatch(/border-radius/)
+        expect(sheet).not.toMatch(/gradient\(/)
+      }
+    })
+  })
+
   describe('paper-default palette', () => {
     it('defines the light palette (paper + Swiss red) on :root', () => {
       expect(css).toMatch(/:root\s*\{[\s\S]*?--color-bg:\s*#ffffff/i)

@@ -37,6 +37,11 @@ describe('Hero', () => {
     expect(screen.getByText('HCM City, Vietnam')).toBeInTheDocument()
   })
 
+  it('labels the wireframe study as a specimen plate (FIG. 1)', () => {
+    render(<Hero />)
+    expect(screen.getByText(/^FIG\. 1/)).toBeInTheDocument()
+  })
+
   it('no longer shows the placeholder copy', () => {
     render(<Hero />)
     expect(screen.queryByText(/Built with React/)).not.toBeInTheDocument()
