@@ -1,4 +1,4 @@
-import { ChessScene } from '@/components/ChessScene/ChessScene'
+import { FlowScene } from '@/components/FlowScene/FlowScene'
 import { Nav } from '@/components/Nav/Nav'
 import { useSmoothScroll } from '@/hooks/useSmoothScroll'
 import { Education } from '@/sections/Education/Education'
@@ -11,7 +11,7 @@ export function App() {
   useSmoothScroll()
   return (
     <>
-      <ChessScene />
+      <FlowScene />
       <Nav />
       <main>
         <Hero />

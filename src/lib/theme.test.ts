@@ -1,19 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import {
-  figureHex,
-  getTheme,
-  initTheme,
-  onThemeChange,
-  readPieceColors,
-  readSceneColors,
-  setTheme,
-  toggleTheme,
-} from './theme'
+import { getTheme, initTheme, onThemeChange, readSceneColors, setTheme, toggleTheme } from './theme'
 
 function reset() {
   document.documentElement.removeAttribute('data-theme')
   document.documentElement.style.removeProperty('--scene-figure-rgb')
-  document.documentElement.style.removeProperty('--scene-piece-rgb')
   try {
     window.localStorage.clear()
   } catch {
@@ -92,23 +82,5 @@ describe('readSceneColors', () => {
 
   it('falls back to ink when the token is missing (paper is the default mode)', () => {
     expect(readSceneColors()).toEqual({ r: 10, g: 10, b: 10 })
-  })
-})
-
-describe('readPieceColors', () => {
-  it('parses --scene-piece-rgb into RGB', () => {
-    document.documentElement.style.setProperty('--scene-piece-rgb', '10 10 10')
-    expect(readPieceColors()).toEqual({ r: 10, g: 10, b: 10 })
-  })
-
-  it('falls back to ink when the token is missing (paper is the default mode)', () => {
-    expect(readPieceColors()).toEqual({ r: 10, g: 10, b: 10 })
-  })
-})
-
-describe('figureHex', () => {
-  it('packs the scene color as 0xRRGGBB', () => {
-    expect(figureHex({ r: 10, g: 10, b: 10 })).toBe(0x0a0a0a) // light mode → ink figures
-    expect(figureHex({ r: 250, g: 250, b: 250 })).toBe(0xfafafa) // dark mode → paper figures
   })
 })

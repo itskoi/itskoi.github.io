@@ -42,10 +42,14 @@ test.describe('swiss poster contract', () => {
     await expect(tile).toHaveCSS('border-radius', '0px')
   })
 
-  test('exactly one canvas — the chess specimen; the pulse network is gone', async ({ page }) => {
+  test('exactly one canvas — the flow specimen; decorative and hidden from AT', async ({
+    page,
+  }) => {
     await page.goto('/')
     expect(await page.locator('canvas').count()).toBe(1)
-    await expect(page.locator('[data-chess-canvas]')).toBeAttached()
+    const canvas = page.locator('[data-flow-canvas]')
+    await expect(canvas).toBeAttached()
+    await expect(canvas).toHaveAttribute('aria-hidden', 'true')
   })
 
   test('the specimen carries its FIG. 1 label', async ({ page }) => {

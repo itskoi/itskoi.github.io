@@ -177,9 +177,7 @@ describe('global token contract', () => {
         '--color-border',
         '--color-accent',
         '--color-accent-strong',
-        '--scene-figure',
         '--scene-figure-rgb',
-        '--scene-piece-rgb',
       ]) {
         expect(block).toContain(token)
       }
@@ -195,10 +193,10 @@ describe('global token contract', () => {
       expect(css).toMatch(/color-scheme:\s*(dark|light)/)
     })
 
-    it('exposes the scene tokens for the 3D layer in both modes', () => {
-      expect(css).toMatch(/--scene-figure:/)
+    it('exposes the scene-ink token for the flow-field canvas in both modes', () => {
       expect(css).toMatch(/--scene-figure-rgb:/)
-      expect(css).toMatch(/--scene-piece-rgb:/)
+      expect(css).not.toMatch(/--scene-piece-rgb/)
+      expect(css).not.toMatch(/--scene-figure:\s*#/)
     })
   })
 

@@ -32,22 +32,22 @@ test.describe('portfolio page', () => {
     await expect(page.getByText(/IEEE-RIVF/)).toBeVisible()
   })
 
-  test('renders the chess canvas behind the content', async ({ page }) => {
+  test('renders the flow canvas behind the content', async ({ page }) => {
     await page.goto('/')
-    await expect(page.locator('[data-chess-canvas]')).toBeAttached()
+    await expect(page.locator('[data-flow-canvas]')).toBeAttached()
     // Content stays visible on top of the canvas.
     await expect(page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' })).toBeVisible()
   })
 
-  test('Education content stays readable above the canvas through the cube transform', async ({
+  test('Education content stays readable above the canvas through the vortex street', async ({
     page,
   }) => {
     await page.goto('/')
     await page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' }).waitFor()
-    const canvas = page.locator('[data-chess-canvas]')
+    const canvas = page.locator('[data-flow-canvas]')
     await expect(canvas).toBeAttached()
 
-    // Enter Education — the band where the chess morphs into the book and pages turn.
+    // Enter Education — the band where the vortex street is fully developed.
     await page.getByRole('navigation').getByRole('link', { name: 'Education' }).click()
     await expect(page.getByRole('heading', { level: 2, name: 'Education' })).toBeInViewport()
 
@@ -56,7 +56,7 @@ test.describe('portfolio page', () => {
     await expect(page.getByRole('link', { name: /Google Cloud Skills Boost/ })).toBeVisible()
     await expect(canvas).toBeAttached()
 
-    // Nudge further so page-turning runs, then scroll back up — canvas survives the reverse.
+    // Nudge further so the street decays, then scroll back up — canvas survives the reverse.
     for (let i = 0; i < 6; i++) {
       await page.mouse.wheel(0, 600)
       await page.waitForTimeout(80)

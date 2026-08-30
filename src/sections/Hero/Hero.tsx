@@ -8,7 +8,7 @@ export function Hero() {
   return (
     <section ref={introRef} className={`${styles.hero} section-grid`} aria-label="Introduction">
       <p className={styles.caption} data-intro>
-        FIG. 1 — chess → lattice, wireframe study
+        FIG. 1 — flow past a cylinder, streamline study
       </p>
       <div className={styles.poster}>
         <h1 className={styles.name} data-intro>

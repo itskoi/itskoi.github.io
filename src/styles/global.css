@@ -9,10 +9,8 @@
   --color-accent: #e30613; /* Swiss red — non-text + large text (≥ 3:1) */
   --color-accent-strong: #c00016; /* red for small text (≥ 4.5:1) */
 
-  /* Scene layers (canvas + 3D): monochrome ink on paper. */
-  --scene-figure: #0a0a0a;
+  /* Scene layer (canvas): monochrome ink on paper. */
   --scene-figure-rgb: 10 10 10;
-  --scene-piece-rgb: 10 10 10;
 
   /* Type — one grotesque carries display and body; mono carries data labels. */
   --font-sans: "Geist Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -41,10 +39,8 @@
   --color-accent: #ff2b39;
   --color-accent-strong: #ff5a66;
 
-  /* Scene layers flip to paper figures on the ink field. */
-  --scene-figure: #fafafa;
+  /* Scene layer flips to paper ink on the ink field. */
   --scene-figure-rgb: 250 250 250;
-  --scene-piece-rgb: 250 250 250;
 }
 
 /* First visit (no explicit choice) follows the OS preference; unknown OS → paper. */
@@ -59,9 +55,7 @@
     --color-accent: #ff2b39;
     --color-accent-strong: #ff5a66;
 
-    --scene-figure: #fafafa;
     --scene-figure-rgb: 250 250 250;
-    --scene-piece-rgb: 250 250 250;
   }
 }
 

@@ -89,7 +89,7 @@ export function initTheme(): void {
   if (stored) applyAttribute(stored)
 }
 
-/** The figure color the canvas + 3D layers draw in, parsed from --scene-figure-rgb. */
+/** The ink the flow-field canvas draws in, parsed from --scene-figure-rgb. */
 export function readSceneColors(): SceneColors {
   const raw = getComputedStyle(document.documentElement)
     .getPropertyValue('--scene-figure-rgb')
@@ -106,34 +106,6 @@ export function readSceneColors(): SceneColors {
     Number.isNaN(b)
   ) {
     return { ...DEFAULT_SCENE }
-  }
-  return { r, g, b }
-}
-
-/** The figure color packed as 0xRRGGBB (for three.js material colors). Defaults to live tokens. */
-export function figureHex(scene: SceneColors = readSceneColors()): number {
-  return (scene.r << 16) | (scene.g << 8) | scene.b
-}
-
-const DEFAULT_PIECE: SceneColors = { r: 10, g: 10, b: 10 }
-
-/** The chess-piece color, parsed from --scene-piece-rgb (ink on paper, paper on ink). */
-export function readPieceColors(): SceneColors {
-  const raw = getComputedStyle(document.documentElement)
-    .getPropertyValue('--scene-piece-rgb')
-    .trim()
-  if (!raw) return { ...DEFAULT_PIECE }
-  const parts = raw.split(/[\s,]+/).map((part) => Number.parseInt(part, 10))
-  const [r, g, b] = parts
-  if (
-    r === undefined ||
-    g === undefined ||
-    b === undefined ||
-    Number.isNaN(r) ||
-    Number.isNaN(g) ||
-    Number.isNaN(b)
-  ) {
-    return { ...DEFAULT_PIECE }
   }
   return { r, g, b }
 }

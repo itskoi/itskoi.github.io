@@ -9,9 +9,9 @@
   text-align: left;
 }
 
-/* Specimen plate: the FIG. 1 label for the wireframe study (the fixed canvas).
-   Anchored bottom-right, mirroring the meta line — the shard cloud it labels
-   lives center-frame and must not cross the caption. */
+/* Specimen plate: the FIG. 1 label for the streamline study (the fixed canvas).
+   Anchored bottom-right, mirroring the meta line — the obstacle it labels lives
+   right of center and must not cross the caption. */
 .caption {
   grid-column: 7 / 13;
   grid-row: 2;
