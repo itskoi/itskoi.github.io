@@ -85,6 +85,16 @@
   row-gap: 0.4rem;
 }
 
+.certList a {
+  color: var(--color-fg);
+}
+
+.certList a:hover,
+.certList a:focus-visible {
+  color: var(--color-accent-strong);
+  outline: none;
+}
+
 .list {
   margin: 0;
   list-style: none;

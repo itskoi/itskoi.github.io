@@ -54,9 +54,10 @@ const SCATTER_MAG = 0.5
 // Fill is see-through; the per-shard border stays visible.
 const SHARD_OPACITY = 0.05
 const EDGE_OPACITY = 0.9
-// Lattice (the cube) tuning.
-const CUBE_FILL_OPACITY = 0.05 // small-cube face fill
-const CUBE_BORDER_OPACITY = 0.9 // small-cube edge (border) brightness
+// Lattice (the cube) tuning. Border sits at a third ink: the cube drifts across the
+// content columns on paper, and stronger edges read as noise over the rows.
+const CUBE_FILL_OPACITY = 0.04 // small-cube face fill
+const CUBE_BORDER_OPACITY = 0.35 // small-cube edge (border) brightness
 const LATTICE_SCATTER = 8 // how far cubes fly in from (and out to on exit)
 // Lattice drift: translates in X/Y (a lissajous) on top of the spin.
 const CUBE_DRIFT_FREQ = 0.3 // drift speed (rad/s)

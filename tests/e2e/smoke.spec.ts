@@ -4,7 +4,7 @@ test.describe('portfolio smoke', () => {
   test('Lenis initializes and wheel produces smooth scroll', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page.getByRole('heading', { level: 1, name: 'Bach-Khoi Vo' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' })).toBeVisible()
 
     // Lenis adds the `lenis` class to <html> on init.
     await expect(page.locator('html')).toHaveClass(/\blenis\b/)

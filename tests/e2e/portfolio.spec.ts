@@ -26,7 +26,7 @@ test.describe('portfolio page', () => {
 
   test('renders key content across the page', async ({ page }) => {
     await page.goto('/')
-    await expect(page.getByRole('heading', { level: 1, name: 'Bach-Khoi Vo' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Wao' })).toBeVisible()
     await expect(page.getByText('University of Science')).toBeVisible()
     await expect(page.getByText(/IEEE-RIVF/)).toBeVisible()
@@ -36,14 +36,14 @@ test.describe('portfolio page', () => {
     await page.goto('/')
     await expect(page.locator('[data-chess-canvas]')).toBeAttached()
     // Content stays visible on top of the canvas.
-    await expect(page.getByRole('heading', { level: 1, name: 'Bach-Khoi Vo' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' })).toBeVisible()
   })
 
   test('Education content stays readable above the canvas through the cube transform', async ({
     page,
   }) => {
     await page.goto('/')
-    await page.getByRole('heading', { level: 1, name: 'Bach-Khoi Vo' }).waitFor()
+    await page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' }).waitFor()
     const canvas = page.locator('[data-chess-canvas]')
     await expect(canvas).toBeAttached()
 
@@ -69,7 +69,7 @@ test.describe('portfolio page', () => {
 
   test('wheel-scroll can reach the very bottom of the page', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('heading', { level: 1, name: 'Bach-Khoi Vo' }).waitFor()
+    await page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' }).waitFor()
 
     const maxScroll = () =>
       page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight)
