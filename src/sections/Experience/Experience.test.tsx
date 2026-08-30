@@ -42,10 +42,11 @@ describe('Experience', () => {
     expect(link).toHaveAttribute('rel', 'noreferrer noopener')
   })
 
-  it('renders the timeline spine, fill, and one marker per entry', () => {
+  it('renders one period label per entry (hairline table, no timeline spine)', () => {
     const { container } = render(<Experience />)
-    expect(container.querySelector(`.${styles.spine}`)).not.toBeNull()
-    expect(container.querySelector(`.${styles.spineFill}`)).not.toBeNull()
-    expect(container.querySelectorAll(`.${styles.marker}`)).toHaveLength(experience.length)
+    expect(container.querySelectorAll(`.${styles.period}`)).toHaveLength(experience.length)
+    expect(container.querySelector(`.${styles.spine}`)).toBeNull()
+    expect(container.querySelector(`.${styles.spineFill}`)).toBeNull()
+    expect(container.querySelector(`.${styles.marker}`)).toBeNull()
   })
 })

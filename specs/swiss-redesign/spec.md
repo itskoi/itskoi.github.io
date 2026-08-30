@@ -147,3 +147,8 @@ Section grammar: every content section is a 12-column grid; the `h2` occupies co
 - Prior art: Josef Müller-Brockmann, *Grid Systems in Graphic Design*; *Neue Grafik* magazine layout grammar
 - Project principles: `specs/constitution.md`
 - Derived from: `specs/_template/`
+
+## Changes (2026-08-30 — during implementation)
+
+1. **Scene placement amended.** `ChessScene` is not a hero ornament — it is a fixed full-viewport scroll narrative (pieces assemble across Experience, morph into the lattice across Education, exit at Publications; owned by `specs/chess-to-book/`). Confining the canvas to the hero's right field would hide the Education morph behind opaque content and force camera recomposition, contradicting the "chess motion unchanged" criterion. Amended resolution: the canvas stays fixed full-viewport; the specimen framing lands as the `FIG. 1` caption plate in the hero's right grid field (cols 7–12); sections stay transparent over the flat paper so the narrative stays visible. `ChessScene.tsx` is untouched — the monochrome flip rides entirely on the scene tokens.
+2. **Masked rise via `clip-path`.** The line-rise is implemented as `clipPath: inset()` + `yPercent` on the revealed element itself (cleared after completion) rather than `overflow: hidden` wrappers — same masked-rise effect, no DOM surgery, StrictMode-safe.
