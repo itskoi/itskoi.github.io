@@ -8,22 +8,53 @@ const css = read('src/styles/global.css')
 
 describe('global token contract', () => {
   describe('typography tokens + roles', () => {
-    it('defines serif/sans/mono stacks using the @fontsource family names', () => {
-      expect(css).toMatch(/--font-serif:\s*"Fraunces Variable"/)
+    it('defines sans/mono stacks using the @fontsource family names — no serif', () => {
       expect(css).toMatch(/--font-sans:\s*"Geist Variable"/)
       expect(css).toMatch(/--font-mono:\s*"Geist Mono Variable"/)
+      expect(css).not.toMatch(/--font-serif/)
     })
 
-    it('defines a clamp-based type scale', () => {
-      expect(css).toMatch(/--fs-display:\s*clamp\(/)
+    it('defines the Swiss scale: poster display against a mono micro-label', () => {
+      expect(css).toMatch(/--fs-display:\s*clamp\(3\.5rem, 13vw, 9\.5rem\)/)
       expect(css).toMatch(/--fs-h2:\s*clamp\(/)
       expect(css).toMatch(/--fs-h3:\s*clamp\(/)
       expect(css).toMatch(/--fs-body:\s*clamp\(/)
+      expect(css).toMatch(/--fs-meta:\s*0\.8125rem/)
     })
 
-    it('maps headings to the serif and body to the sans', () => {
-      expect(css).toMatch(/h1,[\s\S]*?h2,[\s\S]*?h3[\s\S]*?var\(--font-serif\)/)
-      expect(css).toMatch(/body[\s\S]*?font-family:\s*var\(--font-sans\)/)
+    it('maps every heading to the grotesque (one type family carries the page)', () => {
+      expect(css).toMatch(/h1,[\s\S]*?h2,[\s\S]*?h3,[\s\S]*?h4\s*\{[\s\S]*?var\(--font-sans\)/)
+      expect(css).toMatch(/body\s*\{[\s\S]*?font-family:\s*var\(--font-sans\)/)
+    })
+  })
+
+  describe('grid system', () => {
+    it('defines grid tokens: 12 columns, gutter, margin', () => {
+      expect(css).toMatch(/--grid-columns:\s*12/)
+      expect(css).toMatch(/--grid-gutter:\s*clamp\(/)
+      expect(css).toMatch(/--grid-margin:\s*clamp\(/)
+    })
+
+    it('drops to a 6-column grid on narrow screens', () => {
+      expect(css).toMatch(/@media\s*\(max-width:\s*768px\)\s*\{[\s\S]*?--grid-columns:\s*6/)
+    })
+
+    it('exposes a shared .section-grid the sections snap to', () => {
+      expect(css).toMatch(
+        /\.section-grid\s*\{[\s\S]*?display:\s*grid[\s\S]*?repeat\(var\(--grid-columns\),\s*minmax\(0,\s*1fr\)\)/,
+      )
+    })
+  })
+
+  describe('flatness', () => {
+    it('paints no gradients anywhere in global.css', () => {
+      expect(css).not.toMatch(/gradient\(/)
+    })
+
+    it('keeps no rounded or translucent panels', () => {
+      expect(css).not.toMatch(/border-radius/)
+      expect(css).not.toMatch(/color-mix\(in srgb, var\(--color-surface\)/)
+      expect(css).not.toMatch(/#experience/)
     })
   })
 
@@ -50,59 +81,56 @@ describe('global token contract', () => {
     })
   })
 
-  describe('section panels', () => {
-    it('wraps the content sections in a translucent rounded panel', () => {
-      expect(css).toMatch(/#experience[\s\S]*?border-radius/)
-      expect(css).toMatch(/color-mix\(in srgb, var\(--color-surface\) \d+%, transparent\)/)
-    })
-  })
-
-  describe('dual light/dark palette', () => {
-    it('defines the dark palette on :root', () => {
-      expect(css).toMatch(/:root\s*\{[\s\S]*?--color-bg:/)
-      expect(css).toMatch(/--color-accent:\s*#5ba4ff/i)
+  describe('paper-default palette', () => {
+    it('defines the light palette (paper + Swiss red) on :root', () => {
+      expect(css).toMatch(/:root\s*\{[\s\S]*?--color-bg:\s*#ffffff/i)
+      expect(css).toMatch(/--color-fg:\s*#0a0a0a/i)
+      expect(css).toMatch(/--color-accent:\s*#e30613/i)
+      expect(css).toMatch(/--color-accent-strong:\s*#c00016/i)
     })
 
-    it('overrides every token under [data-theme="light"]', () => {
-      const lightBlock = css.match(/\[data-theme="light"\]\s*\{([\s\S]*?)\n\}/)
-      expect(lightBlock, '[data-theme="light"] block must exist').toBeTruthy()
-      const block = lightBlock?.[1] ?? ''
+    it('overrides every token under [data-theme="dark"] (the inverse poster mode)', () => {
+      const darkBlock = css.match(/\[data-theme="dark"\]\s*\{([\s\S]*?)\n\}/)
+      expect(darkBlock, '[data-theme="dark"] block must exist').toBeTruthy()
+      const block = darkBlock?.[1] ?? ''
       for (const token of [
         '--color-bg',
-        '--color-surface',
         '--color-fg',
         '--color-fg-muted',
         '--color-border',
         '--color-accent',
-        '--color-accent-2',
+        '--color-accent-strong',
         '--scene-figure',
         '--scene-figure-rgb',
         '--scene-piece-rgb',
-        '--scene-backdrop',
       ]) {
         expect(block).toContain(token)
       }
     })
 
-    it('follows the OS preference on first visit (no explicit data-theme)', () => {
+    it('follows the OS dark preference on first visit (no explicit data-theme)', () => {
       expect(css).toMatch(
-        /@media\s*\(prefers-color-scheme:\s*light\)\s*\{[\s\S]*?:root:not\(\[data-theme\]\)/,
+        /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{[\s\S]*?:root:not\(\[data-theme\]\)/,
       )
-    })
-
-    it('drops the legacy cyan/violet accents', () => {
-      expect(css).not.toMatch(/#64ffda|#b388ff|#2de2e6|#5eeedc/i)
     })
 
     it('declares color-scheme for native controls', () => {
       expect(css).toMatch(/color-scheme:\s*(dark|light)/)
     })
 
-    it('exposes scene tokens for the canvas/3D layers in both modes', () => {
+    it('exposes the scene tokens for the 3D layer in both modes', () => {
       expect(css).toMatch(/--scene-figure:/)
       expect(css).toMatch(/--scene-figure-rgb:/)
       expect(css).toMatch(/--scene-piece-rgb:/)
-      expect(css).toMatch(/--scene-backdrop:/)
+    })
+  })
+
+  describe('dead tokens are gone', () => {
+    it('drops the surface, backdrop-gradient, second accent, and serif tokens', () => {
+      expect(css).not.toMatch(/--color-surface/)
+      expect(css).not.toMatch(/--scene-backdrop/)
+      expect(css).not.toMatch(/--color-accent-2/)
+      expect(css).not.toMatch(/--font-serif/)
     })
   })
 })

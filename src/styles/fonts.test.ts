@@ -9,11 +9,15 @@ const pkg = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8')) as {
 }
 
 describe('self-hosted fonts', () => {
-  it('imports Fraunces, Geist, and Geist Mono from @fontsource-variable', () => {
-    expect(fontsCss).toMatch(/@fontsource-variable\/fraunces/)
-    // Geist, but not Geist Mono (negative lookahead so this line doesn't match the mono import).
+  it('imports Geist and Geist Mono from @fontsource-variable — and nothing else', () => {
     expect(fontsCss).toMatch(/@fontsource-variable\/geist(?!-mono)/)
     expect(fontsCss).toMatch(/@fontsource-variable\/geist-mono/)
+    expect(fontsCss.match(/@import/g)?.length).toBe(2)
+  })
+
+  it('loads no serif family (Swiss: one grotesque + one mono)', () => {
+    expect(fontsCss).not.toMatch(/fraunces|serif/i)
+    expect(Object.keys(pkg.dependencies).some((dep) => /serif|fraunces/i.test(dep))).toBe(false)
   })
 
   it('pulls no font from a third-party CDN', () => {
@@ -21,10 +25,10 @@ describe('self-hosted fonts', () => {
     expect(fontsCss).not.toMatch(/fonts\.gstatic\.com/)
   })
 
-  it('declares the three families as runtime dependencies', () => {
+  it('declares the two families as runtime dependencies', () => {
     const deps = pkg.dependencies
-    expect(deps['@fontsource-variable/fraunces']).toBeTruthy()
     expect(deps['@fontsource-variable/geist']).toBeTruthy()
     expect(deps['@fontsource-variable/geist-mono']).toBeTruthy()
+    expect(deps['@fontsource-variable/fraunces']).toBeUndefined()
   })
 })

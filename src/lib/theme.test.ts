@@ -25,9 +25,9 @@ beforeEach(reset)
 afterEach(reset)
 
 describe('initTheme', () => {
-  it('defaults to dark when nothing is stored and the OS does not prefer light', () => {
+  it('defaults to light (paper) when nothing is stored and the OS preference is unknown', () => {
     initTheme()
-    expect(getTheme()).toBe('dark')
+    expect(getTheme()).toBe('light')
   })
 
   it('leaves data-theme unset when no choice is stored (OS CSS path owns first paint)', () => {
@@ -36,20 +36,20 @@ describe('initTheme', () => {
   })
 
   it('applies a stored choice and sets data-theme', () => {
-    window.localStorage.setItem('theme', 'light')
+    window.localStorage.setItem('theme', 'dark')
     initTheme()
-    expect(document.documentElement.getAttribute('data-theme')).toBe('light')
-    expect(getTheme()).toBe('light')
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
+    expect(getTheme()).toBe('dark')
   })
 
   it('resolves from the OS preference when nothing is stored', () => {
     vi.stubGlobal(
       'matchMedia',
-      (query: string) => ({ matches: query.includes('light'), media: query }) as MediaQueryList,
+      (query: string) => ({ matches: query.includes('dark'), media: query }) as MediaQueryList,
     )
     initTheme()
     expect(document.documentElement.getAttribute('data-theme')).toBeNull()
-    expect(getTheme()).toBe('light')
+    expect(getTheme()).toBe('dark')
     vi.unstubAllGlobals()
   })
 })
@@ -58,19 +58,19 @@ describe('setTheme / toggleTheme', () => {
   it('setTheme sets the attribute, persists, and notifies subscribers', () => {
     const cb = vi.fn()
     const off = onThemeChange(cb)
-    setTheme('light')
-    expect(document.documentElement.getAttribute('data-theme')).toBe('light')
-    expect(window.localStorage.getItem('theme')).toBe('light')
-    expect(cb).toHaveBeenCalledWith('light')
+    setTheme('dark')
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
+    expect(window.localStorage.getItem('theme')).toBe('dark')
+    expect(cb).toHaveBeenCalledWith('dark')
     off()
   })
 
   it('toggleTheme flips dark <-> light', () => {
-    setTheme('dark')
-    expect(toggleTheme()).toBe('light')
-    expect(getTheme()).toBe('light')
+    setTheme('light')
     expect(toggleTheme()).toBe('dark')
     expect(getTheme()).toBe('dark')
+    expect(toggleTheme()).toBe('light')
+    expect(getTheme()).toBe('light')
   })
 })
 
@@ -86,29 +86,29 @@ describe('onThemeChange', () => {
 
 describe('readSceneColors', () => {
   it('parses --scene-figure-rgb into RGB', () => {
-    document.documentElement.style.setProperty('--scene-figure-rgb', '11 14 18')
-    expect(readSceneColors()).toEqual({ r: 11, g: 14, b: 18 })
+    document.documentElement.style.setProperty('--scene-figure-rgb', '250 250 250')
+    expect(readSceneColors()).toEqual({ r: 250, g: 250, b: 250 })
   })
 
-  it('falls back to white when the token is missing', () => {
-    expect(readSceneColors()).toEqual({ r: 255, g: 255, b: 255 })
+  it('falls back to ink when the token is missing (paper is the default mode)', () => {
+    expect(readSceneColors()).toEqual({ r: 10, g: 10, b: 10 })
   })
 })
 
 describe('readPieceColors', () => {
   it('parses --scene-piece-rgb into RGB', () => {
-    document.documentElement.style.setProperty('--scene-piece-rgb', '29 78 216')
-    expect(readPieceColors()).toEqual({ r: 29, g: 78, b: 216 })
+    document.documentElement.style.setProperty('--scene-piece-rgb', '10 10 10')
+    expect(readPieceColors()).toEqual({ r: 10, g: 10, b: 10 })
   })
 
-  it('falls back to electric blue when the token is missing', () => {
-    expect(readPieceColors()).toEqual({ r: 91, g: 164, b: 255 })
+  it('falls back to ink when the token is missing (paper is the default mode)', () => {
+    expect(readPieceColors()).toEqual({ r: 10, g: 10, b: 10 })
   })
 })
 
 describe('figureHex', () => {
   it('packs the scene color as 0xRRGGBB', () => {
-    expect(figureHex({ r: 255, g: 255, b: 255 })).toBe(0xffffff) // dark mode → white pieces
-    expect(figureHex({ r: 11, g: 14, b: 18 })).toBe(0x0b0e12) // light mode → ink pieces
+    expect(figureHex({ r: 10, g: 10, b: 10 })).toBe(0x0a0a0a) // light mode → ink figures
+    expect(figureHex({ r: 250, g: 250, b: 250 })).toBe(0xfafafa) // dark mode → paper figures
   })
 })

@@ -1,89 +1,74 @@
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* Palette — dark is the default (the showcase mode). */
-  --color-bg: #08090c;
-  --color-surface: #101418;
-  --color-fg: #f3f4f6;
-  --color-fg-muted: #9aa1ab;
-  --color-border: color-mix(in srgb, var(--color-fg) 10%, transparent);
-  --color-accent: #5ba4ff; /* electric blue — primary accent */
-  --color-accent-2: #3b82f6; /* royal blue — secondary accent */
+  /* Palette — paper is the default; dark is the inverse poster mode. */
+  --color-bg: #ffffff;
+  --color-fg: #0a0a0a;
+  --color-fg-muted: #55595f;
+  --color-border: color-mix(in srgb, var(--color-fg) 15%, transparent);
+  --color-accent: #e30613; /* Swiss red — non-text + large text (≥ 3:1) */
+  --color-accent-strong: #c00016; /* red for small text (≥ 4.5:1) */
 
-  /* Scene layers (canvas + 3D). Pulse network stays white; chess pieces are blue. */
-  --scene-figure: #ffffff;
-  --scene-figure-rgb: 255 255 255;
-  --scene-piece-rgb: 91 164 255; /* electric blue chess pieces */
-  --scene-backdrop:
-    radial-gradient(ellipse 100% 80% at 50% -20%, rgba(40, 90, 200, 0.28), rgba(2, 4, 10, 0) 55%),
-    radial-gradient(ellipse 60% 50% at 85% 8%, rgba(50, 80, 180, 0.16), rgba(2, 4, 10, 0) 55%),
-    linear-gradient(180deg, #050a16 0%, #03060d 55%, #02040a 100%);
+  /* Scene layers (canvas + 3D): monochrome ink on paper. */
+  --scene-figure: #0a0a0a;
+  --scene-figure-rgb: 10 10 10;
+  --scene-piece-rgb: 10 10 10;
 
-  /* Type — self-hosted variable families (see fonts.css). */
-  --font-serif: "Fraunces Variable", Georgia, "Times New Roman", serif;
+  /* Type — one grotesque carries display and body; mono carries data labels. */
   --font-sans: "Geist Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
 
-  /* Type scale. */
-  --fs-display: clamp(3rem, 10vw, 6rem);
-  --fs-h2: clamp(2rem, 4vw, 2.75rem);
-  --fs-h3: clamp(1.25rem, 2.5vw, 1.5rem);
+  /* Type scale — poster display against mono micro-labels. */
+  --fs-display: clamp(3.5rem, 13vw, 9.5rem);
+  --fs-h2: clamp(2.25rem, 6vw, 4.5rem);
+  --fs-h3: clamp(1.375rem, 3vw, 1.875rem);
   --fs-body: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --fs-meta: 0.8125rem;
+
+  /* Grid — the structural backbone every section snaps to. */
+  --grid-columns: 12;
+  --grid-gutter: clamp(1rem, 2vw, 1.5rem);
+  --grid-margin: clamp(1.25rem, 5vw, 4rem);
 }
 
-:root[data-theme="light"] {
-  color-scheme: light;
+:root[data-theme="dark"] {
+  color-scheme: dark;
 
-  --color-bg: #f7f8fa;
-  --color-surface: #ffffff;
-  --color-fg: #0b0e12;
-  --color-fg-muted: #5a6370;
-  --color-border: color-mix(in srgb, var(--color-fg) 10%, transparent);
-  --color-accent: #1d4ed8; /* deep cobalt — legible on white */
-  --color-accent-2: #1e40af; /* deeper royal — secondary */
+  --color-bg: #0a0a0a;
+  --color-fg: #fafafa;
+  --color-fg-muted: #a3a3a3;
+  --color-border: color-mix(in srgb, var(--color-fg) 15%, transparent);
+  --color-accent: #ff2b39;
+  --color-accent-strong: #ff5a66;
 
-  /* Scene layers flip to ink on the pale backdrop. */
-  --scene-figure: #0b0e12;
-  --scene-figure-rgb: 11 14 18;
-  --scene-piece-rgb: 11 14 18; /* ink chess pieces */
-  --scene-backdrop:
-    radial-gradient(
-      ellipse 100% 80% at 50% -20%,
-      rgba(205, 220, 240, 0.6),
-      rgba(247, 248, 250, 0) 55%
-    ),
-    radial-gradient(ellipse 60% 50% at 85% 8%, rgba(198, 215, 235, 0.5), rgba(247, 248, 250, 0) 55%),
-    linear-gradient(180deg, #edf1f7 0%, #f1f4f9 55%, #f7f8fa 100%);
+  /* Scene layers flip to paper figures on the ink field. */
+  --scene-figure: #fafafa;
+  --scene-figure-rgb: 250 250 250;
+  --scene-piece-rgb: 250 250 250;
 }
 
-/* First visit (no explicit choice) follows the OS preference. */
-@media (prefers-color-scheme: light) {
+/* First visit (no explicit choice) follows the OS preference; unknown OS → paper. */
+@media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    color-scheme: light;
+    color-scheme: dark;
 
-    --color-bg: #f7f8fa;
-    --color-surface: #ffffff;
-    --color-fg: #0b0e12;
-    --color-fg-muted: #5a6370;
-    --color-border: color-mix(in srgb, var(--color-fg) 10%, transparent);
-    --color-accent: #1d4ed8;
-    --color-accent-2: #1e40af;
+    --color-bg: #0a0a0a;
+    --color-fg: #fafafa;
+    --color-fg-muted: #a3a3a3;
+    --color-border: color-mix(in srgb, var(--color-fg) 15%, transparent);
+    --color-accent: #ff2b39;
+    --color-accent-strong: #ff5a66;
 
-    --scene-figure: #0b0e12;
-    --scene-figure-rgb: 11 14 18;
-    --scene-piece-rgb: 11 14 18;
-    --scene-backdrop:
-      radial-gradient(
-        ellipse 100% 80% at 50% -20%,
-        rgba(205, 220, 240, 0.6),
-        rgba(247, 248, 250, 0) 55%
-      ),
-      radial-gradient(
-        ellipse 60% 50% at 85% 8%,
-        rgba(198, 215, 235, 0.5),
-        rgba(247, 248, 250, 0) 55%
-      ),
-      linear-gradient(180deg, #edf1f7 0%, #f1f4f9 55%, #f7f8fa 100%);
+    --scene-figure: #fafafa;
+    --scene-figure-rgb: 250 250 250;
+    --scene-piece-rgb: 250 250 250;
+  }
+}
+
+/* Narrow screens carry a 6-column grid. */
+@media (max-width: 768px) {
+  :root {
+    --grid-columns: 6;
   }
 }
 
@@ -121,24 +106,20 @@ main {
   z-index: 1;
 }
 
-/* Content sections render as translucent rounded panels. Only the background
-   is translucent so the text stays fully opaque; Hero is excluded (full-viewport landing). */
-#experience,
-#education,
-#publications,
-#technologies {
-  margin-bottom: 2rem;
-  border-radius: 1rem;
-  border: 1px solid var(--color-border);
-  background: color-mix(in srgb, var(--color-surface) 60%, transparent);
+/* Shared section grid: content snaps to the columns. Sections are flat —
+   separated by hairline rules and whitespace, never panels. */
+.section-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  padding-inline: var(--grid-margin);
 }
 
-/* Type roles: serif carries every heading, sans carries the body. */
+/* Type roles: one grotesque for everything; hierarchy is scale + the mono voice. */
 h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-serif);
-  font-optical-sizing: auto;
-  line-height: 1.1;
+  font-family: var(--font-sans);
+  line-height: 1.05;
 }

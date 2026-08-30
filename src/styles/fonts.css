@@ -2,8 +2,7 @@
    runtime request to a font CDN. Metric-matched fallbacks in global.css keep the
    first paint stable while the variable files stream in.
 
-   Fraunces pulls the `opsz` subset (weight + optical-size axis) so
-   `font-optical-sizing: auto` actually shapes the headlines. Geist ships weight only. */
-@import "@fontsource-variable/fraunces/opsz.css";
+   Geist ships the weight axis only; the grotesque serves display and body while
+   Geist Mono carries every data label (nav, dates, DOIs, tag tiles, captions). */
 @import "@fontsource-variable/geist/index.css";
 @import "@fontsource-variable/geist-mono/index.css";

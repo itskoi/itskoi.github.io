@@ -1,4 +1,3 @@
-import { Background } from '@/components/Background/Background'
 import { ChessScene } from '@/components/ChessScene/ChessScene'
 import { Nav } from '@/components/Nav/Nav'
 import { useSmoothScroll } from '@/hooks/useSmoothScroll'
@@ -12,7 +11,6 @@ export function App() {
   useSmoothScroll()
   return (
     <>
-      <Background />
       <ChessScene />
       <Nav />
       <main>

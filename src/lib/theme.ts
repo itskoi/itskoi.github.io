@@ -7,7 +7,7 @@ export interface SceneColors {
 }
 
 const STORAGE_KEY = 'theme'
-const DEFAULT_SCENE: SceneColors = { r: 255, g: 255, b: 255 }
+const DEFAULT_SCENE: SceneColors = { r: 10, g: 10, b: 10 }
 
 const listeners = new Set<(theme: Theme) => void>()
 
@@ -33,16 +33,16 @@ function writeStorage(theme: Theme): void {
   }
 }
 
-function prefersLight(): boolean {
+function prefersDark(): boolean {
   return (
     typeof window !== 'undefined' &&
     typeof window.matchMedia === 'function' &&
-    window.matchMedia('(prefers-color-scheme: light)').matches
+    window.matchMedia('(prefers-color-scheme: dark)').matches
   )
 }
 
 function osTheme(): Theme {
-  return prefersLight() ? 'light' : 'dark'
+  return prefersDark() ? 'dark' : 'light'
 }
 
 function applyAttribute(theme: Theme): void {
@@ -115,9 +115,9 @@ export function figureHex(scene: SceneColors = readSceneColors()): number {
   return (scene.r << 16) | (scene.g << 8) | scene.b
 }
 
-const DEFAULT_PIECE: SceneColors = { r: 91, g: 164, b: 255 }
+const DEFAULT_PIECE: SceneColors = { r: 10, g: 10, b: 10 }
 
-/** The chess-piece color, parsed from --scene-piece-rgb (electric blue in dark mode). */
+/** The chess-piece color, parsed from --scene-piece-rgb (ink on paper, paper on ink). */
 export function readPieceColors(): SceneColors {
   const raw = getComputedStyle(document.documentElement)
     .getPropertyValue('--scene-piece-rgb')

@@ -24,31 +24,38 @@ function contrast(a: string, b: string): number {
 }
 
 const AA_NORMAL = 4.5
+const AA_LARGE = 3 // large text (≥ 1.5rem bold / 1.875rem) and non-text graphics
 
-describe('palette contrast (WCAG AA, body text)', () => {
-  describe('dark mode', () => {
-    const bg = '#08090c'
-    it('body text on background', () => {
-      expect(contrast('#f3f4f6', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
+describe('palette contrast (WCAG)', () => {
+  describe('light mode (paper default)', () => {
+    const bg = '#ffffff'
+    it('body text on paper', () => {
+      expect(contrast('#0a0a0a', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
     })
-    it('accent (electric blue) text on background', () => {
-      expect(contrast('#5ba4ff', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
+    it('muted text on paper', () => {
+      expect(contrast('#55595f', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
     })
-    it('accent-2 (royal blue) text on background', () => {
-      expect(contrast('#3b82f6', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
+    it('accent-strong (small red text) on paper', () => {
+      expect(contrast('#c00016', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
+    })
+    it('accent (Swiss red) meets the large-text / non-text bar on paper', () => {
+      expect(contrast('#e30613', bg)).toBeGreaterThanOrEqual(AA_LARGE)
     })
   })
 
-  describe('light mode', () => {
-    const bg = '#f7f8fa'
-    it('body text on background', () => {
-      expect(contrast('#0b0e12', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
+  describe('dark mode (ink field)', () => {
+    const bg = '#0a0a0a'
+    it('body text on ink', () => {
+      expect(contrast('#fafafa', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
     })
-    it('accent (deep cobalt) text on background', () => {
-      expect(contrast('#1d4ed8', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
+    it('muted text on ink', () => {
+      expect(contrast('#a3a3a3', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
     })
-    it('accent-2 (deeper royal) text on background', () => {
-      expect(contrast('#1e40af', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
+    it('accent (red) text on ink', () => {
+      expect(contrast('#ff2b39', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
+    })
+    it('accent-strong (small red text) on ink', () => {
+      expect(contrast('#ff5a66', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
     })
   })
 })

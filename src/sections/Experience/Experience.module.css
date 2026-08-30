@@ -103,7 +103,7 @@
 
 .company {
   margin: 0.25rem 0 0;
-  color: var(--color-accent);
+  color: var(--color-accent-strong);
 }
 
 .company a {

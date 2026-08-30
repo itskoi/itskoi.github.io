@@ -47,7 +47,7 @@
 .link:hover,
 .link:focus-visible {
   opacity: 1;
-  color: var(--color-accent-2);
+  color: var(--color-accent-strong);
   outline: none;
 }
 
@@ -58,7 +58,7 @@
 
 .link.active {
   opacity: 1;
-  color: var(--color-accent-2);
+  color: var(--color-accent-strong);
 }
 
 .link.active::before {
