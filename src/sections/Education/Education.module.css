@@ -1,65 +1,116 @@
+/* Same hairline row grammar as Experience: mono index column on the left,
+   content blocks snapped to the grid columns. */
 .section {
-  max-width: 64rem;
-  margin: 0 auto;
-  padding: 6rem 2rem;
+  padding-block: clamp(5rem, 14vh, 9rem);
+  border-top: 1px solid var(--color-border);
 }
 
 .heading {
+  grid-column: 1 / 5;
+  margin-bottom: 3rem;
   font-size: var(--fs-h2);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 2.5rem;
+  font-weight: 650;
+  letter-spacing: -0.03em;
 }
 
-.degree {
-  margin-bottom: 2rem;
+.content {
+  grid-column: 1 / -1;
 }
 
-.school {
-  margin: 0 0 0.25rem;
-  font-size: 1.4rem;
-  font-weight: 600;
-}
-
-.degreeTitle {
-  margin: 0 0 0.25rem;
-  opacity: 0.85;
+.row {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  border-top: 1px solid var(--color-border);
+  padding-block: 2.25rem;
 }
 
 .period {
-  margin: 0 0 0.5rem;
+  grid-column: 1 / 3;
+  margin: 0;
   font-family: var(--font-mono);
-  font-size: 0.9rem;
-  opacity: 0.6;
+  font-size: var(--fs-meta);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-fg-muted);
+}
+
+.schoolBlock {
+  grid-column: 3 / 7;
+}
+
+.school {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.degreeTitle {
+  margin: 0.35rem 0 0;
+  color: var(--color-fg-muted);
 }
 
 .gpa {
-  margin: 0;
+  margin: 0.75rem 0 0;
   color: var(--color-accent-strong);
 }
 
-.lists {
-  display: grid;
-  gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+.block {
+  grid-column: 7 / 13;
 }
 
-.subheading {
+.subheading,
+.rowLabel {
   margin: 0 0 0.75rem;
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-fg-muted);
+}
+
+.rowLabel {
+  grid-column: 1 / 3;
+  align-self: start;
+}
+
+.certList {
+  grid-column: 3 / 13;
+  margin: 0;
+  list-style: none;
+  display: grid;
+  row-gap: 0.4rem;
 }
 
 .list {
   margin: 0;
-  padding-left: 1.25rem;
-  line-height: 1.6;
-}
-
-.list li {
-  margin-bottom: 0.4rem;
+  list-style: none;
+  display: grid;
+  row-gap: 0.4rem;
 }
 
 .muted {
-  opacity: 0.6;
+  color: var(--color-fg-muted);
+}
+
+@media (max-width: 768px) {
+  .heading {
+    grid-column: 1 / -1;
+  }
+
+  .row {
+    row-gap: 0.75rem;
+    padding-block: 1.75rem;
+  }
+
+  .period,
+  .schoolBlock,
+  .block,
+  .rowLabel,
+  .certList {
+    grid-column: 1 / -1;
+  }
 }
