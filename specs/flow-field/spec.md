@@ -1,0 +1,92 @@
+# Spec: flow-field
+
+> WHAT we are building and WHY. Replace the chess→lattice WebGL specimen with a **2D streamline study**: dashed ink hairlines flowing left→right past a hairline circle, developing into a Kármán vortex street and calming again — wind and water rendered as a technical chart, not atmosphere. No implementation here — see `plan.md`.
+
+## Context
+
+The owner retired the chess/cube scene as the page's signature element and asked for something evoking **the flow of water or wind** instead. Three concepts were reviewed (streamline study past an obstacle, bathymetric depth contours, two-source interference rings); the owner selected the **streamline study**.
+
+The constraint that shapes everything: `specs/swiss-redesign/`'s motion doctrine — *mechanical and grid-aligned… instead of atmospheric (no parallax, no soft opacity fades, no growing fills)*. So "flow" is not rendered as soft blur, particles, or glow. It is rendered the way a fluid-dynamics textbook figure would be: **streamlines** (lines everywhere tangent to the velocity field) drawn as traveling dashes in ink on paper, bending around a circular obstacle, shedding alternating vortices in its wake. The specimen-plate framing survives verbatim — same fixed full-viewport canvas behind the content, same `FIG. 1` mono caption; only the specimen changes.
+
+What the visitor sees, mapped to the page's scroll bands (mirroring the chess choreography):
+
+| Scroll band        | Field state                                                            |
+|--------------------|------------------------------------------------------------------------|
+| Hero (load)        | Laminar lines with a gentle traveling waviness; the circle stands full-size right of center — the labeled exhibit |
+| Hero → Experience  | Waviness settles; the stream straightens                               |
+| Experience         | Shedding begins — alternating vortices peel off behind the circle      |
+| Education          | Fully developed vortex street; lines weave the full width             |
+| Publications → end | Circulation decays, the circle dematerializes, lines calm to straight |
+
+Dashes travel along every line continuously — the flow direction reads without any soft trails, and the page keeps living between scrolls.
+
+## User stories
+
+- As a **visitor**, I want **the showpiece to evoke wind or water moving across the page** so the portfolio **feels alive without decorative noise**.
+- As a **visitor**, I want **the flow drawn like a technical figure — hairline streamlines, a labeled obstacle, traveling dashes** so the showpiece **stays objective and Swiss rather than atmospheric**.
+- As a **visitor scrolling the page**, I want **the flow to evolve with my scroll** — settle, shed, weave, calm — so **scrolling feels like turning the pages of a study**.
+- As a **motion-sensitive visitor**, I want **a static laminar frame instead of the animation** so **the poster stays calm**.
+- As the **owner**, I want **the scene monochrome ink from the theme tokens** so it **inverts cleanly with dark mode like the rest of the poster**.
+
+## Acceptance criteria
+
+(testable; each maps to at least one test — see `plan.md`)
+
+### The field (physics of the drawing)
+- [ ] The velocity field is analytic and pure: uniform free stream + potential flow past a cylinder + a staggered row of regularized point vortices + a settling waviness term. Given identical inputs it returns identical outputs. — `flowField.test.ts`
+- [ ] The obstacle is impermeable: radial velocity at the cylinder surface (`r = R`) is ~0, and the crown (`r = R`, θ = 90°) runs at ~2U. — `flowField.test.ts`
+- [ ] Far from the cylinder the field returns to the free stream `(U, 0)`. — `flowField.test.ts`
+- [ ] Stagnation points sit at the upstream and downstream poles of the circle (velocity ~0 at `(±R, 0)` relative to center). — `flowField.test.ts`
+- [ ] Each vortex carries its circulation: the tangential line integral around a loop enclosing one vortex ≈ Γ (within the regularization tolerance), positive for one row, negative for the other. — `flowField.test.ts`
+- [ ] With zero vortices the cylinder flow is irrotational (discrete curl ≈ 0 away from the core). — `flowField.test.ts`
+
+### The street
+- [ ] The street is a deterministic function of time and strength: same inputs → same vortices; strength 0 → no vortices. — `flowField.test.ts`
+- [ ] Vortices alternate sign and side (top row one circulation, bottom row the opposite), drift downstream, and are gone past the exit. — `flowField.test.ts`
+
+### The timeline (scroll choreography)
+- [ ] Scroll progress maps to the four beats — `settle`, `shed`, `street`, `exit` — each clamped to [0, 1] with the bands anchored to the `#experience`, `#education`, `#publications` tops. — `flowField.test.ts`
+- [ ] At page load the field is laminar with full waviness and zero shedding; at the end of the page it is calm laminar with no obstacle. — `flowField.test.ts`
+
+### The rendering
+- [ ] Exactly one `<canvas>` remains on the page — now `data-flow-canvas`, fixed full-viewport behind the content, `aria-hidden`, `pointer-events: none`. — `FlowScene.test.tsx` + `tests/e2e/swiss.spec.ts`
+- [ ] Streamlines are dashed hairlines in ink from `--scene-figure-rgb`; the obstacle is a hairline ring at specimen ink (0.75) over a faint fill (0.05) — the same two-ink grammar the chess edges used. — `FlowScene.test.tsx` (source contract)
+- [ ] Dash phase advances with time so dashes travel along the lines at the local field speed; lines are re-integrated from fixed left-edge seeds every frame. — `FlowScene.test.tsx` (source contract)
+- [ ] The scene re-reads tokens and rebuilds on theme change (`useTheme` dep), caps DPR at 2, and handles resize. — `FlowScene.test.tsx` (source contract)
+- [ ] Reduced-motion visitors get a static laminar frame: no time advance, no scroll response, one canonical composition. — `FlowScene.test.tsx` (source contract)
+
+### The specimen plate
+- [ ] The hero caption reads `FIG. 1 — flow past a cylinder, streamline study` and keeps the mono/meta styling. — `Hero.test.tsx` + `tests/e2e/swiss.spec.ts`
+- [ ] The specimen is visible on ≤ 480px viewports (the 2D field spans the viewport; the chess FOV bug dies with chess). — `tests/e2e/portfolio.spec.ts`
+
+### Removal
+- [ ] `src/components/ChessScene/` is deleted; nothing in `src/` imports `three`; `three` and `@types/three` leave `package.json`. — `bun run check`/`lint` green + dependency absence
+- [ ] Theme helpers only the chess scene consumed (`figureHex`, `readPieceColors`) and their tokens (`--scene-figure` hex, `--scene-piece-rgb`) are deleted, not shimmed; `--scene-figure-rgb` remains the scene-ink contract, read by `readSceneColors()`. — `theme.test.ts`, `global.test.ts`
+
+## Out of scope
+
+- Content, section order, grid grammar, type scale, palette — all owned by `specs/swiss-redesign/` and untouched.
+- The masked line-rise reveal system (`useHeroIntro`, `useScrollReveal`) — unchanged.
+- Smooth-scroll plumbing (Lenis ↔ GSAP ticker) — unchanged; the scene keeps reading raw `window.scrollY` in its own rAF, no ScrollTrigger.
+- Physical fidelity beyond the listed invariants (no viscosity, no boundary layers, no image vortices inside the cylinder).
+
+## Decisions (resolved 2026-08-30)
+
+1. **Concept — streamline study past an obstacle.** Owner-selected over "bathymetric depth contours" and "interference rings". Wind-and-water in one figure; maps 1:1 onto the chess narrative beats (order → interaction → transformation → calm).
+2. **Pipeline — 2D canvas, three.js deleted.** The specimen is line art; 2D canvas gives crisper hairlines at lower cost, drops ~600 KB of dependency, and fixes the ≤ 480px invisibility for free.
+3. **Motion doctrine — flow as technical drawing.** Dashed streamlines with traveling dash phase are the *only* ambient motion; no particle trails, no gradients, no opacity fades. The waviness/settling term is a pure sinusoid. This **amends** `specs/swiss-redesign/`'s "chess scene keeps its existing motion untouched" (Decision 5) — the specimen itself is replaced; the doctrine (mechanical, not atmospheric) is kept.
+4. **Ink grammar — two inks, inherited.** Streamlines at ~0.38 ink (the "third ink" the lattice taught: full ink over the tabular rows reads as noise); the obstacle ring at 0.75 with a 0.05 fill, exactly the chess-edge specimen weight.
+5. **Narrative — ends calm, not symmetrical.** Load shows the full specimen (circle + laminar weave); the page ends on empty ruled calm as the study concludes.
+
+## Open questions
+
+- Dash pattern density and street strength on paper — tune by screenshot during implementation; record shipped values in a dated Changes note (same protocol as the wireframe-opacity tuning).
+- Free-stream speed: a dash should cross the viewport in roughly 8–15 s idle. Tune once the obstacle spacing is seen in situ.
+
+## References
+
+- Superseded decisions: `specs/chess-pieces/spec.md` and `specs/chess-to-book/spec.md` (scene geometry/motion ownership), `specs/swiss-redesign/spec.md` (Decision 3's chess-as-specimen framing → the specimen is now the flow study; the `--scene-piece-rgb` token row and mobile-FOV follow-up are moot)
+- Token contract: `src/styles/global.css` (`--scene-figure-rgb`), `src/lib/theme.ts` (`readSceneColors`)
+- Prior art: Kármán vortex street diagrams; textbook potential-flow figures (flow past a cylinder); hint-style wind maps
+- Project principles: `specs/constitution.md`
+- Derived from: `specs/_template/`
