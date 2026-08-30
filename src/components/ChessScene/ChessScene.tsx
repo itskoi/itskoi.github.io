@@ -53,7 +53,7 @@ const AMPLITUDE = 3
 const SCATTER_MAG = 0.5
 // Fill is see-through; the per-shard border stays visible.
 const SHARD_OPACITY = 0.05
-const EDGE_OPACITY = 0.9
+const EDGE_OPACITY = 0.75
 // Lattice (the cube) tuning. Border sits at a third ink: the cube drifts across the
 // content columns on paper, and stronger edges read as noise over the rows.
 const CUBE_FILL_OPACITY = 0.04 // small-cube face fill
