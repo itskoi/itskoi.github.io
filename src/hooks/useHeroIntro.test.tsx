@@ -41,13 +41,21 @@ describe('useHeroIntro', () => {
   })
   afterEach(() => vi.clearAllMocks())
 
-  it('plays a staggered intro timeline on mount', () => {
+  it('plays a staggered masked line-rise on mount (no opacity fade)', () => {
     const { unmount } = render(<Harness />)
     expect(spies.gsapTimeline).toHaveBeenCalledTimes(1)
     expect(spies.timelineFrom).toHaveBeenCalledWith(
       '[data-intro]',
-      expect.objectContaining({ stagger: 0.15, opacity: 0 }),
+      expect.objectContaining({
+        stagger: 0.08,
+        ease: 'expo.out',
+        yPercent: expect.any(Number),
+        clipPath: expect.stringMatching(/^inset\(/),
+        clearProps: 'clipPath',
+      }),
     )
+    const vars = spies.timelineFrom.mock.calls[0][1] as Record<string, unknown>
+    expect(vars).not.toHaveProperty('opacity')
     unmount()
     expect(spies.ctxRevert).toHaveBeenCalledTimes(1)
   })

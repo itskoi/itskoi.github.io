@@ -1,39 +1,35 @@
 import { profile } from '@/data/portfolio'
 import { useHeroIntro } from '@/hooks/useHeroIntro'
-import { useParallax } from '@/hooks/useParallax'
 import styles from './Hero.module.css'
 
 export function Hero() {
-  const parallaxRef = useParallax<HTMLDivElement>({ amount: 80 })
   const introRef = useHeroIntro<HTMLDivElement>()
 
   return (
     <section className={styles.hero}>
-      <div ref={parallaxRef}>
-        <div ref={introRef}>
-          <h1 className={styles.name} data-intro>
-            {profile.name}
-          </h1>
-          <p className={styles.role} data-intro>
-            {profile.role}
-          </p>
-          <p className={styles.location} data-intro>
-            {profile.location}
-          </p>
-          <p className={styles.links} data-intro>
-            <a
-              href={profile.linkedin.href}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label={profile.linkedin.label}
-            >
-              <LinkedInIcon />
-            </a>
-            <a href={profile.email.href} aria-label={profile.email.label}>
-              <MailIcon />
-            </a>
-          </p>
-        </div>
+      <div ref={introRef}>
+        <h1 className={styles.name} data-intro>
+          {profile.name}
+        </h1>
+        <p className={styles.role} data-intro>
+          {profile.role}
+        </p>
+        <p className={styles.location} data-intro>
+          {profile.location}
+        </p>
+        <p className={styles.links} data-intro>
+          <a
+            href={profile.linkedin.href}
+            target="_blank"
+            rel="noreferrer noopener"
+            aria-label={profile.linkedin.label}
+          >
+            <LinkedInIcon />
+          </a>
+          <a href={profile.email.href} aria-label={profile.email.label}>
+            <MailIcon />
+          </a>
+        </p>
       </div>
     </section>
   )

@@ -39,13 +39,22 @@ describe('useScrollReveal', () => {
   })
   afterEach(() => vi.clearAllMocks())
 
-  it('reveals [data-reveal] children on mount', () => {
+  it('reveals [data-reveal] children as masked line-rises (no opacity fade)', () => {
     const { unmount } = render(<Harness />)
     expect(spies.gsapContext).toHaveBeenCalledTimes(1)
     expect(spies.gsapFrom).toHaveBeenCalledWith(
       '[data-reveal]',
-      expect.objectContaining({ stagger: 0.08, opacity: 0 }),
+      expect.objectContaining({
+        stagger: 0.08,
+        ease: 'expo.out',
+        yPercent: expect.any(Number),
+        clipPath: expect.stringMatching(/^inset\(/),
+        clearProps: 'clipPath',
+        scrollTrigger: expect.objectContaining({ start: 'top 80%' }),
+      }),
     )
+    const vars = spies.gsapFrom.mock.calls[0][1] as Record<string, unknown>
+    expect(vars).not.toHaveProperty('opacity')
     unmount()
     expect(spies.ctxRevert).toHaveBeenCalledTimes(1)
   })

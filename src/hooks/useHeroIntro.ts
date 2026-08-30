@@ -8,13 +8,16 @@ export function useHeroIntro<T extends HTMLElement = HTMLElement>() {
     const root = ref.current
     if (!root || prefersReducedMotion()) return
 
+    // Masked line-rise: each line slides up out of its own clip. `clearProps`
+    // drops the clip when done so descenders are never shaved at the box edge.
     const ctx = gsap.context(() => {
       gsap.timeline().from('[data-intro]', {
-        y: 24,
-        opacity: 0,
-        stagger: 0.15,
+        yPercent: 60,
+        clipPath: 'inset(0% 0% 100% 0%)',
+        clearProps: 'clipPath',
+        stagger: 0.08,
         duration: 0.7,
-        ease: 'power3.out',
+        ease: 'expo.out',
       })
     }, root)
 

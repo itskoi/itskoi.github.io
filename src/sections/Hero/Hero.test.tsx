@@ -7,15 +7,14 @@ const spies = vi.hoisted(() => {
     fn()
     return { revert: ctxRevert }
   })
-  const gsapFromTo = vi.fn()
   const timelineFrom = vi.fn()
   const gsapTimeline = vi.fn(() => ({ from: timelineFrom }))
   const prefersReducedMotion = vi.fn(() => false)
-  return { ctxRevert, gsapContext, gsapFromTo, gsapTimeline, timelineFrom, prefersReducedMotion }
+  return { ctxRevert, gsapContext, gsapTimeline, timelineFrom, prefersReducedMotion }
 })
 
 vi.mock('@/lib/gsap', () => ({
-  gsap: { context: spies.gsapContext, fromTo: spies.gsapFromTo, timeline: spies.gsapTimeline },
+  gsap: { context: spies.gsapContext, timeline: spies.gsapTimeline },
   prefersReducedMotion: spies.prefersReducedMotion,
 }))
 
@@ -24,7 +23,6 @@ import { Hero } from './Hero'
 describe('Hero', () => {
   beforeEach(() => {
     spies.gsapContext.mockClear()
-    spies.gsapFromTo.mockClear()
     spies.gsapTimeline.mockClear()
     spies.timelineFrom.mockClear()
     spies.ctxRevert.mockClear()
@@ -54,17 +52,15 @@ describe('Hero', () => {
     expect(email).toHaveAttribute('href', 'mailto:itskoiwork@gmail.com')
   })
 
-  it('wires the intro timeline and parallax on mount', () => {
+  it('wires the intro timeline on mount (no parallax — the hero is static on the grid)', () => {
     render(<Hero />)
     expect(spies.gsapTimeline).toHaveBeenCalledTimes(1)
     expect(spies.timelineFrom).toHaveBeenCalledWith('[data-intro]', expect.any(Object))
-    expect(spies.gsapFromTo).toHaveBeenCalledTimes(1)
   })
 
   it('registers no motion under reduced motion', () => {
     spies.prefersReducedMotion.mockReturnValue(true)
     render(<Hero />)
     expect(spies.gsapTimeline).not.toHaveBeenCalled()
-    expect(spies.gsapFromTo).not.toHaveBeenCalled()
   })
 })
