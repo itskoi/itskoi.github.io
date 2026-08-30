@@ -90,3 +90,11 @@ Dashes travel along every line continuously — the flow direction reads without
 - Prior art: Kármán vortex street diagrams; textbook potential-flow figures (flow past a cylinder); hint-style wind maps
 - Project principles: `specs/constitution.md`
 - Derived from: `specs/_template/`
+
+## Changes (2026-08-30 — during implementation, from screenshot review)
+
+1. **Wall projection added (resolves the no-image-vortex risk).** Superposed point vortices ignore the cylinder wall, and the first screenshot round showed streamlines crossing the obstacle interior once the street was active. `integrateStreamline` now projects any step that lands inside the obstacle back onto the surface (`R + 1.5`), so lines hug the circle and release tangentially. Verified at pixel level: zero dark pixels inside the circle in canvas-only screenshots at every beat. (An earlier "interior line" reading turned out to be the Education rows' own hairline rules crossing the fixed backdrop — the canvas was already clean.)
+2. **Street tuned to read as a street (resolves open question 1).** First pass read as "general waviness": circulation ratio 0.9 → 1.5, spacing 3.4R → 2.4R, row offset 1.4R → 1.2R, and vortex influence is now local to the wake (fades out between 14× and 26× the core radius) so far-field lines stay laminar and the wake reads as the event. Shipped inks: streamlines 0.38 → **0.3** (they cross the tabular rows; the lattice lesson), obstacle ring **0.75** / fill **0.05** unchanged from the chess grammar. Dash pattern `[4, 6]` at 1px.
+3. **Integration budget raised.** Lines caught circling vortex cores exhausted the 420-step budget and ended raggedly mid-screen; `MAX_STEPS` is now 800 — all lines span the full width again.
+4. **Mobile specimen enlarged.** At `RADIUS_RATIO` 0.105 the obstacle was ~41px on a 390px viewport — present but faint. Narrow viewports (< 768px) use 0.15; the street weaves legibly behind the stacked content (the chess FOV bug stays dead).
+5. **Free-stream speed (resolves open question 2).** `U = 0.085 × viewport width` per second — a dash crosses the page in ~12 s idle; street drift 0.8U; wobble period 9 s at 0.22U amplitude. Left as shipped after review.

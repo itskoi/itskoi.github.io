@@ -140,7 +140,7 @@ describe('streetVortices — the stateless Kármán street', () => {
   it('keeps every vortex inside the exit window and caps the circulation', () => {
     for (const v of streetVortices(args)) {
       expect(v.x).toBeLessThanOrEqual(1200 + 2 * CYL.radius)
-      expect(Math.abs(v.circulation)).toBeLessThanOrEqual(2 * Math.PI * U * CYL.radius)
+      expect(Math.abs(v.circulation)).toBeLessThanOrEqual(1.55 * 2 * Math.PI * U * CYL.radius)
     }
   })
 
@@ -293,5 +293,22 @@ describe('integrateStreamline', () => {
       expect(p.y).toBeLessThanOrEqual(bounds.height + 48)
     }
     expect(minDistance).toBeGreaterThan(CYL.radius - 2)
+  })
+
+  it('projects steps out of the obstacle — the wall holds even under strong vortices', () => {
+    const vortex = { x: CYL.cx + 150, y: CYL.cy, circulation: 3 * 2 * Math.PI * U * CYL.radius }
+    const f = {
+      U,
+      cylinder: CYL,
+      vortices: [vortex],
+      vortexCore: CYL.radius * 0.35,
+      wobble: 0,
+      wobbleWavelength: 200,
+      wobbleOmega: 1,
+    }
+    const { points } = integrateStreamline(f, 0, CYL.cy + 3, 0, bounds)
+    for (const p of points) {
+      expect(Math.hypot(p.x - CYL.cx, p.y - CYL.cy)).toBeGreaterThan(CYL.radius - 1)
+    }
   })
 })

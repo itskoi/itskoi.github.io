@@ -63,9 +63,13 @@ export interface Streamline {
 
 const WOBBLE_AMPLITUDE = 0.22
 const SPAWN_GAP_RATIO = 1.1
-const CIRCULATION_RATIO = 0.9
+const CIRCULATION_RATIO = 1.5
+// Vortex influence is local to the wake: it fades out between 14× and 26× the core
+// radius so the street reads as a wake event, not global waviness.
+const REACH_NEAR_RATIO = 14
+const REACH_FAR_RATIO = 26
 const STEP = 6
-const MAX_STEPS = 420
+const MAX_STEPS = 800
 const BOUNDS_PAD = 24
 
 function clamp01(v: number): number {
@@ -97,10 +101,14 @@ export function vortexVelocity(
   let vx = 0
   let vy = 0
   const core2 = core * core
+  const near = core * REACH_NEAR_RATIO
+  const far = core * REACH_FAR_RATIO
   for (const v of vortices) {
     const dx = x - v.x
     const dy = y - v.y
-    const k = v.circulation / (2 * Math.PI) / (dx * dx + dy * dy + core2)
+    const d2 = dx * dx + dy * dy
+    const influence = 1 - smoothstep(near, far, Math.sqrt(d2))
+    const k = ((v.circulation / (2 * Math.PI)) * influence) / (d2 + core2)
     vx += -k * dy
     vy += k * dx
   }
@@ -175,6 +183,20 @@ export function integrateStreamline(
     if (midSpeed < 1e-6) break
     x += (mid.x / midSpeed) * STEP
     y += (mid.y / midSpeed) * STEP
+    // Superposed vortices do not respect the wall (no image vortices), so a step
+    // can land inside the obstacle — project it back onto the surface; the line
+    // then hugs the circle and releases tangentially, like an attached boundary layer.
+    if (f.cylinder) {
+      const dx = x - f.cylinder.cx
+      const dy = y - f.cylinder.cy
+      const d = Math.hypot(dx, dy)
+      const min = f.cylinder.radius + 1.5
+      if (d < min) {
+        const scale = d > 1e-6 ? min / d : 0
+        x = f.cylinder.cx + dx * scale
+        y = f.cylinder.cy + dy * scale
+      }
+    }
     points.push({ x, y })
     if (x > bounds.width + BOUNDS_PAD || y < -BOUNDS_PAD || y > bounds.height + BOUNDS_PAD) break
   }

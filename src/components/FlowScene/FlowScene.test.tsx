@@ -24,7 +24,7 @@ describe('FlowScene', () => {
   })
 
   it('draws the two-ink specimen grammar: third-ink dashed lines, 0.75-ink obstacle ring', () => {
-    expect(source).toMatch(/LINE_INK = 0\.38/)
+    expect(source).toMatch(/LINE_INK = 0\.3/)
     expect(source).toMatch(/RING_INK = 0\.75/)
     expect(source).toMatch(/FILL_INK = 0\.05/)
     expect(source).toMatch(/setLineDash\(\[4, 6\]\)/)

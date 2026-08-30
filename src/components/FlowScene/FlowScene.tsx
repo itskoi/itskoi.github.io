@@ -11,16 +11,17 @@ import {
   streetVortices,
 } from './flowField'
 
-const LINE_INK = 0.38
+const LINE_INK = 0.3
 const RING_INK = 0.75
 const FILL_INK = 0.05
 const SEED_ROWS = 14
 const FREE_STREAM_RATIO = 0.085
 const RADIUS_RATIO = 0.105
+const RADIUS_RATIO_MOBILE = 0.15 // the specimen must still read on a narrow viewport
 const STATION_X = 0.62
 const STATION_Y = 0.48
-const SPACING_RATIO = 3.4
-const ROW_OFFSET_RATIO = 1.4
+const SPACING_RATIO = 2.4
+const ROW_OFFSET_RATIO = 1.2
 const DRIFT_RATIO = 0.8
 const CORE_RATIO = 0.35
 const STREET_COUNT = 9
@@ -99,7 +100,8 @@ export function FlowScene() {
 
       const tl = flowTimeline(scrollY, markers)
       const U = width * FREE_STREAM_RATIO
-      const radius = Math.min(width, height) * RADIUS_RATIO * (1 - tl.exit)
+      const radiusRatio = width < 768 ? RADIUS_RATIO_MOBILE : RADIUS_RATIO
+      const radius = Math.min(width, height) * radiusRatio * (1 - tl.exit)
       const cylinder =
         radius >= 1 ? { cx: width * STATION_X, cy: height * STATION_Y, radius } : null
       const field: FlowField = {
