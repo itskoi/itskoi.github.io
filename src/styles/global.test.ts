@@ -100,10 +100,10 @@ describe('global token contract', () => {
       expect(heroCss).toMatch(/line-height:\s*1;/)
     })
 
-    it('hero meta (location + links) is mono; the caption is the specimen label', () => {
+    it('hero meta (location + links) is mono; the specimen label is gone', () => {
       expect(heroCss).toMatch(/\.meta\s*\{[\s\S]*?var\(--font-mono\)/)
-      expect(heroCss).toMatch(/\.caption\s*\{[\s\S]*?var\(--font-mono\)/)
-      expect(heroTsx).toMatch(/FIG\. 1/)
+      expect(heroCss).not.toMatch(/\.caption/)
+      expect(heroTsx).not.toMatch(/FIG\. 1/)
     })
 
     it('nav is a fixed top bar with mono uppercase labels', () => {

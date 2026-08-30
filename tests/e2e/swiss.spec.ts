@@ -52,11 +52,6 @@ test.describe('swiss poster contract', () => {
     await expect(canvas).toHaveAttribute('aria-hidden', 'true')
   })
 
-  test('the specimen carries its FIG. 1 label', async ({ page }) => {
-    await page.goto('/')
-    await expect(page.getByText(/^FIG\. 1/)).toBeVisible()
-  })
-
   test('nav links are keyboard-focusable', async ({ page }) => {
     await page.goto('/')
     const first = page.getByRole('navigation').getByRole('link').first()

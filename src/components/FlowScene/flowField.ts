@@ -17,7 +17,7 @@ export interface Vortex {
 
 export interface FlowField {
   U: number
-  cylinder: Cylinder | null
+  bodies: readonly Cylinder[]
   vortices: readonly Vortex[]
   vortexCore: number
   wobble: number
@@ -71,6 +71,10 @@ const REACH_FAR_RATIO = 26
 const STEP = 6
 const MAX_STEPS = 800
 const BOUNDS_PAD = 24
+// Streamlines keep a visible air gap off every body — a line kissing the ring
+// reads as a hit even when it never crosses. The standoff scales with the body.
+const STANDOFF_RATIO = 1.12
+const STANDOFF_MIN = 2
 
 function clamp01(v: number): number {
   return Math.min(1, Math.max(0, v))
@@ -116,14 +120,21 @@ export function vortexVelocity(
 }
 
 export function fieldVelocity(f: FlowField, x: number, y: number, time: number): Vec {
-  const base = f.cylinder ? cylinderVelocity(f.cylinder, f.U, x, y) : { x: f.U, y: 0 }
+  let vx = f.U
+  let vy = 0
+  for (const body of f.bodies) {
+    const v = cylinderVelocity(body, f.U, x, y)
+    vx += v.x - f.U
+    vy += v.y
+  }
   const swirl = vortexVelocity(f.vortices, x, y, f.vortexCore)
-  let vy = base.y + swirl.y
+  vx += swirl.x
+  vy += swirl.y
   if (f.wobble > 0) {
     const phase = ((x / f.wobbleWavelength) * 2 - (time * f.wobbleOmega) / Math.PI) * Math.PI
     vy += f.wobble * WOBBLE_AMPLITUDE * f.U * Math.sin(phase)
   }
-  return { x: base.x + swirl.x, y: vy }
+  return { x: vx, y: vy }
 }
 
 export function streetVortices(p: StreetParams): Vortex[] {
@@ -183,18 +194,18 @@ export function integrateStreamline(
     if (midSpeed < 1e-6) break
     x += (mid.x / midSpeed) * STEP
     y += (mid.y / midSpeed) * STEP
-    // Superposed vortices do not respect the wall (no image vortices), so a step
-    // can land inside the obstacle — project it back onto the surface; the line
-    // then hugs the circle and releases tangentially, like an attached boundary layer.
-    if (f.cylinder) {
-      const dx = x - f.cylinder.cx
-      const dy = y - f.cylinder.cy
+    // Superposed vortices do not respect the walls (no image vortices), so a step
+    // can land inside a body — project it back outside the standoff; the line
+    // then bends around the body and releases tangentially, like flow around it.
+    for (const body of f.bodies) {
+      const dx = x - body.cx
+      const dy = y - body.cy
       const d = Math.hypot(dx, dy)
-      const min = f.cylinder.radius + 1.5
+      const min = body.radius * STANDOFF_RATIO + STANDOFF_MIN
       if (d < min) {
         const scale = d > 1e-6 ? min / d : 0
-        x = f.cylinder.cx + dx * scale
-        y = f.cylinder.cy + dy * scale
+        x = body.cx + dx * scale
+        y = body.cy + dy * scale
       }
     }
     points.push({ x, y })

@@ -14,12 +14,22 @@ import {
 const LINE_INK = 0.3
 const RING_INK = 0.75
 const FILL_INK = 0.05
+const GRATICULE_INK = 0.3
+const ORBIT_INK = 0.15
 const SEED_ROWS = 14
 const FREE_STREAM_RATIO = 0.085
 const RADIUS_RATIO = 0.105
 const RADIUS_RATIO_MOBILE = 0.15 // the specimen must still read on a narrow viewport
 const STATION_X = 0.62
 const STATION_Y = 0.48
+const MOON_RATIO = 0.28
+// the moon deflects flow well beyond its drawn ring — its sphere of influence
+const MOON_INFLUENCE = 1.5
+const ORBIT_RATIO = 1.9
+const ORBIT_PERIOD = 36
+const ORBIT_PHASE = -0.9
+const SPIN_PERIOD = 26
+const MERIDIANS = 3
 const SPACING_RATIO = 2.4
 const ROW_OFFSET_RATIO = 1.2
 const DRIFT_RATIO = 0.8
@@ -102,16 +112,25 @@ export function FlowScene() {
       const U = width * FREE_STREAM_RATIO
       const radiusRatio = width < 768 ? RADIUS_RATIO_MOBILE : RADIUS_RATIO
       const radius = Math.min(width, height) * radiusRatio * (1 - tl.exit)
-      const cylinder =
-        radius >= 1 ? { cx: width * STATION_X, cy: height * STATION_Y, radius } : null
+      const planet = radius >= 1 ? { cx: width * STATION_X, cy: height * STATION_Y, radius } : null
+      const moonAngle = (time * 2 * Math.PI) / ORBIT_PERIOD + ORBIT_PHASE
+      const moon = (() => {
+        if (!planet) return null
+        const orbit = planet.radius * ORBIT_RATIO
+        return {
+          cx: planet.cx + orbit * Math.cos(moonAngle),
+          cy: planet.cy + orbit * Math.sin(moonAngle),
+          radius: planet.radius * MOON_RATIO,
+        }
+      })()
       const field: FlowField = {
         U,
-        cylinder,
-        vortices: cylinder
+        bodies: planet && moon ? [planet, { ...moon, radius: moon.radius * MOON_INFLUENCE }] : [],
+        vortices: planet
           ? streetVortices({
               time,
               strength: tl.street,
-              cylinder,
+              cylinder: planet,
               U,
               count: STREET_COUNT,
               spacing: radius * SPACING_RATIO,
@@ -144,13 +163,56 @@ export function FlowScene() {
         ctx.stroke()
       }
 
-      if (cylinder) {
+      if (planet && moon) {
         ctx.setLineDash([])
+
+        // the orbit path — a faint continuous ring, distinct from the dashed flow,
+        // broken around the moon the way an orrery chart leaves a gap for the body
+        const orbit = planet.radius * ORBIT_RATIO
+        const gap = Math.asin(Math.min(1, (moon.radius * 1.4) / orbit))
         ctx.beginPath()
-        ctx.arc(cylinder.cx, cylinder.cy, cylinder.radius, 0, Math.PI * 2)
+        ctx.arc(planet.cx, planet.cy, orbit, moonAngle + gap, moonAngle - gap + Math.PI * 2)
+        ctx.strokeStyle = ink(ORBIT_INK)
+        ctx.stroke()
+
+        // the moon — same ring/fill grammar as the planet
+        ctx.beginPath()
+        ctx.arc(moon.cx, moon.cy, moon.radius, 0, Math.PI * 2)
         ctx.fillStyle = ink(FILL_INK)
         ctx.fill()
         ctx.strokeStyle = ink(RING_INK)
+        ctx.stroke()
+
+        // the planet — fill + specimen ring + wireframe graticule
+        ctx.beginPath()
+        ctx.arc(planet.cx, planet.cy, planet.radius, 0, Math.PI * 2)
+        ctx.fillStyle = ink(FILL_INK)
+        ctx.fill()
+        ctx.strokeStyle = ink(RING_INK)
+        ctx.stroke()
+        ctx.strokeStyle = ink(GRATICULE_INK)
+        const spin = (time * 2 * Math.PI) / SPIN_PERIOD
+        for (let i = 0; i < MERIDIANS; i += 1) {
+          const rx = Math.abs(Math.cos(spin + (i * 2 * Math.PI) / MERIDIANS)) * planet.radius
+          ctx.beginPath()
+          ctx.ellipse(planet.cx, planet.cy, Math.max(rx, 0.01), planet.radius, 0, 0, Math.PI * 2)
+          ctx.stroke()
+        }
+        for (const lat of [-0.42, 0.42]) {
+          ctx.beginPath()
+          ctx.ellipse(
+            planet.cx,
+            planet.cy + lat * planet.radius,
+            planet.radius * 0.9,
+            planet.radius * 0.12,
+            0,
+            0,
+            Math.PI * 2,
+          )
+          ctx.stroke()
+        }
+        ctx.beginPath()
+        ctx.ellipse(planet.cx, planet.cy, planet.radius, planet.radius * 0.22, 0, 0, Math.PI * 2)
         ctx.stroke()
       }
     }

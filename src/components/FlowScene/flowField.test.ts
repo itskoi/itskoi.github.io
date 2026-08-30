@@ -201,10 +201,10 @@ describe('flowTimeline — scroll choreography', () => {
 })
 
 describe('fieldVelocity — superposition', () => {
-  it('is pure uniform flow with no cylinder, no vortices, no wobble', () => {
+  it('is pure uniform flow with no bodies, no vortices, no wobble', () => {
     const f = {
       U,
-      cylinder: null,
+      bodies: [],
       vortices: [],
       vortexCore: 5,
       wobble: 0,
@@ -216,11 +216,11 @@ describe('fieldVelocity — superposition', () => {
     expect(v.y).toBeCloseTo(0, 6)
   })
 
-  it('adds the cylinder and vortex components exactly', () => {
+  it('adds the body and vortex components exactly', () => {
     const vortex = { x: 700, y: 300, circulation: 2 * Math.PI * U * CYL.radius * 0.9 }
     const f = {
       U,
-      cylinder: CYL,
+      bodies: [CYL],
       vortices: [vortex],
       vortexCore: CYL.radius * 0.35,
       wobble: 0,
@@ -237,7 +237,7 @@ describe('fieldVelocity — superposition', () => {
   it('weaves: the wobble term bends the field and scales with its weight', () => {
     const base = {
       U,
-      cylinder: null,
+      bodies: [],
       vortices: [],
       vortexCore: 5,
       wobbleWavelength: 200,
@@ -257,7 +257,7 @@ describe('integrateStreamline', () => {
   it('draws a straight horizontal line through a uniform field', () => {
     const f = {
       U,
-      cylinder: null,
+      bodies: [],
       vortices: [],
       vortexCore: 5,
       wobble: 0,
@@ -273,10 +273,10 @@ describe('integrateStreamline', () => {
     expect(meanSpeed).toBeCloseTo(U, 5)
   })
 
-  it('never crosses the obstacle and stays inside the padded viewport', () => {
+  it('never crosses the obstacle and keeps a visible air gap off the ring', () => {
     const f = {
       U,
-      cylinder: CYL,
+      bodies: [CYL],
       vortices: [],
       vortexCore: 5,
       wobble: 0,
@@ -292,14 +292,14 @@ describe('integrateStreamline', () => {
       expect(p.y).toBeGreaterThanOrEqual(-48)
       expect(p.y).toBeLessThanOrEqual(bounds.height + 48)
     }
-    expect(minDistance).toBeGreaterThan(CYL.radius - 2)
+    expect(minDistance).toBeGreaterThan(CYL.radius * 1.08)
   })
 
   it('projects steps out of the obstacle — the wall holds even under strong vortices', () => {
     const vortex = { x: CYL.cx + 150, y: CYL.cy, circulation: 3 * 2 * Math.PI * U * CYL.radius }
     const f = {
       U,
-      cylinder: CYL,
+      bodies: [CYL],
       vortices: [vortex],
       vortexCore: CYL.radius * 0.35,
       wobble: 0,
@@ -308,7 +308,25 @@ describe('integrateStreamline', () => {
     }
     const { points } = integrateStreamline(f, 0, CYL.cy + 3, 0, bounds)
     for (const p of points) {
-      expect(Math.hypot(p.x - CYL.cx, p.y - CYL.cy)).toBeGreaterThan(CYL.radius - 1)
+      expect(Math.hypot(p.x - CYL.cx, p.y - CYL.cy)).toBeGreaterThan(CYL.radius * 1.08)
+    }
+  })
+
+  it('holds the standoff around both bodies — planet and orbiting moon', () => {
+    const moon = { cx: 620, cy: 250, radius: 18 }
+    const f = {
+      U,
+      bodies: [CYL, moon],
+      vortices: [],
+      vortexCore: 5,
+      wobble: 0,
+      wobbleWavelength: 200,
+      wobbleOmega: 1,
+    }
+    const { points } = integrateStreamline(f, 0, 250, 0, bounds)
+    for (const p of points) {
+      expect(Math.hypot(p.x - moon.cx, p.y - moon.cy)).toBeGreaterThan(moon.radius * 1.08)
+      expect(Math.hypot(p.x - CYL.cx, p.y - CYL.cy)).toBeGreaterThan(CYL.radius * 1.08)
     }
   })
 })
