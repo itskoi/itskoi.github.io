@@ -122,6 +122,42 @@ describe('global token contract', () => {
     })
   })
 
+  describe('sections snap to the grid', () => {
+    const sectionSheets = [
+      'src/sections/Experience/Experience.module.css',
+      'src/sections/Education/Education.module.css',
+      'src/sections/Publications/Publications.module.css',
+      'src/sections/Technologies/Technologies.module.css',
+    ].map(read)
+
+    it('every content section places its heading in columns 1–4', () => {
+      for (const sheet of sectionSheets) {
+        expect(sheet).toMatch(/\.heading\s*\{[^}]*grid-column:\s*1\s*\/\s*5/)
+      }
+    })
+
+    it('every tabular row re-declares the grid columns', () => {
+      for (const sheet of sectionSheets) {
+        expect(sheet).toMatch(/repeat\(var\(--grid-columns\),\s*minmax\(0,\s*1fr\)\)/)
+      }
+    })
+
+    it('every section is separated by a hairline rule, not a panel', () => {
+      for (const sheet of sectionSheets) {
+        expect(sheet).toMatch(/border-top:\s*1px solid var\(--color-border\)/)
+        expect(sheet).not.toMatch(/border-radius/)
+        expect(sheet).not.toMatch(/color-mix\(in srgb, var\(--color-surface\)/)
+      }
+    })
+
+    it('the Experience rows place period / role / highlights in the index, left, and right fields', () => {
+      const sheet = sectionSheets[0]
+      expect(sheet).toMatch(/\.period\s*\{[^}]*grid-column:\s*1\s*\/\s*3/)
+      expect(sheet).toMatch(/\.entryHeader\s*\{[^}]*grid-column:\s*3\s*\/\s*7/)
+      expect(sheet).toMatch(/\.highlights\s*\{[^}]*grid-column:\s*7\s*\/\s*13/)
+    })
+  })
+
   describe('paper-default palette', () => {
     it('defines the light palette (paper + Swiss red) on :root', () => {
       expect(css).toMatch(/:root\s*\{[\s\S]*?--color-bg:\s*#ffffff/i)

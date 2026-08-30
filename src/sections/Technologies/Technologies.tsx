@@ -5,7 +5,11 @@ import styles from './Technologies.module.css'
 export function Technologies() {
   const ref = useScrollReveal<HTMLDivElement>()
   return (
-    <section id="technologies" aria-labelledby="technologies-heading" className={styles.section}>
+    <section
+      id="technologies"
+      aria-labelledby="technologies-heading"
+      className={`${styles.section} section-grid`}
+    >
       <h2 id="technologies-heading" className={styles.heading}>
         Technologies
       </h2>
