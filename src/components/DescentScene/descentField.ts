@@ -139,7 +139,8 @@ export function buildTrajectory(): Trajectory {
   return { points, arcLengths, totalLength: total }
 }
 
-function pointAt(traj: Trajectory, sRaw: number): Vec3 {
+/** The raw parameter-space point at fraction s ∈ [0, 1] of the run's arc. */
+export function pointAt(traj: Trajectory, sRaw: number): Vec3 {
   const s = Math.min(1, Math.max(0, sRaw))
   const target = s * traj.totalLength
   const last = traj.points.length - 1
