@@ -163,9 +163,8 @@ describe('flowTimeline — scroll choreography', () => {
     viewportHeight: 800,
   }
 
-  it('opens laminar: full wobble, no street, obstacle present at load', () => {
+  it('opens with no street and the obstacle present at load', () => {
     const tl = flowTimeline(0, markers)
-    expect(tl.settle).toBe(0)
     expect(tl.shed).toBe(0)
     expect(tl.street).toBe(0)
     expect(tl.exit).toBe(0)
@@ -173,15 +172,13 @@ describe('flowTimeline — scroll choreography', () => {
 
   it('holds the developed street through Education', () => {
     const tl = flowTimeline(3000, markers)
-    expect(tl.settle).toBe(1)
     expect(tl.shed).toBe(1)
     expect(tl.street).toBe(1)
     expect(tl.exit).toBe(0)
   })
 
-  it('ends calm: no wobble, no street, no obstacle past the last band', () => {
+  it('ends calm: no street, no obstacle past the last band', () => {
     const tl = flowTimeline(6000, markers)
-    expect(tl.settle).toBe(1)
     expect(tl.shed).toBe(1)
     expect(tl.street).toBe(0)
     expect(tl.exit).toBe(1)
@@ -191,7 +188,6 @@ describe('flowTimeline — scroll choreography', () => {
     const early = flowTimeline(200, markers)
     const mid = flowTimeline(500, markers)
     const late = flowTimeline(1400, markers)
-    expect(early.settle).toBe(1)
     expect(early.shed).toBeGreaterThan(0)
     expect(late.shed).toBe(1)
     expect(mid.shed).toBeGreaterThan(early.shed)

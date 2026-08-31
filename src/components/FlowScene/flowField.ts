@@ -57,10 +57,9 @@ export interface ScrollMarkers {
   viewportHeight: number
 }
 
-// The four scroll-driven progress values, each eased into 0..1.
+// The scroll-driven progress values, each eased into 0..1.
 
 export interface FlowTimeline {
-  settle: number // 0 at load → 1 by Experience: the waviness straightens
   shed: number // ramps up across Experience entry: vortices start peeling off
   street: number // combined street strength = shed × (1 − exit): holds through Education
   exit: number // ramps up at Publications: circulation and the planet decay
@@ -227,17 +226,16 @@ export function streetVortices(p: StreetParams): Vortex[] {
 }
 
 /**
- * Scroll position → the four story beats. Each band is a smoothstep anchored to
+ * Scroll position → the story beats. Each band is a smoothstep anchored to
  * a section top (offset by fractions of a viewport height so transitions begin
  * just before a section arrives and finish just after). `street` is derived:
  * it can only be as strong as the shed ramp allows, and the exit ramp kills it.
  */
 export function flowTimeline(scrollY: number, m: ScrollMarkers): FlowTimeline {
   const vh = m.viewportHeight
-  const settle = smoothstep(0, m.experienceTop - vh * 0.9, scrollY)
   const shed = smoothstep(m.experienceTop - vh * 0.9, m.experienceTop + vh * 0.6, scrollY)
   const exit = smoothstep(m.publicationsTop - vh * 0.3, m.publicationsTop + vh * 0.8, scrollY)
-  return { settle, shed, street: shed * (1 - exit), exit }
+  return { shed, street: shed * (1 - exit), exit }
 }
 
 /**

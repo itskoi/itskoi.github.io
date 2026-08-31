@@ -60,9 +60,9 @@ const DRIFT_RATIO = 0.8 // vortices drift downstream at 80% of the wind speed
 const CORE_RATIO = 0.35 // vortices are "regularized" inside this core radius (keeps the math finite)
 const STREET_COUNT = 9 // how many vortices exist at once
 
-// ─── The settling wave ────────────────────────────────────────────────────────
-// At page load the "wind" has a gentle traveling waviness that straightens out as
-// you scroll into Experience — the page opening its study.
+// ─── The ambient wave ─────────────────────────────────────────────────────────
+// A gentle traveling waviness in the wind. Always on and driven only by the
+// scene clock — scrolling never changes it.
 
 const WOBBLE_WAVELENGTH_RATIO = 0.16 // wave crest spacing = 16% of the width
 const WOBBLE_PERIOD = 9 // the wave travels one wavelength every 9 s
@@ -166,10 +166,10 @@ export function FlowScene() {
       }
 
       // ─── 1. Where are we in the story? ──────────────────────────────────────
-      // The scroll position inside the section bands becomes four 0..1 progress
-      // values: settle (waviness straightens, hero → Experience), shed + street
-      // (the vortex street develops and holds, Experience → Publications) and
-      // exit (everything decays and the page ends calm).
+      // The scroll position inside the section bands becomes three 0..1 progress
+      // values: shed + street (the vortex street develops and holds, Experience
+      // → Publications) and exit (the street and planet decay toward the end).
+      // The ambient wave is not here by design — it ignores scroll entirely.
       const tl = flowTimeline(scrollY, markers)
 
       // ─── 2. The bodies ──────────────────────────────────────────────────────
@@ -199,7 +199,7 @@ export function FlowScene() {
       //     — both deflect the streamlines as real obstacles
       //   - vortices: the street, spawned behind the planet as a pure function of
       //     (time, strength) — strength 0 outside the Education-ish bands
-      //   - wobble: the settling wave, weight (1 − settle) → zero after the hero
+      //   - wobble: the ambient wave, always at full weight — scroll-independent
       const field: FlowField = {
         U,
         bodies: planet && moon ? [planet, { ...moon, radius: moon.radius * MOON_INFLUENCE }] : [],
@@ -217,7 +217,7 @@ export function FlowScene() {
             })
           : [],
         vortexCore: radius * CORE_RATIO,
-        wobble: 1 - tl.settle,
+        wobble: 1,
         wobbleWavelength: width * WOBBLE_WAVELENGTH_RATIO,
         wobbleOmega: (2 * Math.PI) / WOBBLE_PERIOD,
       }
