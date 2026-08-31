@@ -30,3 +30,9 @@ A personal portfolio SPA. Single page, smooth-scrolling, motion-forward. The sit
 - A router / multi-page architecture.
 - Tailwind or CSS-in-JS libraries.
 - CI workflow files (add when a remote exists).
+
+## Changes
+
+### 2026-08-31 — motion stack reset
+
+1. **Motion (amends the Technology line).** GSAP no longer animates content: the reveal hooks (`useHeroIntro`, `useScrollReveal`), the flow-field scene, and with them ScrollTrigger are removed. GSAP remains, ticker-only, as the host that drives Lenis's RAF. The site's single animator is the scroll-driven gradient-descent field (`specs/gradient-descent`). Lenis smooth scroll is unchanged.
