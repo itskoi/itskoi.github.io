@@ -94,3 +94,9 @@ Field dashes travel continuously with the scene clock — the gradient is alive 
 - Prior art: 3D surface + quiver plots (matplotlib); loss-landscape visualizations (Li et al., *Visualizing the Loss Landscapes of Neural Networks*, 2018); gradient-descent contour animations
 - Project principles: `specs/constitution.md`
 - Derived from: `specs/_template/`
+
+## Changes (2026-08-31 — shipped values, from browser review)
+
+1. **First render shipped unchanged (resolves open question 1).** Screenshot review at s = 0 / 0.5 / 1 confirmed the composition: the wireframe slice reads as a receding mesh, the dashes stay subtle, the crosshair is legible, text contrast is unaffected. Shipped values: wireframe 0.22 ink over a 15×15 grid spanning 7.5 world units; field dashes 0.3 ink, `[3, 7]` pattern, 5×5 seed lattice over 4.4 units, 24 points at 0.16-unit steps; dash travel 40 px/s per unit of |∇f|; dotted remainder `[2, 6]` at 0.3 ink; traversed path 1.5 px accent at 0.75 ink; crosshair r = 7 px with 3 px ticks; depth fade linear to zero at 14 world units.
+2. **The slice plane rides the camera (resolves open question 2).** No shimmer observed — Lenis keeps s continuous, so the morphing wireframe reads as a scan. Kept as shipped.
+3. **The start point moved during implementation.** The first candidate start (−3.6, 2.6, 3.2) fell into the local trap — the risk `plan.md` called out. The shipped start (3.8, 3.2, −2.6) skirts the trap and converges 0.19 world units from the basin centre, as asserted in `descentField.test.ts`.

@@ -32,22 +32,23 @@ test.describe('portfolio page', () => {
     await expect(page.getByText(/IEEE-RIVF/)).toBeVisible()
   })
 
-  test('renders the flow canvas behind the content', async ({ page }) => {
+  test('renders the descent canvas behind the content', async ({ page }) => {
     await page.goto('/')
-    await expect(page.locator('[data-flow-canvas]')).toBeAttached()
+    await expect(page.locator('[data-descent-canvas]')).toBeAttached()
     // Content stays visible on top of the canvas.
     await expect(page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' })).toBeVisible()
   })
 
-  test('Education content stays readable above the canvas through the vortex street', async ({
+  test('Education content stays readable above the canvas through the mid-descent band', async ({
     page,
   }) => {
     await page.goto('/')
     await page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' }).waitFor()
-    const canvas = page.locator('[data-flow-canvas]')
+    const canvas = page.locator('[data-descent-canvas]')
     await expect(canvas).toBeAttached()
 
-    // Enter Education — the band where the vortex street is fully developed.
+    // Enter Education — the band where the camera is mid-descent and the
+    // accent path is at its longest.
     await page.getByRole('navigation').getByRole('link', { name: 'Education' }).click()
     await expect(page.getByRole('heading', { level: 2, name: 'Education' })).toBeInViewport()
 
@@ -56,7 +57,7 @@ test.describe('portfolio page', () => {
     await expect(page.getByRole('link', { name: /Google Cloud Skills Boost/ })).toBeVisible()
     await expect(canvas).toBeAttached()
 
-    // Nudge further so the street decays, then scroll back up — canvas survives the reverse.
+    // Nudge further down the run, then scroll back up — canvas survives the reverse.
     for (let i = 0; i < 6; i++) {
       await page.mouse.wheel(0, 600)
       await page.waitForTimeout(80)
