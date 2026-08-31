@@ -30,6 +30,7 @@
 - [x] Task 9 — Cap every field streamline with a solid chevron arrowhead at its downstream tip; size in world units via the local projection scale so arrows fade with depth. Test: `DescentScene.test.tsx` (source contract). Commit: `feat(descent): quiver arrowheads — the field states its direction (spec: specs/gradient-descent)`.
 - [x] Task 10 — Accent arrowhead on the leading tip of the traversed path, pointing along the tangent. Test: `DescentScene.test.tsx` (source contract). Commit: `feat(descent): the run states its heading — accent arrowhead on the traversed tip (spec: specs/gradient-descent)`.
 - [x] Task 11 — The traversed tip's head becomes a small filled accent triangle (field chevrons stay open). Test: `DescentScene.test.tsx` (source contract). Commit: `feat(descent): the heading head is a small filled triangle (spec: specs/gradient-descent)`.
+- [x] Task 12 — Downsize the field chevrons: `ARROW_SIZE` 0.18 → 0.12, clamp 3–16 px. Test: `DescentScene.test.tsx` (source contract). Commit: `feat(descent): quieter field chevrons (spec: specs/gradient-descent)`.
 
 ## Done
 

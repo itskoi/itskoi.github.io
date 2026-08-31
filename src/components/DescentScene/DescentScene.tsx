@@ -48,7 +48,7 @@ const SEED_GRID = 5 // 5×5 field-dash streamlines
 const SEED_WINDOW = 4.4 // world units of field seeded around the path
 const DASH_STEP = 0.16 // integration step along the field (world units)
 const DASH_POINTS = 24 // points per dash streamline
-const ARROW_SIZE = 0.18 // open chevron at each streamline tip, in world units — arrows shrink with depth
+const ARROW_SIZE = 0.12 // open chevron at each streamline tip, in world units — arrows shrink with depth
 const PATH_ARROW_SIZE = 0.11 // the filled head on the traversed tip — smaller, a quiet pointer
 const DASH_TRAVEL = 40 // px of dash travel per unit of gradient magnitude × second
 const FAR_DEPTH = 14 // world units at which lines have fully faded
@@ -196,7 +196,7 @@ export function DescentScene() {
       if (!a) return
       const size = Math.min(
         Math.max(ARROW_SIZE * projectionScale(a.tip.depth, { width, height }), 3),
-        24,
+        16,
       )
       const backX = -a.ux * size
       const backY = -a.uy * size

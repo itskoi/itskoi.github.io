@@ -46,7 +46,7 @@ describe('DescentScene', () => {
 
   it('caps every field streamline with a solid arrowhead — the quiver grammar states −∇f', () => {
     expect(source).toMatch(/const drawChevron/)
-    expect(source).toMatch(/ARROW_SIZE = 0\.18/) // world units — arrows shrink with depth
+    expect(source).toMatch(/ARROW_SIZE = 0\.12/) // world units — arrows shrink with depth
     expect(source).toMatch(/drawChevron\(screen, style\)/)
     // sized by the foreshortening-free perspective scale, clamped to stay visible
     expect(source).toMatch(/projectionScale\(/)
