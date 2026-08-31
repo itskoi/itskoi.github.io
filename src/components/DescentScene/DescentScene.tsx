@@ -172,7 +172,7 @@ export function DescentScene() {
     // sized by the true perspective scale (focal/depth — immune to the
     // foreshortening that flattens tips pointing away from the camera) and
     // clamped, so arrows shrink as the field recedes without ever vanishing.
-    const drawArrowhead = (screen: Array<Projected | null>, style: string) => {
+    const drawArrowhead = (screen: Array<Projected | null>, style: string, lineWidth = 1) => {
       const tip = screen[screen.length - 1]
       if (!tip) return
       let base = screen.length - 2
@@ -193,7 +193,7 @@ export function DescentScene() {
       const backY = -uy * size
       const half = size * 0.42 // barb splay
       ctx.strokeStyle = style
-      ctx.lineWidth = 1
+      ctx.lineWidth = lineWidth
       ctx.setLineDash([])
       ctx.lineDashOffset = 0
       ctx.beginPath()
@@ -289,6 +289,9 @@ export function DescentScene() {
 
       const behind = traceProjected(rendered.slice(0, head + 1), pose)
       strokeScreen(behind.screen, accent(ACCENT_INK), 1.5, [], 0)
+      // The traveler's heading: an accent chevron on the leading tip, aimed
+      // down the dotted remainder toward the crosshair.
+      drawArrowhead(behind.screen, accent(ACCENT_INK), 1.5)
 
       // ── 4. The minimum: an accent crosshair the whole page descends toward ─
       const mark = projectPoint(rendered[rendered.length - 1], pose, { width, height })

@@ -53,6 +53,10 @@ describe('DescentScene', () => {
     expect(source).toMatch(/Math\.min\(\s*Math\.max\(ARROW_SIZE/)
   })
 
+  it('caps the traversed path with an accent arrowhead — the run states its heading', () => {
+    expect(source).toMatch(/drawArrowhead\(behind\.screen, accent\(ACCENT_INK\), 1\.5\)/)
+  })
+
   it('marks the minimum with an accent crosshair', () => {
     expect(source).toMatch(/crosshair the whole page descends toward/)
     expect(source).toMatch(/ctx\.arc/)
