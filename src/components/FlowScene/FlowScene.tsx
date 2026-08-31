@@ -14,7 +14,6 @@ import {
 const LINE_INK = 0.3
 const RING_INK = 0.75
 const FILL_INK = 0.05
-const GRATICULE_INK = 0.3
 const ORBIT_INK = 0.15
 const SEED_ROWS = 14
 const FREE_STREAM_RATIO = 0.085
@@ -28,8 +27,6 @@ const MOON_INFLUENCE = 1.5
 const ORBIT_RATIO = 1.9
 const ORBIT_PERIOD = 36
 const ORBIT_PHASE = -0.9
-const SPIN_PERIOD = 26
-const MERIDIANS = 3
 const SPACING_RATIO = 2.4
 const ROW_OFFSET_RATIO = 1.2
 const DRIFT_RATIO = 0.8
@@ -183,36 +180,12 @@ export function FlowScene() {
         ctx.strokeStyle = ink(RING_INK)
         ctx.stroke()
 
-        // the planet — fill + specimen ring + wireframe graticule
+        // the planet — fill + specimen ring, nothing more
         ctx.beginPath()
         ctx.arc(planet.cx, planet.cy, planet.radius, 0, Math.PI * 2)
         ctx.fillStyle = ink(FILL_INK)
         ctx.fill()
         ctx.strokeStyle = ink(RING_INK)
-        ctx.stroke()
-        ctx.strokeStyle = ink(GRATICULE_INK)
-        const spin = (time * 2 * Math.PI) / SPIN_PERIOD
-        for (let i = 0; i < MERIDIANS; i += 1) {
-          const rx = Math.abs(Math.cos(spin + (i * 2 * Math.PI) / MERIDIANS)) * planet.radius
-          ctx.beginPath()
-          ctx.ellipse(planet.cx, planet.cy, Math.max(rx, 0.01), planet.radius, 0, 0, Math.PI * 2)
-          ctx.stroke()
-        }
-        for (const lat of [-0.42, 0.42]) {
-          ctx.beginPath()
-          ctx.ellipse(
-            planet.cx,
-            planet.cy + lat * planet.radius,
-            planet.radius * 0.9,
-            planet.radius * 0.12,
-            0,
-            0,
-            Math.PI * 2,
-          )
-          ctx.stroke()
-        }
-        ctx.beginPath()
-        ctx.ellipse(planet.cx, planet.cy, planet.radius, planet.radius * 0.22, 0, 0, Math.PI * 2)
         ctx.stroke()
       }
     }

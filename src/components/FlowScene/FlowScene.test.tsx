@@ -30,13 +30,13 @@ describe('FlowScene', () => {
     expect(source).toMatch(/setLineDash\(\[4, 6\]\)/)
   })
 
-  it('renders the specimen as a planet with an orbiting, flow-deflecting moon', () => {
+  it('renders the specimen as a bare planet with an orbiting, flow-deflecting moon', () => {
     expect(source).toMatch(/MOON_RATIO = 0\.28/)
     expect(source).toMatch(/ORBIT_RATIO = 1\.9/)
     expect(source).toMatch(/ORBIT_PERIOD = 36/)
     expect(source).toMatch(/MOON_INFLUENCE = 1\.5/)
     expect(source).toMatch(/planet && moon/)
-    expect(source).toMatch(/GRATICULE_INK/)
+    expect(source).not.toMatch(/ellipse|MERIDIANS|GRATICULE/)
   })
 
   it('rebuilds when the theme changes', () => {
