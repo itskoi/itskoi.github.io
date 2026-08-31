@@ -14,7 +14,6 @@ import {
 const LINE_INK = 0.3
 const RING_INK = 0.75
 const FILL_INK = 0.05
-const ORBIT_INK = 0.15
 const SEED_ROWS = 14
 const FREE_STREAM_RATIO = 0.085
 const RADIUS_RATIO = 0.105
@@ -163,16 +162,7 @@ export function FlowScene() {
       if (planet && moon) {
         ctx.setLineDash([])
 
-        // the orbit path — a faint continuous ring, distinct from the dashed flow,
-        // broken around the moon the way an orrery chart leaves a gap for the body
-        const orbit = planet.radius * ORBIT_RATIO
-        const gap = Math.asin(Math.min(1, (moon.radius * 1.4) / orbit))
-        ctx.beginPath()
-        ctx.arc(planet.cx, planet.cy, orbit, moonAngle + gap, moonAngle - gap + Math.PI * 2)
-        ctx.strokeStyle = ink(ORBIT_INK)
-        ctx.stroke()
-
-        // the moon — same ring/fill grammar as the planet
+        // the moon — same ring/fill grammar as the planet, on an invisible orbit
         ctx.beginPath()
         ctx.arc(moon.cx, moon.cy, moon.radius, 0, Math.PI * 2)
         ctx.fillStyle = ink(FILL_INK)

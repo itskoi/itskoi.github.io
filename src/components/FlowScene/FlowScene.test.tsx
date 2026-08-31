@@ -36,7 +36,7 @@ describe('FlowScene', () => {
     expect(source).toMatch(/ORBIT_PERIOD = 36/)
     expect(source).toMatch(/MOON_INFLUENCE = 1\.5/)
     expect(source).toMatch(/planet && moon/)
-    expect(source).not.toMatch(/ellipse|MERIDIANS|GRATICULE/)
+    expect(source).not.toMatch(/ellipse|MERIDIANS|GRATICULE|ORBIT_INK/)
   })
 
   it('rebuilds when the theme changes', () => {
