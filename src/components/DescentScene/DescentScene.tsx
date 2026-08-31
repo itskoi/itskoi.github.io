@@ -48,7 +48,8 @@ const SEED_GRID = 5 // 5×5 field-dash streamlines
 const SEED_WINDOW = 4.4 // world units of field seeded around the path
 const DASH_STEP = 0.16 // integration step along the field (world units)
 const DASH_POINTS = 24 // points per dash streamline
-const ARROW_SIZE = 0.18 // chevron at each streamline tip, in world units — arrows shrink with depth
+const ARROW_SIZE = 0.18 // open chevron at each streamline tip, in world units — arrows shrink with depth
+const PATH_ARROW_SIZE = 0.11 // the filled head on the traversed tip — smaller, a quiet pointer
 const DASH_TRAVEL = 40 // px of dash travel per unit of gradient magnitude × second
 const FAR_DEPTH = 14 // world units at which lines have fully faded
 const REDUCED_S = 0.5 // the canonical frozen pose — mid-descent
@@ -167,40 +168,70 @@ export function DescentScene() {
       ctx.stroke()
     }
 
-    // A solid chevron at a streamline's downstream tip — the quiver grammar.
-    // Direction is stated, not just implied by dash travel. The chevron is
-    // sized by the true perspective scale (focal/depth — immune to the
-    // foreshortening that flattens tips pointing away from the camera) and
-    // clamped, so arrows shrink as the field recedes without ever vanishing.
-    const drawArrowhead = (screen: Array<Projected | null>, style: string, lineWidth = 1) => {
+    // Where an arrow sits and which way it points: the polyline's last
+    // projected point, oriented back along its last visible stretch.
+    const arrowGeometry = (
+      screen: Array<Projected | null>,
+    ): { tip: Projected; ux: number; uy: number } | null => {
       const tip = screen[screen.length - 1]
-      if (!tip) return
+      if (!tip) return null
       let base = screen.length - 2
       while (base >= 0 && !screen[base]) base -= 1 // back to the last visible point
       const prev = base >= 0 ? screen[base] : null
-      if (!prev) return
-      let ux = tip.x - prev.x
-      let uy = tip.y - prev.y
+      if (!prev) return null
+      const ux = tip.x - prev.x
+      const uy = tip.y - prev.y
       const dirLen = Math.hypot(ux, uy)
-      if (dirLen < 1e-6) return
-      ux /= dirLen
-      uy /= dirLen
+      if (dirLen < 1e-6) return null
+      return { tip, ux: ux / dirLen, uy: uy / dirLen }
+    }
+
+    // The field's arrowhead: an open chevron at each streamline's downstream
+    // tip — the quiver grammar. Direction is stated, not just implied by dash
+    // travel. Sized by the true perspective scale (focal/depth — immune to the
+    // foreshortening that flattens tips pointing away from the camera) and
+    // clamped, so arrows shrink as the field recedes without ever vanishing.
+    const drawChevron = (screen: Array<Projected | null>, style: string) => {
+      const a = arrowGeometry(screen)
+      if (!a) return
       const size = Math.min(
-        Math.max(ARROW_SIZE * projectionScale(tip.depth, { width, height }), 3),
+        Math.max(ARROW_SIZE * projectionScale(a.tip.depth, { width, height }), 3),
         24,
       )
-      const backX = -ux * size
-      const backY = -uy * size
+      const backX = -a.ux * size
+      const backY = -a.uy * size
       const half = size * 0.42 // barb splay
       ctx.strokeStyle = style
-      ctx.lineWidth = lineWidth
+      ctx.lineWidth = 1
       ctx.setLineDash([])
       ctx.lineDashOffset = 0
       ctx.beginPath()
-      ctx.moveTo(tip.x + backX - uy * half, tip.y + backY + ux * half)
-      ctx.lineTo(tip.x, tip.y)
-      ctx.lineTo(tip.x + backX + uy * half, tip.y + backY - ux * half)
+      ctx.moveTo(a.tip.x + backX - a.uy * half, a.tip.y + backY + a.ux * half)
+      ctx.lineTo(a.tip.x, a.tip.y)
+      ctx.lineTo(a.tip.x + backX + a.uy * half, a.tip.y + backY - a.ux * half)
       ctx.stroke()
+    }
+
+    // The traversed tip's head: a small filled triangle in the accent — the
+    // figure's one solid glyph, the way a plotted optimizer path terminates in
+    // a marker. Smaller than the open chevrons; same perspective sizing.
+    const drawPathHead = (screen: Array<Projected | null>, style: string) => {
+      const a = arrowGeometry(screen)
+      if (!a) return
+      const size = Math.min(
+        Math.max(PATH_ARROW_SIZE * projectionScale(a.tip.depth, { width, height }), 3),
+        18,
+      )
+      const backX = -a.ux * size
+      const backY = -a.uy * size
+      const half = size * 0.45 // barb splay
+      ctx.fillStyle = style
+      ctx.beginPath()
+      ctx.moveTo(a.tip.x, a.tip.y)
+      ctx.lineTo(a.tip.x + backX - a.uy * half, a.tip.y + backY + a.ux * half)
+      ctx.lineTo(a.tip.x + backX + a.uy * half, a.tip.y + backY - a.ux * half)
+      ctx.closePath()
+      ctx.fill()
     }
 
     // ─── The frame loop ──────────────────────────────────────────────────────
@@ -273,7 +304,7 @@ export function DescentScene() {
           const { screen, meanDepth } = traceProjected(line, pose)
           const style = ink(FIELD_INK * depthFade(meanDepth))
           strokeScreen(screen, style, 1, [3, 7], -dashPhase[k])
-          drawArrowhead(screen, style)
+          drawChevron(screen, style)
           k += 1
         }
       }
@@ -289,9 +320,9 @@ export function DescentScene() {
 
       const behind = traceProjected(rendered.slice(0, head + 1), pose)
       strokeScreen(behind.screen, accent(ACCENT_INK), 1.5, [], 0)
-      // The traveler's heading: an accent chevron on the leading tip, aimed
-      // down the dotted remainder toward the crosshair.
-      drawArrowhead(behind.screen, accent(ACCENT_INK), 1.5)
+      // The traveler's heading: a small filled accent head on the leading
+      // tip, aimed down the dotted remainder toward the crosshair.
+      drawPathHead(behind.screen, accent(ACCENT_INK))
 
       // ── 4. The minimum: an accent crosshair the whole page descends toward ─
       const mark = projectPoint(rendered[rendered.length - 1], pose, { width, height })

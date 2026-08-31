@@ -45,16 +45,18 @@ describe('DescentScene', () => {
   })
 
   it('caps every field streamline with a solid arrowhead — the quiver grammar states −∇f', () => {
-    expect(source).toMatch(/const drawArrowhead/)
+    expect(source).toMatch(/const drawChevron/)
     expect(source).toMatch(/ARROW_SIZE = 0\.18/) // world units — arrows shrink with depth
-    expect(source).toMatch(/drawArrowhead\(screen, style\)/)
+    expect(source).toMatch(/drawChevron\(screen, style\)/)
     // sized by the foreshortening-free perspective scale, clamped to stay visible
-    expect(source).toMatch(/projectionScale\(tip\.depth/)
+    expect(source).toMatch(/projectionScale\(/)
     expect(source).toMatch(/Math\.min\(\s*Math\.max\(ARROW_SIZE/)
   })
 
-  it('caps the traversed path with an accent arrowhead — the run states its heading', () => {
-    expect(source).toMatch(/drawArrowhead\(behind\.screen, accent\(ACCENT_INK\), 1\.5\)/)
+  it("terminates the traversed path in a small filled accent head — the figure's one solid glyph", () => {
+    expect(source).toMatch(/PATH_ARROW_SIZE = 0\.11/) // smaller than the open field chevron
+    expect(source).toMatch(/drawPathHead\(behind\.screen, accent\(ACCENT_INK\)\)/)
+    expect(source).toMatch(/ctx\.fill\(\)/)
   })
 
   it('marks the minimum with an accent crosshair', () => {
