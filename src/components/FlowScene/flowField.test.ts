@@ -197,17 +197,14 @@ describe('flowTimeline — scroll choreography', () => {
 })
 
 describe('fieldVelocity — superposition', () => {
-  it('is pure uniform flow with no bodies, no vortices, no wobble', () => {
+  it('is pure uniform flow with no bodies and no vortices', () => {
     const f = {
       U,
       bodies: [],
       vortices: [],
       vortexCore: 5,
-      wobble: 0,
-      wobbleWavelength: 200,
-      wobbleOmega: 1,
     }
-    const v = fieldVelocity(f, 123, 456, 7.8)
+    const v = fieldVelocity(f, 123, 456)
     expect(v.x).toBeCloseTo(U, 6)
     expect(v.y).toBeCloseTo(0, 6)
   })
@@ -219,31 +216,12 @@ describe('fieldVelocity — superposition', () => {
       bodies: [CYL],
       vortices: [vortex],
       vortexCore: CYL.radius * 0.35,
-      wobble: 0,
-      wobbleWavelength: 200,
-      wobbleOmega: 1,
     }
-    const v = fieldVelocity(f, 520, 340, 3)
+    const v = fieldVelocity(f, 520, 340)
     const c = cylinderVelocity(CYL, U, 520, 340)
     const w = vortexVelocity([vortex], 520, 340, f.vortexCore)
     expect(v.x).toBeCloseTo(c.x + w.x, 9)
     expect(v.y).toBeCloseTo(c.y + w.y, 9)
-  })
-
-  it('weaves: the wobble term bends the field and scales with its weight', () => {
-    const base = {
-      U,
-      bodies: [],
-      vortices: [],
-      vortexCore: 5,
-      wobbleWavelength: 200,
-      wobbleOmega: 1,
-    }
-    const full = fieldVelocity({ ...base, wobble: 1 }, 50, 0, 0)
-    const half = fieldVelocity({ ...base, wobble: 0.5 }, 50, 0, 0)
-    expect(full.y).toBeCloseTo(U * 0.22, 6)
-    expect(half.y).toBeCloseTo(full.y * 0.5, 6)
-    expect(fieldVelocity({ ...base, wobble: 1 }, 0, 0, 0).y).toBeCloseTo(0, 6)
   })
 })
 
@@ -256,11 +234,8 @@ describe('integrateStreamline', () => {
       bodies: [],
       vortices: [],
       vortexCore: 5,
-      wobble: 0,
-      wobbleWavelength: 200,
-      wobbleOmega: 1,
     }
-    const { points, meanSpeed } = integrateStreamline(f, 0, 100, 0, bounds)
+    const { points, meanSpeed } = integrateStreamline(f, 0, 100, bounds)
     expect(points[0]).toEqual({ x: 0, y: 100 })
     for (const p of points) {
       expect(Math.abs(p.y - 100)).toBeLessThan(1e-6)
@@ -275,11 +250,8 @@ describe('integrateStreamline', () => {
       bodies: [CYL],
       vortices: [],
       vortexCore: 5,
-      wobble: 0,
-      wobbleWavelength: 200,
-      wobbleOmega: 1,
     }
-    const { points } = integrateStreamline(f, 0, 313, 0, bounds)
+    const { points } = integrateStreamline(f, 0, 313, bounds)
     let minDistance = Number.POSITIVE_INFINITY
     for (const p of points) {
       const d = Math.hypot(p.x - CYL.cx, p.y - CYL.cy)
@@ -298,11 +270,8 @@ describe('integrateStreamline', () => {
       bodies: [CYL],
       vortices: [vortex],
       vortexCore: CYL.radius * 0.35,
-      wobble: 0,
-      wobbleWavelength: 200,
-      wobbleOmega: 1,
     }
-    const { points } = integrateStreamline(f, 0, CYL.cy + 3, 0, bounds)
+    const { points } = integrateStreamline(f, 0, CYL.cy + 3, bounds)
     for (const p of points) {
       expect(Math.hypot(p.x - CYL.cx, p.y - CYL.cy)).toBeGreaterThan(CYL.radius * 1.08)
     }
@@ -315,11 +284,8 @@ describe('integrateStreamline', () => {
       bodies: [CYL, moon],
       vortices: [],
       vortexCore: 5,
-      wobble: 0,
-      wobbleWavelength: 200,
-      wobbleOmega: 1,
     }
-    const { points } = integrateStreamline(f, 0, 250, 0, bounds)
+    const { points } = integrateStreamline(f, 0, 250, bounds)
     for (const p of points) {
       expect(Math.hypot(p.x - moon.cx, p.y - moon.cy)).toBeGreaterThan(moon.radius * 1.08)
       expect(Math.hypot(p.x - CYL.cx, p.y - CYL.cy)).toBeGreaterThan(CYL.radius * 1.08)

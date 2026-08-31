@@ -42,9 +42,6 @@ export interface FlowField {
   bodies: readonly Cylinder[] // obstacles that deflect the flow (planet, moon)
   vortices: readonly Vortex[] // the street; empty when strength is 0
   vortexCore: number // regularization radius — see vortexVelocity
-  wobble: number // 0..1 weight of the settling wave
-  wobbleWavelength: number // wave crest spacing, px
-  wobbleOmega: number // wave angular frequency, rad/s
 }
 
 // Document-space positions of the content sections — the anchors the scroll
@@ -92,7 +89,6 @@ export interface Streamline {
   meanSpeed: number
 }
 
-const WOBBLE_AMPLITUDE = 0.22 // the wave's cross-wind speed, as a fraction of U
 const SPAWN_GAP_RATIO = 1.1 // vortices are born 2.1 planet radii downstream (1 + this)
 const CIRCULATION_RATIO = 1.5 // vortex strength Γ = 1.5 · 2πUR — tuned by screenshot review
 // Vortex influence is local to the wake: it fades out between 14× and 26× the core
@@ -171,12 +167,13 @@ export function vortexVelocity(
 }
 
 /**
- * The whole flow at one point: wind + every body's deflection + every vortex +
- * the settling wave. Superposition — components are simply added. Each body
- * contributes its doublet only (v − U strips the uniform part, so N bodies still
- * carry exactly one free stream).
+ * The whole flow at one point: wind + every body's deflection + every vortex.
+ * Superposition — components are simply added. Each body contributes its doublet
+ * only (v − U strips the uniform part, so N bodies still carry exactly one free
+ * stream). The field is steady: it depends on where the bodies and vortices are,
+ * never on the clock.
  */
-export function fieldVelocity(f: FlowField, x: number, y: number, time: number): Vec {
+export function fieldVelocity(f: FlowField, x: number, y: number): Vec {
   let vx = f.U
   let vy = 0
   for (const body of f.bodies) {
@@ -187,10 +184,6 @@ export function fieldVelocity(f: FlowField, x: number, y: number, time: number):
   const swirl = vortexVelocity(f.vortices, x, y, f.vortexCore)
   vx += swirl.x
   vy += swirl.y
-  if (f.wobble > 0) {
-    const phase = ((x / f.wobbleWavelength) * 2 - (time * f.wobbleOmega) / Math.PI) * Math.PI
-    vy += f.wobble * WOBBLE_AMPLITUDE * f.U * Math.sin(phase)
-  }
   return { x: vx, y: vy }
 }
 
@@ -250,7 +243,6 @@ export function integrateStreamline(
   f: FlowField,
   x0: number,
   y0: number,
-  time: number,
   bounds: StreamlineBounds,
 ): Streamline {
   const points: Vec[] = [{ x: x0, y: y0 }]
@@ -259,14 +251,14 @@ export function integrateStreamline(
   let speedSum = 0
   let count = 0
   for (let i = 0; i < MAX_STEPS; i += 1) {
-    const v = fieldVelocity(f, x, y, time)
+    const v = fieldVelocity(f, x, y)
     const speed = Math.hypot(v.x, v.y)
     if (speed < 1e-6) break
     speedSum += speed
     count += 1
     const hx = (v.x / speed) * (STEP / 2)
     const hy = (v.y / speed) * (STEP / 2)
-    const mid = fieldVelocity(f, x + hx, y + hy, time)
+    const mid = fieldVelocity(f, x + hx, y + hy)
     const midSpeed = Math.hypot(mid.x, mid.y)
     if (midSpeed < 1e-6) break
     x += (mid.x / midSpeed) * STEP

@@ -60,13 +60,6 @@ const DRIFT_RATIO = 0.8 // vortices drift downstream at 80% of the wind speed
 const CORE_RATIO = 0.35 // vortices are "regularized" inside this core radius (keeps the math finite)
 const STREET_COUNT = 9 // how many vortices exist at once
 
-// ─── The ambient wave ─────────────────────────────────────────────────────────
-// A gentle traveling waviness in the wind. Always on and driven only by the
-// scene clock — scrolling never changes it.
-
-const WOBBLE_WAVELENGTH_RATIO = 0.16 // wave crest spacing = 16% of the width
-const WOBBLE_PERIOD = 9 // the wave travels one wavelength every 9 s
-
 export function FlowScene() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { theme } = useTheme()
@@ -199,7 +192,6 @@ export function FlowScene() {
       //     — both deflect the streamlines as real obstacles
       //   - vortices: the street, spawned behind the planet as a pure function of
       //     (time, strength) — strength 0 outside the Education-ish bands
-      //   - wobble: the ambient wave, always at full weight — scroll-independent
       const field: FlowField = {
         U,
         bodies: planet && moon ? [planet, { ...moon, radius: moon.radius * MOON_INFLUENCE }] : [],
@@ -217,9 +209,6 @@ export function FlowScene() {
             })
           : [],
         vortexCore: radius * CORE_RATIO,
-        wobble: 1,
-        wobbleWavelength: width * WOBBLE_WAVELENGTH_RATIO,
-        wobbleOmega: (2 * Math.PI) / WOBBLE_PERIOD,
       }
 
       // ─── 4. Paint the streamlines ───────────────────────────────────────────
@@ -239,7 +228,7 @@ export function FlowScene() {
         // Walk the field from the seed to the far edge: ~6 px steps, bending
         // wherever the field points, projected off any body it meets. meanSpeed
         // is the average field speed along the line.
-        const { points, meanSpeed } = integrateStreamline(field, 0, seedY, time, { width, height })
+        const { points, meanSpeed } = integrateStreamline(field, 0, seedY, { width, height })
         // Dash travel: advance this line's dash phase by the distance a fluid
         // parcel would cover this frame (speed × dt). Near the stagnation poles
         // dashes crawl; over the crown they race — the acceleration is visible.
