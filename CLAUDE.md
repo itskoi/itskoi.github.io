@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-A single-page portfolio SPA built with TypeScript + React 19, bundled by Vite, with Bun as the package manager and script runner. Smooth scrolling is handled by Lenis wired into GSAP's ticker; GSAP ScrollTrigger is the animation primitive.
+A single-page portfolio SPA built with TypeScript + React 19, bundled by Vite, with Bun as the package manager and script runner. Smooth scrolling is handled by Lenis wired into GSAP's ticker. The page's single animator is the gradient-descent canvas scene (`src/components/DescentScene/`, spec: `specs/gradient-descent`).
 
 Work in this repo follows **Spec-Driven Development (SDD) + Test-Driven Development (TDD)**. See `specs/README.md` and `specs/constitution.md` for the full methodology — the short version is below.
 
@@ -60,14 +60,14 @@ bun run test:e2e tests/e2e/smoke.spec.ts:5
 The Lenis + GSAP handshake is centralized so React StrictMode's double-effect in dev doesn't double-register:
 
 ```
-src/lib/gsap.ts              ensures gsap.registerPlugin(ScrollTrigger) runs once
+src/lib/gsap.ts              ticker-only: re-exports gsap + prefersReducedMotion() (no ScrollTrigger)
 src/lib/lenis.ts             createSmoothScroll(): builds a Lenis instance, hooks its raf
                              into gsap.ticker, returns { lenis, destroy }
 src/hooks/useSmoothScroll.ts calls createSmoothScroll() in useEffect, destroys on unmount
 src/App.tsx                  calls useSmoothScroll() once at the top
 ```
 
-When adding scroll-triggered animations, import `{ gsap, ScrollTrigger }` from `@/lib/gsap` — never re-register the plugin. The Lenis instance is reachable via the `SmoothScroll` interface if you need `lenis.scrollTo(target)` from a nav link.
+GSAP no longer animates anything — its ticker only drives Lenis's RAF. Scroll-driven motion lives in the canvas scene, which reads raw `window.scrollY` inside its own rAF loop (deliberately no ScrollTrigger). `prefersReducedMotion()` from `@/lib/gsap` is the reduced-motion gate. The Lenis instance is reachable via the `SmoothScroll` interface if you need `lenis.scrollTo(target)` from a nav link.
 
 ### Source layout
 

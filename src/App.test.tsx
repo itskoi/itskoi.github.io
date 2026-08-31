@@ -4,15 +4,6 @@ import { describe, expect, it, vi } from 'vitest'
 vi.mock('@/lib/lenis', () => ({
   createSmoothScroll: () => ({ lenis: {}, destroy: vi.fn() }),
 }))
-vi.mock('@/lib/gsap', () => ({
-  gsap: {
-    context: () => ({ revert: () => {} }),
-    from: () => {},
-    fromTo: () => {},
-    timeline: () => ({ from: () => {} }),
-  },
-  prefersReducedMotion: () => false,
-}))
 
 import { App } from './App'
 

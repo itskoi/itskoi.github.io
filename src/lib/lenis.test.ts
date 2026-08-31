@@ -30,4 +30,10 @@ describe('lenis scroll plumbing', () => {
     teardown()
     expect(() => scrollTo('#education')).not.toThrow()
   })
+
+  it('wires no scroll listeners (ScrollTrigger left with the reveal hooks)', () => {
+    on.mockClear()
+    createSmoothScroll()
+    expect(on).not.toHaveBeenCalled()
+  })
 })

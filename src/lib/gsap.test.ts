@@ -1,10 +1,18 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { gsap, prefersReducedMotion, ScrollTrigger } from './gsap'
+import { gsap, prefersReducedMotion } from './gsap'
+
+const source = readFileSync(resolve(process.cwd(), 'src/lib/gsap.ts'), 'utf8')
 
 describe('gsap module', () => {
-  it('exports gsap and ScrollTrigger', () => {
+  it('exports gsap (ticker-only)', () => {
     expect(gsap).toBeDefined()
-    expect(ScrollTrigger).toBeDefined()
+    expect(gsap.ticker).toBeDefined()
+  })
+
+  it('no longer registers ScrollTrigger (it left with the reveal hooks)', () => {
+    expect(source).not.toMatch(/ScrollTrigger/)
   })
 
   describe('prefersReducedMotion', () => {

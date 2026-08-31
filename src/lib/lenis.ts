@@ -1,5 +1,5 @@
 import Lenis from 'lenis'
-import { ensureGsapRegistered, gsap, ScrollTrigger } from './gsap'
+import { gsap } from './gsap'
 
 export interface SmoothScroll {
   lenis: Lenis
@@ -9,15 +9,13 @@ export interface SmoothScroll {
 let activeLenis: Lenis | null = null
 
 export function createSmoothScroll(): SmoothScroll {
-  ensureGsapRegistered()
-
   const lenis = new Lenis({
     duration: 1.2,
     smoothWheel: true,
   })
 
-  lenis.on('scroll', ScrollTrigger.update)
-
+  // GSAP's ticker is the single RAF host — it calls lenis.raf with delta
+  // seconds, which Lenis wants in milliseconds.
   const raf = (time: number) => lenis.raf(time * 1000)
   gsap.ticker.add(raf)
   gsap.ticker.lagSmoothing(0)
