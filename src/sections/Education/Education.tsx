@@ -1,9 +1,7 @@
 import { education } from '@/data/portfolio'
-import { useScrollReveal } from '@/hooks/useScrollReveal'
 import styles from './Education.module.css'
 
 export function Education() {
-  const ref = useScrollReveal<HTMLDivElement>()
   return (
     <section
       id="education"
@@ -13,8 +11,8 @@ export function Education() {
       <h2 id="education-heading" className={styles.heading}>
         Education
       </h2>
-      <div ref={ref} className={styles.content}>
-        <article className={styles.row} data-reveal>
+      <div className={styles.content}>
+        <article className={styles.row}>
           <p className={styles.period}>{education.period}</p>
           <div className={styles.schoolBlock}>
             <h3 className={styles.school}>{education.school}</h3>
@@ -35,7 +33,7 @@ export function Education() {
           </div>
         </article>
 
-        <div className={styles.row} data-reveal>
+        <div className={styles.row}>
           <h4 className={styles.rowLabel}>Certifications</h4>
           <ul className={styles.certList}>
             {education.certifications.map((cert) => (

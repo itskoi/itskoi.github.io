@@ -1,9 +1,7 @@
 import { publications } from '@/data/portfolio'
-import { useScrollReveal } from '@/hooks/useScrollReveal'
 import styles from './Publications.module.css'
 
 export function Publications() {
-  const ref = useScrollReveal<HTMLDivElement>()
   return (
     <section
       id="publications"
@@ -13,9 +11,9 @@ export function Publications() {
       <h2 id="publications-heading" className={styles.heading}>
         Publications
       </h2>
-      <div ref={ref} className={styles.entries}>
+      <div className={styles.entries}>
         {publications.map((pub) => (
-          <article key={pub.doi.label} className={styles.entry} data-reveal>
+          <article key={pub.doi.label} className={styles.entry}>
             <p className={styles.period}>{pub.period}</p>
             <div className={styles.paper}>
               <h3 className={styles.title}>{pub.title}</h3>

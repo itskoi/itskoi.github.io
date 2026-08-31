@@ -1,10 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
-
-vi.mock('@/lib/gsap', () => ({
-  gsap: { context: () => ({ revert: () => {} }), from: () => {} },
-  prefersReducedMotion: () => false,
-}))
+import { describe, expect, it } from 'vitest'
 
 import { experience } from '@/data/portfolio'
 import { Experience } from './Experience'
