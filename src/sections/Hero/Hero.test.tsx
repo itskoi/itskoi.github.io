@@ -7,7 +7,7 @@ describe('Hero', () => {
   it('renders the name as h1, plus role and location', () => {
     render(<Hero />)
     expect(screen.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' })).toBeInTheDocument()
-    expect(screen.getByText('Fullstack AI Engineer')).toBeInTheDocument()
+    expect(screen.getByText('AI Engineer')).toBeInTheDocument()
     expect(screen.getByText('HCM City, Vietnam')).toBeInTheDocument()
   })
 

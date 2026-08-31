@@ -49,7 +49,7 @@ export const profile: {
   linkedin: Link
 } = {
   name: 'Võ Bách Khôi',
-  role: 'Fullstack AI Engineer',
+  role: 'AI Engineer',
   location: 'HCM City, Vietnam',
   email: { label: 'itskoiwork@gmail.com', href: 'mailto:itskoiwork@gmail.com' },
   linkedin: { label: 'LinkedIn', href: 'https://linkedin.com/in/bachkhoivo' },

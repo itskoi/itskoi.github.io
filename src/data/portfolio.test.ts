@@ -5,7 +5,7 @@ describe('portfolio data', () => {
   describe('profile', () => {
     it('exposes name, role, location, email, and LinkedIn', () => {
       expect(profile.name).toBe('Võ Bách Khôi')
-      expect(profile.role).toBe('Fullstack AI Engineer')
+      expect(profile.role).toBe('AI Engineer')
       expect(profile.location).toBe('HCM City, Vietnam')
       expect(profile.email.href).toContain('itskoiwork@gmail.com')
       expect(profile.linkedin.href).toContain('linkedin.com/in/bachkhoivo')
