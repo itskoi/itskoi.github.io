@@ -225,6 +225,20 @@ export function projectPoint(
   }
 }
 
+/**
+ * Pixels per world unit at a camera-space depth — the perspective scale.
+ * Unlike measuring on screen between two projected points, this is immune to
+ * foreshortening (a segment pointing away from the camera measures almost
+ * zero on screen while spanning real world units).
+ */
+export function projectionScale(
+  depth: number,
+  viewport: { width: number; height: number },
+): number {
+  const focal = FOCAL_RATIO * Math.min(viewport.width, viewport.height)
+  return focal / Math.max(depth, NEAR_PLANE)
+}
+
 // ─── The scroll timeline ──────────────────────────────────────────────────────
 // The whole document is one optimization run — no section-band anchoring.
 

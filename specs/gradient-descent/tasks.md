@@ -25,6 +25,10 @@
 
 - [x] Task 8 — Browser review of the shipped composition (inks, dash speed, camera pullback); record shipped values in a dated Changes note in `spec.md` if any constants moved. Test: n/a (review).
 
+## 6. Owner revision — quiver arrowheads
+
+- [x] Task 9 — Cap every field streamline with a solid chevron arrowhead at its downstream tip; size in world units via the local projection scale so arrows fade with depth. Test: `DescentScene.test.tsx` (source contract). Commit: `feat(descent): quiver arrowheads — the field states its direction (spec: specs/gradient-descent)`.
+
 ## Done
 
 - [x] All acceptance criteria from `spec.md` verified.

@@ -22,6 +22,7 @@ import {
   type Projected,
   pointAt,
   poseAt,
+  projectionScale,
   projectPoint,
   scrollProgress,
   sliceFlowDirection,
@@ -47,6 +48,7 @@ const SEED_GRID = 5 // 5×5 field-dash streamlines
 const SEED_WINDOW = 4.4 // world units of field seeded around the path
 const DASH_STEP = 0.16 // integration step along the field (world units)
 const DASH_POINTS = 24 // points per dash streamline
+const ARROW_SIZE = 0.18 // chevron at each streamline tip, in world units — arrows shrink with depth
 const DASH_TRAVEL = 40 // px of dash travel per unit of gradient magnitude × second
 const FAR_DEPTH = 14 // world units at which lines have fully faded
 const REDUCED_S = 0.5 // the canonical frozen pose — mid-descent
@@ -165,6 +167,42 @@ export function DescentScene() {
       ctx.stroke()
     }
 
+    // A solid chevron at a streamline's downstream tip — the quiver grammar.
+    // Direction is stated, not just implied by dash travel. The chevron is
+    // sized by the true perspective scale (focal/depth — immune to the
+    // foreshortening that flattens tips pointing away from the camera) and
+    // clamped, so arrows shrink as the field recedes without ever vanishing.
+    const drawArrowhead = (screen: Array<Projected | null>, style: string) => {
+      const tip = screen[screen.length - 1]
+      if (!tip) return
+      let base = screen.length - 2
+      while (base >= 0 && !screen[base]) base -= 1 // back to the last visible point
+      const prev = base >= 0 ? screen[base] : null
+      if (!prev) return
+      let ux = tip.x - prev.x
+      let uy = tip.y - prev.y
+      const dirLen = Math.hypot(ux, uy)
+      if (dirLen < 1e-6) return
+      ux /= dirLen
+      uy /= dirLen
+      const size = Math.min(
+        Math.max(ARROW_SIZE * projectionScale(tip.depth, { width, height }), 3),
+        24,
+      )
+      const backX = -ux * size
+      const backY = -uy * size
+      const half = size * 0.42 // barb splay
+      ctx.strokeStyle = style
+      ctx.lineWidth = 1
+      ctx.setLineDash([])
+      ctx.lineDashOffset = 0
+      ctx.beginPath()
+      ctx.moveTo(tip.x + backX - uy * half, tip.y + backY + ux * half)
+      ctx.lineTo(tip.x, tip.y)
+      ctx.lineTo(tip.x + backX + uy * half, tip.y + backY - ux * half)
+      ctx.stroke()
+    }
+
     // ─── The frame loop ──────────────────────────────────────────────────────
     // The rAF stays the single source of motion, no ScrollTrigger here.
     let last = performance.now()
@@ -233,7 +271,9 @@ export function DescentScene() {
           }
           dashPhase[k] += speed * step * DASH_TRAVEL
           const { screen, meanDepth } = traceProjected(line, pose)
-          strokeScreen(screen, ink(FIELD_INK * depthFade(meanDepth)), 1, [3, 7], -dashPhase[k])
+          const style = ink(FIELD_INK * depthFade(meanDepth))
+          strokeScreen(screen, style, 1, [3, 7], -dashPhase[k])
+          drawArrowhead(screen, style)
           k += 1
         }
       }

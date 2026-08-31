@@ -44,6 +44,15 @@ describe('DescentScene', () => {
     expect(source).toMatch(/dashPhase\[k\] \+= speed \* step \* DASH_TRAVEL/)
   })
 
+  it('caps every field streamline with a solid arrowhead — the quiver grammar states −∇f', () => {
+    expect(source).toMatch(/const drawArrowhead/)
+    expect(source).toMatch(/ARROW_SIZE = 0\.18/) // world units — arrows shrink with depth
+    expect(source).toMatch(/drawArrowhead\(screen, style\)/)
+    // sized by the foreshortening-free perspective scale, clamped to stay visible
+    expect(source).toMatch(/projectionScale\(tip\.depth/)
+    expect(source).toMatch(/Math\.min\(\s*Math\.max\(ARROW_SIZE/)
+  })
+
   it('marks the minimum with an accent crosshair', () => {
     expect(source).toMatch(/crosshair the whole page descends toward/)
     expect(source).toMatch(/ctx\.arc/)

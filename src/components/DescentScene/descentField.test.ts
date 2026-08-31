@@ -8,6 +8,7 @@ import {
   loss,
   NEAR_PLANE,
   poseAt,
+  projectionScale,
   projectPoint,
   START,
   scrollProgress,
@@ -173,6 +174,13 @@ describe('the projection', () => {
   it('culls anything behind the camera or inside the near plane', () => {
     expect(projectPoint({ x: 0, y: 0, z: -1 }, pose, viewport)).toBeNull()
     expect(projectPoint({ x: 0, y: 0, z: NEAR_PLANE / 2 }, pose, viewport)).toBeNull()
+  })
+
+  it('scales with 1/depth (foreshortening-free px-per-world-unit)', () => {
+    // focal = 0.62 × min(800, 600) = 372
+    expect(projectionScale(1, viewport)).toBeCloseTo(372, 6)
+    expect(projectionScale(2, viewport)).toBeCloseTo(186, 6)
+    expect(projectionScale(NEAR_PLANE / 2, viewport)).toBeCloseTo(372 / NEAR_PLANE, 6)
   })
 })
 
