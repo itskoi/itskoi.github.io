@@ -44,6 +44,18 @@ describe('global token contract', () => {
         /\.section-grid\s*\{[\s\S]*?display:\s*grid[\s\S]*?repeat\(var\(--grid-columns\),\s*minmax\(0,\s*1fr\)\)/,
       )
     })
+
+    it('caps content to a centered measure on wide displays (padding, not max-width)', () => {
+      expect(css).toMatch(/--grid-max-width:\s*80rem/)
+      expect(css).toMatch(
+        /--grid-inline:\s*max\(var\(--grid-margin\),\s*calc\(\(100% - var\(--grid-max-width\)\) \/ 2\)\)/,
+      )
+      expect(css).toMatch(/\.section-grid\s*\{[\s\S]*?padding-inline:\s*var\(--grid-inline\)/)
+    })
+
+    it('aligns the nav chrome to the same measure', () => {
+      expect(read('src/components/Nav/Nav.module.css')).toMatch(/padding:[^;]*var\(--grid-inline\)/)
+    })
   })
 
   describe('flatness', () => {

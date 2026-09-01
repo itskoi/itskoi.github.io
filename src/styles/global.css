@@ -27,6 +27,10 @@
   --grid-columns: 12;
   --grid-gutter: clamp(1rem, 2vw, 1.5rem);
   --grid-margin: clamp(1.25rem, 5vw, 4rem);
+  --grid-max-width: 80rem; /* the reading measure wide displays center on */
+  /* Inline inset: the margin until it exceeds the centered measure's half —
+     boxes stay full-bleed, only their content caps. */
+  --grid-inline: max(var(--grid-margin), calc((100% - var(--grid-max-width)) / 2));
 }
 
 :root[data-theme="dark"] {
@@ -106,7 +110,7 @@ main {
   display: grid;
   grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
   column-gap: var(--grid-gutter);
-  padding-inline: var(--grid-margin);
+  padding-inline: var(--grid-inline);
 }
 
 /* Type roles: one grotesque for everything; hierarchy is scale + the mono voice. */

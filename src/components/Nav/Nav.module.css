@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   gap: 2rem;
-  padding: 0.9rem var(--grid-margin) 1rem;
+  padding: 0.9rem var(--grid-inline) 1rem;
   background: var(--color-bg);
   border-bottom: 1px solid var(--color-border);
 }
