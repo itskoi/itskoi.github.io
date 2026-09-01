@@ -11,6 +11,13 @@
   font-size: var(--fs-h2);
   font-weight: 650;
   letter-spacing: -0.03em;
+  transition: color 0.4s ease;
+}
+
+/* The section being read announces itself — display-size type, so the plain
+   accent red meets the AA-large bar. */
+.heading[data-active="true"] {
+  color: var(--color-accent);
 }
 
 .entries {
@@ -84,5 +91,12 @@
   .entryHeader,
   .highlights {
     grid-column: 1 / -1;
+  }
+}
+
+/* Reduced motion: the active color still flips, just instantly. */
+@media (prefers-reduced-motion: reduce) {
+  .heading {
+    transition: none;
   }
 }

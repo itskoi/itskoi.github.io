@@ -1,14 +1,16 @@
 import { experience } from '@/data/portfolio'
+import { useSectionActive } from '@/hooks/useSectionActive'
 import styles from './Experience.module.css'
 
 export function Experience() {
+  const active = useSectionActive('experience')
   return (
     <section
       id="experience"
       aria-labelledby="experience-heading"
       className={`${styles.section} section-grid`}
     >
-      <h2 id="experience-heading" className={styles.heading}>
+      <h2 id="experience-heading" className={styles.heading} data-active={active}>
         Experience
       </h2>
       <div className={styles.entries}>

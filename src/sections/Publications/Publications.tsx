@@ -1,14 +1,16 @@
 import { publications } from '@/data/portfolio'
+import { useSectionActive } from '@/hooks/useSectionActive'
 import styles from './Publications.module.css'
 
 export function Publications() {
+  const active = useSectionActive('publications')
   return (
     <section
       id="publications"
       aria-labelledby="publications-heading"
       className={`${styles.section} section-grid`}
     >
-      <h2 id="publications-heading" className={styles.heading}>
+      <h2 id="publications-heading" className={styles.heading} data-active={active}>
         Publications
       </h2>
       <div className={styles.entries}>

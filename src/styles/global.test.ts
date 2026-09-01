@@ -170,6 +170,32 @@ describe('global token contract', () => {
     })
   })
 
+  describe('section heading accent', () => {
+    const sheets = [
+      'src/sections/Experience/Experience.module.css',
+      'src/sections/Education/Education.module.css',
+      'src/sections/Publications/Publications.module.css',
+      'src/sections/Technologies/Technologies.module.css',
+    ].map(read)
+
+    it('the active heading fades to the large-text accent red via a color transition', () => {
+      for (const sheet of sheets) {
+        expect(sheet).toMatch(/\.heading\s*\{[^}]*transition:\s*color\s+0\.4s/)
+        expect(sheet).toMatch(
+          /\.heading\[data-active=['"]true['"]\]\s*\{[^}]*color:\s*var\(--color-accent\)/,
+        )
+      }
+    })
+
+    it('drops the fade under reduced motion — the color flips instantly', () => {
+      for (const sheet of sheets) {
+        expect(sheet).toMatch(
+          /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{[\s\S]*?\.heading\s*\{[\s\S]*?transition:\s*none/,
+        )
+      }
+    })
+  })
+
   describe('paper-default palette', () => {
     it('defines the light palette (paper + Swiss red) on :root', () => {
       expect(css).toMatch(/:root\s*\{[\s\S]*?--color-bg:\s*#ffffff/i)

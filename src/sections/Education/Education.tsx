@@ -1,14 +1,16 @@
 import { education } from '@/data/portfolio'
+import { useSectionActive } from '@/hooks/useSectionActive'
 import styles from './Education.module.css'
 
 export function Education() {
+  const active = useSectionActive('education')
   return (
     <section
       id="education"
       aria-labelledby="education-heading"
       className={`${styles.section} section-grid`}
     >
-      <h2 id="education-heading" className={styles.heading}>
+      <h2 id="education-heading" className={styles.heading} data-active={active}>
         Education
       </h2>
       <div className={styles.content}>

@@ -1,11 +1,34 @@
-import { render, screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { act, render, screen, within } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { experience } from '@/data/portfolio'
 import { Experience } from './Experience'
 import styles from './Experience.module.css'
 
+function stubBandObserver() {
+  const observer = { observe: vi.fn(), unobserve: vi.fn(), disconnect: vi.fn() }
+  const observerClass = vi.fn(
+    (_callback: IntersectionObserverCallback, _init?: IntersectionObserverInit) => observer,
+  )
+  vi.stubGlobal('IntersectionObserver', observerClass)
+  return observerClass
+}
+
+const fireBand = (observerClass: ReturnType<typeof stubBandObserver>, isIntersecting: boolean) => {
+  const callback = observerClass.mock.calls[0]?.[0]
+  act(() => {
+    callback?.(
+      [{ isIntersecting } as IntersectionObserverEntry],
+      undefined as unknown as IntersectionObserver,
+    )
+  })
+}
+
 describe('Experience', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
   it('renders the heading and 4 role articles', () => {
     render(<Experience />)
     expect(screen.getByRole('heading', { level: 2, name: 'Experience' })).toBeInTheDocument()
@@ -43,5 +66,23 @@ describe('Experience', () => {
     expect(container.querySelector(`.${styles.spine}`)).toBeNull()
     expect(container.querySelector(`.${styles.spineFill}`)).toBeNull()
     expect(container.querySelector(`.${styles.marker}`)).toBeNull()
+  })
+
+  it('marks the heading active when its section crosses the shared band', () => {
+    const observerClass = stubBandObserver()
+    render(<Experience />)
+    fireBand(observerClass, true)
+    expect(screen.getByRole('heading', { level: 2, name: 'Experience' })).toHaveAttribute(
+      'data-active',
+      'true',
+    )
+  })
+
+  it('renders the heading inactive where no observer exists (jsdom)', () => {
+    render(<Experience />)
+    expect(screen.getByRole('heading', { level: 2, name: 'Experience' })).toHaveAttribute(
+      'data-active',
+      'false',
+    )
   })
 })
