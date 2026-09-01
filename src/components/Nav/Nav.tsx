@@ -1,6 +1,7 @@
 import type { MouseEvent } from 'react'
 import { useEffect, useState } from 'react'
 import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle'
+import { ACTIVE_BAND } from '@/hooks/useSectionActive'
 import { scrollTo } from '@/lib/lenis'
 import styles from './Nav.module.css'
 
@@ -21,14 +22,13 @@ export function Nav() {
     )
     if (sections.length === 0) return
 
-    // Thin band around the vertical middle: the section crossing it is "active".
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) setActiveId(entry.target.id)
         }
       },
-      { rootMargin: '-45% 0px -50% 0px', threshold: 0 },
+      { rootMargin: ACTIVE_BAND, threshold: 0 },
     )
     for (const section of sections) observer.observe(section)
     return () => observer.disconnect()
