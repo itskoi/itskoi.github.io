@@ -15,11 +15,11 @@ test.describe('typography & theme', () => {
 
       await toggle.click()
       await expect(html).toHaveAttribute('data-theme', 'dark')
-      await expect(body).toHaveCSS('background-color', 'rgb(10, 10, 10)') // ink field
+      await expect(body).toHaveCSS('background-color', 'rgb(10, 26, 51)') // navy field
 
       await page.reload()
       await expect(html).toHaveAttribute('data-theme', 'dark')
-      await expect(body).toHaveCSS('background-color', 'rgb(10, 10, 10)')
+      await expect(body).toHaveCSS('background-color', 'rgb(10, 26, 51)')
     })
 
     test('loads fonts with no third-party request', async ({ page }) => {
@@ -40,7 +40,7 @@ test.describe('typography & theme', () => {
     test('follows the OS dark preference on first visit (no explicit choice)', async ({ page }) => {
       await page.goto('/')
       expect(await page.locator('html').getAttribute('data-theme')).toBeNull()
-      await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(10, 10, 10)')
+      await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(10, 26, 51)')
     })
   })
 })

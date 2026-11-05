@@ -1,7 +1,6 @@
 import type { MouseEvent } from 'react'
-import { useEffect, useState } from 'react'
 import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle'
-import { ACTIVE_BAND } from '@/hooks/useSectionActive'
+import { useActiveId } from '@/hooks/useSectionActive'
 import { scrollTo } from '@/lib/lenis'
 import styles from './Nav.module.css'
 
@@ -12,27 +11,10 @@ const NAV_ITEMS = [
   { id: 'technologies', label: 'Technologies' },
 ] as const
 
+const NAV_IDS = NAV_ITEMS.map((item) => item.id)
+
 export function Nav() {
-  const [activeId, setActiveId] = useState<string | undefined>(undefined)
-
-  useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined') return
-    const sections = NAV_ITEMS.map((item) => document.getElementById(item.id)).filter(
-      (el): el is HTMLElement => el !== null,
-    )
-    if (sections.length === 0) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) setActiveId(entry.target.id)
-        }
-      },
-      { rootMargin: ACTIVE_BAND, threshold: 0 },
-    )
-    for (const section of sections) observer.observe(section)
-    return () => observer.disconnect()
-  }, [])
+  const activeId = useActiveId(NAV_IDS)
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
     event.preventDefault()

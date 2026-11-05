@@ -33,6 +33,14 @@ A personal portfolio SPA. Single page, smooth-scrolling, motion-forward. The sit
 
 ## Changes
 
+### 2026-11-05 — Lorenz backdrop
+
+1. **Motion (amends the 2026-08-31 note).** The Lorenz attractor replaces the gradient-descent field as the page's one canvas (`specs/lorenz-background`). It runs on time, not scroll, so scroll no longer drives any animation.
+
+### 2026-11-05 — project illustrations
+
+1. **Motion (amends the 2026-08-31 note).** The descent field stays the page's only scroll-driven animator and only canvas. Experience adds CSS build-ins on inline SVG illustrations, one pass per activation with no JS tweening (`specs/portfolio-redesign`).
+
 ### 2026-08-31 — motion stack reset
 
 1. **Motion (amends the Technology line).** GSAP no longer animates content: the reveal hooks (`useHeroIntro`, `useScrollReveal`), the flow-field scene, and with them ScrollTrigger are removed. GSAP remains, ticker-only, as the host that drives Lenis's RAF. The site's single animator is the scroll-driven gradient-descent field (`specs/gradient-descent`). Lenis smooth scroll is unchanged.

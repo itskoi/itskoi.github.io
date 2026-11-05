@@ -89,7 +89,7 @@ export function initTheme(): void {
   if (stored) applyAttribute(stored)
 }
 
-/** The ink the flow-field canvas draws in, parsed from --scene-figure-rgb. */
+/** The ink the backdrop canvas draws in, parsed from --scene-figure-rgb. */
 export function readSceneColors(): SceneColors {
   const raw = getComputedStyle(document.documentElement)
     .getPropertyValue('--scene-figure-rgb')

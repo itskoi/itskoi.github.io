@@ -1,7 +1,7 @@
 :root {
   color-scheme: light;
 
-  /* Palette — paper is the default; dark is the inverse poster mode. */
+  /* Palette — paper is the default (white, black, red); dark is navy, white, orange. */
   --color-bg: #ffffff;
   --color-fg: #0a0a0a;
   --color-fg-muted: #55595f;
@@ -36,15 +36,15 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --color-bg: #0a0a0a;
-  --color-fg: #fafafa;
-  --color-fg-muted: #a3a3a3;
+  --color-bg: #0a1a33; /* dark navy */
+  --color-fg: #ffffff;
+  --color-fg-muted: #a9b8cf;
   --color-border: color-mix(in srgb, var(--color-fg) 15%, transparent);
-  --color-accent: #ff2b39;
-  --color-accent-strong: #ff5a66;
+  --color-accent: #ff7a1a; /* orange */
+  --color-accent-strong: #ff9a4d;
 
-  /* Scene layer flips to paper ink on the ink field. */
-  --scene-figure-rgb: 250 250 250;
+  /* Scene layer flips to white ink on the navy field. */
+  --scene-figure-rgb: 255 255 255;
 }
 
 /* First visit (no explicit choice) follows the OS preference; unknown OS → paper. */
@@ -52,14 +52,14 @@
   :root:not([data-theme]) {
     color-scheme: dark;
 
-    --color-bg: #0a0a0a;
-    --color-fg: #fafafa;
-    --color-fg-muted: #a3a3a3;
+    --color-bg: #0a1a33;
+    --color-fg: #ffffff;
+    --color-fg-muted: #a9b8cf;
     --color-border: color-mix(in srgb, var(--color-fg) 15%, transparent);
-    --color-accent: #ff2b39;
-    --color-accent-strong: #ff5a66;
+    --color-accent: #ff7a1a;
+    --color-accent-strong: #ff9a4d;
 
-    --scene-figure-rgb: 250 250 250;
+    --scene-figure-rgb: 255 255 255;
   }
 }
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-A single-page portfolio SPA built with TypeScript + React 19, bundled by Vite, with Bun as the package manager and script runner. Smooth scrolling is handled by Lenis wired into GSAP's ticker. The page's single animator is the gradient-descent canvas scene (`src/components/DescentScene/`, spec: `specs/gradient-descent`).
+A single-page portfolio SPA built with TypeScript + React 19, bundled by Vite, with Bun as the package manager and script runner. Smooth scrolling is handled by Lenis wired into GSAP's ticker. The page's backdrop is a time-driven Lorenz attractor on one canvas (`src/components/LorenzScene/`, spec: `specs/lorenz-background`); Experience adds one-shot CSS build-ins on inline SVG illustrations (`src/components/ProjectScene/`, spec: `specs/portfolio-redesign`).
 
 Work in this repo follows **Spec-Driven Development (SDD) + Test-Driven Development (TDD)**. See `specs/README.md` and `specs/constitution.md` for the full methodology — the short version is below.
 
@@ -67,7 +67,7 @@ src/hooks/useSmoothScroll.ts calls createSmoothScroll() in useEffect, destroys o
 src/App.tsx                  calls useSmoothScroll() once at the top
 ```
 
-GSAP no longer animates anything — its ticker only drives Lenis's RAF. Scroll-driven motion lives in the canvas scene, which reads raw `window.scrollY` inside its own rAF loop (deliberately no ScrollTrigger). `prefersReducedMotion()` from `@/lib/gsap` is the reduced-motion gate. The Lenis instance is reachable via the `SmoothScroll` interface if you need `lenis.scrollTo(target)` from a nav link.
+GSAP no longer animates anything — its ticker only drives Lenis's RAF. The canvas scene runs its own rAF loop (deliberately no ScrollTrigger). The project illustrations switch on `useActiveId` (the nav's band) and animate in CSS only. `prefersReducedMotion()` from `@/lib/gsap` is the reduced-motion gate. The Lenis instance is reachable via the `SmoothScroll` interface if you need `lenis.scrollTo(target)` from a nav link.
 
 ### Source layout
 

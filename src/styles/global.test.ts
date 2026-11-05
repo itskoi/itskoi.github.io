@@ -149,7 +149,8 @@ describe('global token contract', () => {
     })
 
     it('every tabular row re-declares the grid columns', () => {
-      for (const sheet of sectionSheets) {
+      // Experience is the exception: its text and stage sit on the section grid directly.
+      for (const sheet of sectionSheets.slice(1)) {
         expect(sheet).toMatch(/repeat\(var\(--grid-columns\),\s*minmax\(0,\s*1fr\)\)/)
       }
     })
@@ -162,11 +163,11 @@ describe('global token contract', () => {
       }
     })
 
-    it('the Experience rows place period / role / highlights in the index, left, and right fields', () => {
+    it('Experience splits into a text column and a sticky stage column', () => {
       const sheet = sectionSheets[0]
-      expect(sheet).toMatch(/\.period\s*\{[^}]*grid-column:\s*1\s*\/\s*3/)
-      expect(sheet).toMatch(/\.entryHeader\s*\{[^}]*grid-column:\s*3\s*\/\s*7/)
-      expect(sheet).toMatch(/\.highlights\s*\{[^}]*grid-column:\s*7\s*\/\s*13/)
+      expect(sheet).toMatch(/\.entries\s*\{[^}]*grid-column:\s*1\s*\/\s*7/)
+      expect(sheet).toMatch(/\.stage\s*\{[^}]*grid-column:\s*7\s*\/\s*13/)
+      expect(sheet).toMatch(/\.stage\s*\{[^}]*position:\s*sticky/)
     })
   })
 
@@ -202,6 +203,16 @@ describe('global token contract', () => {
       expect(css).toMatch(/--color-fg:\s*#0a0a0a/i)
       expect(css).toMatch(/--color-accent:\s*#e30613/i)
       expect(css).toMatch(/--color-accent-strong:\s*#c00016/i)
+    })
+
+    it('dark mode is navy, white, and orange on both the attribute and OS paths', () => {
+      for (const token of [
+        /--color-bg:\s*#0a1a33/gi,
+        /--color-fg:\s*#ffffff/gi,
+        /--color-accent:\s*#ff7a1a/gi,
+      ]) {
+        expect(css.match(token)).toHaveLength(2)
+      }
     })
 
     it('overrides every token under [data-theme="dark"] (the inverse poster mode)', () => {

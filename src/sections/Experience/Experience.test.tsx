@@ -29,27 +29,45 @@ describe('Experience', () => {
     vi.unstubAllGlobals()
   })
 
-  it('renders the heading and 4 role articles', () => {
+  const projects = experience.flatMap((item) => item.projects)
+
+  const activeScene = (container: HTMLElement) =>
+    Array.from(container.querySelectorAll('[data-scene][data-active="true"]')).map((el) =>
+      el.getAttribute('data-scene'),
+    )
+
+  it('renders the heading and one article per role', () => {
     render(<Experience />)
     expect(screen.getByRole('heading', { level: 2, name: 'Experience' })).toBeInTheDocument()
-    expect(screen.getAllByRole('article')).toHaveLength(4)
+    expect(screen.getAllByRole('article')).toHaveLength(experience.length)
   })
 
   it('lists roles newest-first with Wao first', () => {
     render(<Experience />)
-    const articles = screen.getAllByRole('article')
-    expect(articles).toHaveLength(experience.length)
+    const first = screen.getAllByRole('article')[0]
     expect(
-      within(articles[0]).getByRole('heading', { level: 3, name: 'Fullstack AI Engineer' }),
+      within(first).getByRole('heading', { level: 3, name: 'AI Engineer' }),
     ).toBeInTheDocument()
-    expect(within(articles[0]).getByRole('link', { name: 'Wao' })).toBeInTheDocument()
+    expect(within(first).getByRole('link', { name: 'Wao' })).toBeInTheDocument()
+    expect(within(first).getByText('Sole AI engineer').tagName).toBe('STRONG')
   })
 
-  it('renders at least one highlight per role', () => {
-    render(<Experience />)
-    for (const article of screen.getAllByRole('article')) {
-      expect(within(article).getAllByRole('listitem').length).toBeGreaterThan(0)
+  it('renders every project as a heading with its stack and its bold results', () => {
+    const { container } = render(<Experience />)
+    for (const project of projects) {
+      expect(screen.getByRole('heading', { level: 4, name: project.title })).toBeInTheDocument()
+      for (const tool of project.stack) {
+        expect(screen.getAllByText(tool).length).toBeGreaterThan(0)
+      }
     }
+    expect(within(container).getByText('Led a 4-person team').tagName).toBe('STRONG')
+    expect(within(container).getByText('LLM agent').tagName).toBe('STRONG')
+    expect(container.textContent).not.toContain('**')
+  })
+
+  it('keeps the non-project resume note', () => {
+    render(<Experience />)
+    expect(screen.getByText('AI training modules').tagName).toBe('STRONG')
   })
 
   it('links the Wao company to its external URL in a new tab', () => {
@@ -60,12 +78,80 @@ describe('Experience', () => {
     expect(link).toHaveAttribute('rel', 'noreferrer noopener')
   })
 
-  it('renders one period label per entry (hairline table, no timeline spine)', () => {
+  it('renders one period label per role in the mono voice', () => {
     const { container } = render(<Experience />)
     expect(container.querySelectorAll(`.${styles.period}`)).toHaveLength(experience.length)
-    expect(container.querySelector(`.${styles.spine}`)).toBeNull()
-    expect(container.querySelector(`.${styles.spineFill}`)).toBeNull()
-    expect(container.querySelector(`.${styles.marker}`)).toBeNull()
+  })
+
+  it('renders one illustration per project, none active until a project is reached', () => {
+    const { container } = render(<Experience />)
+    expect(container.querySelectorAll('[data-scene]')).toHaveLength(projects.length)
+    expect(activeScene(container)).toEqual([])
+  })
+
+  it('starts the first illustration as soon as the section reaches the band', () => {
+    const observerClass = stubBandObserver()
+    const { container } = render(<Experience />)
+    fireBand(observerClass, true)
+    expect(activeScene(container)).toEqual([projects[0].id])
+    fireBand(observerClass, false)
+    expect(activeScene(container)).toEqual([])
+  })
+
+  it('switches the illustration to the project crossing the band', () => {
+    const observerClass = stubBandObserver()
+    const { container } = render(<Experience />)
+    const callback = observerClass.mock.calls.find(
+      (call) => call[0] !== observerClass.mock.calls[0]?.[0],
+    )?.[0]
+    act(() => {
+      callback?.(
+        [
+          {
+            isIntersecting: true,
+            target: document.getElementById('voice'),
+          } as unknown as IntersectionObserverEntry,
+        ],
+        undefined as unknown as IntersectionObserver,
+      )
+    })
+    expect(activeScene(container)).toEqual(['voice'])
+    expect(document.getElementById('voice')).toHaveAttribute('data-active', 'true')
+    expect(document.getElementById('companion')).toHaveAttribute('data-active', 'false')
+  })
+
+  it('gives every company a logo and a short description', () => {
+    render(<Experience />)
+    for (const item of experience) {
+      const article = document.getElementById(item.id) as HTMLElement
+      expect(article.querySelector('img')).toHaveAttribute('src', item.logo)
+      expect(within(article).getByText(item.about)).toBeInTheDocument()
+      expect(item.about.length).toBeLessThanOrEqual(70)
+    }
+  })
+
+  it('reveals a company only while the band is inside its entry', () => {
+    const observerClass = stubBandObserver()
+    render(<Experience />)
+    const entries = () => experience.map((item) => document.getElementById(item.id))
+    for (const entry of entries()) expect(entry).toHaveAttribute('data-active', 'false')
+
+    act(() => {
+      observerClass.mock.calls[2]?.[0](
+        [
+          {
+            isIntersecting: true,
+            target: document.getElementById('uniquify'),
+          } as unknown as IntersectionObserverEntry,
+        ],
+        undefined as unknown as IntersectionObserver,
+      )
+    })
+    expect(entries().map((entry) => entry?.getAttribute('data-active'))).toEqual([
+      'false',
+      'true',
+      'false',
+    ])
   })
 
   it('marks the heading active when its section crosses the shared band', () => {

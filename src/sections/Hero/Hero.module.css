@@ -1,5 +1,5 @@
 /* Flush-left, bottom-anchored poster: huge type anchored to the grid, the
-   descent field flowing on the fixed canvas behind. */
+   Lorenz figure turning on the fixed canvas behind. */
 .hero {
   min-height: 100vh;
   grid-template-rows: 1fr auto;

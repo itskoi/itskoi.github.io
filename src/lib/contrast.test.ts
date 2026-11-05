@@ -43,19 +43,19 @@ describe('palette contrast (WCAG)', () => {
     })
   })
 
-  describe('dark mode (ink field)', () => {
-    const bg = '#0a0a0a'
-    it('body text on ink', () => {
-      expect(contrast('#fafafa', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
+  describe('dark mode (navy field)', () => {
+    const bg = '#0a1a33'
+    it('body text on navy', () => {
+      expect(contrast('#ffffff', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
     })
-    it('muted text on ink', () => {
-      expect(contrast('#a3a3a3', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
+    it('muted text on navy', () => {
+      expect(contrast('#a9b8cf', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
     })
-    it('accent (red) text on ink', () => {
-      expect(contrast('#ff2b39', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
+    it('accent (orange) text on navy', () => {
+      expect(contrast('#ff7a1a', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
     })
-    it('accent-strong (small red text) on ink', () => {
-      expect(contrast('#ff5a66', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
+    it('accent-strong (small orange text) on navy', () => {
+      expect(contrast('#ff9a4d', bg)).toBeGreaterThanOrEqual(AA_NORMAL)
     })
   })
 })

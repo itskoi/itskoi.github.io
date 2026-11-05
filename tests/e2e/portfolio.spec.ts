@@ -29,26 +29,25 @@ test.describe('portfolio page', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Wao' })).toBeVisible()
     await expect(page.getByText('University of Science')).toBeVisible()
-    await expect(page.getByText(/IEEE-RIVF/)).toBeVisible()
+    await expect(page.getByText("IEEE RIVF'23", { exact: true })).toBeVisible()
   })
 
-  test('renders the descent canvas behind the content', async ({ page }) => {
+  test('renders the Lorenz canvas behind the content', async ({ page }) => {
     await page.goto('/')
-    await expect(page.locator('[data-descent-canvas]')).toBeAttached()
+    await expect(page.locator('[data-lorenz-canvas]')).toBeAttached()
     // Content stays visible on top of the canvas.
     await expect(page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' })).toBeVisible()
   })
 
-  test('Education content stays readable above the canvas through the mid-descent band', async ({
+  test('Education content stays readable above the canvas while the backdrop runs', async ({
     page,
   }) => {
     await page.goto('/')
     await page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' }).waitFor()
-    const canvas = page.locator('[data-descent-canvas]')
+    const canvas = page.locator('[data-lorenz-canvas]')
     await expect(canvas).toBeAttached()
 
-    // Enter Education — the band where the camera is mid-descent and the
-    // accent path is at its longest.
+    // Enter Education, where the figure sits behind full-width text.
     await page.getByRole('navigation').getByRole('link', { name: 'Education' }).click()
     await expect(page.getByRole('heading', { level: 2, name: 'Education' })).toBeInViewport()
 

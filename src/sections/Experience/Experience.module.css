@@ -1,5 +1,5 @@
-/* Hairline grid table: one rule per entry, period in the mono index column,
-   role/company in the left field, highlights in the right field. */
+/* Two columns: the project being read on the left, its illustration held in a
+   sticky stage on the right. Below 768px the stage pins above the text instead. */
 .section {
   padding-block: clamp(5rem, 14vh, 9rem);
   border-top: 1px solid var(--color-border);
@@ -15,35 +15,93 @@
 }
 
 /* The section being read announces itself — display-size type, so the plain
-   accent red meets the AA-large bar. */
+   accent meets the AA-large bar. */
 .heading[data-active="true"] {
   color: var(--color-accent);
 }
 
+/* Text and stage sit directly on the section grid, so the stage starts at the
+   section's top and is already pinned when the first project reaches the band. */
+.layout {
+  display: contents;
+}
+
 .entries {
-  grid-column: 1 / -1;
+  grid-column: 1 / 7;
+  grid-row: 2;
+}
+
+/* A plate from the nav to the viewport's bottom and right edges, so the Lorenz
+   canvas never tangles with the diagram's lines. The clipped shadow paints the
+   bleed past the measure without adding scrollable overflow. */
+.stage {
+  grid-column: 7 / 13;
+  grid-row: 1 / span 2;
+  position: sticky;
+  top: 4rem;
+  align-self: start;
+  height: calc(100svh - 4rem);
+  padding: 1.5rem 0 1.5rem var(--grid-gutter);
+  border-left: 1px solid var(--color-border);
+  background: var(--color-bg);
+  box-shadow: 0 0 0 100vw var(--color-bg);
+  clip-path: inset(0 -100vw 0 0);
+}
+
+.stageInner {
+  position: relative;
+  height: 100%;
 }
 
 .entry {
-  display: grid;
-  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
-  column-gap: var(--grid-gutter);
   border-top: 1px solid var(--color-border);
-  padding-block: 2.25rem;
+  padding-block: 2.25rem 0;
+}
+
+.entryHeader {
+  margin-bottom: 1.5rem;
+}
+
+/* Opacity alone hides it, so the page doesn't shift on reveal and screen readers
+   still get the description. */
+.intro {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 3rem;
+  margin-bottom: 1.25rem;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.45s ease-out,
+    transform 0.45s ease-out;
+}
+
+.entry[data-active="true"] .intro {
+  opacity: 1;
+  transform: none;
+}
+
+/* White in both themes: the logos are made for light backgrounds. */
+.logo {
+  flex: none;
+  width: auto;
+  height: 3rem;
+  background: #fff;
+}
+
+.about {
+  margin: 0;
+  color: var(--color-fg);
 }
 
 .period {
-  grid-column: 1 / 3;
-  margin: 0;
+  margin: 0 0 0.75rem;
   font-family: var(--font-mono);
   font-size: var(--fs-meta);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-fg-muted);
-}
-
-.entryHeader {
-  grid-column: 3 / 7;
 }
 
 .role {
@@ -63,40 +121,107 @@
   color: inherit;
 }
 
-.highlights {
-  grid-column: 7 / 13;
-  margin: 0;
+.context {
+  margin-top: 0.75rem;
+  color: var(--color-fg-muted);
+}
+
+/* min-height gives each project dwell time under the band as you scroll. */
+.project {
+  min-height: 62vh;
+  padding-block: 1.75rem 2.5rem;
+  padding-right: var(--grid-gutter);
+  border-top: 1px solid var(--color-border);
+}
+
+.projectTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  transition: color 0.3s ease;
+}
+
+.project[data-active="true"] .projectTitle {
+  color: var(--color-accent-strong);
+}
+
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin-top: 0.6rem;
   list-style: none;
-  display: grid;
-  row-gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  color: var(--color-fg-muted);
 }
 
-.highlights li {
-  line-height: 1.6;
+.body {
+  margin-top: 1rem;
+  color: var(--color-fg-muted);
+  transition: color 0.3s ease;
 }
 
-/* Narrow screens: the row collapses to a stacked block under the grid's
-   six columns. */
+.project[data-active="true"] .body {
+  color: var(--color-fg);
+}
+
+.body strong,
+.context strong,
+.note strong {
+  font-weight: 650;
+  color: var(--color-fg);
+}
+
+.note {
+  padding-block: 1.75rem 2.5rem;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-fg-muted);
+}
+
 @media (max-width: 768px) {
   .heading {
     grid-column: 1 / -1;
   }
 
-  .entry {
-    row-gap: 0.75rem;
-    padding-block: 1.75rem;
+  /* A block parent lets the sticky stage travel the whole list of projects. */
+  .layout {
+    display: block;
+    grid-column: 1 / -1;
   }
 
-  .period,
-  .entryHeader,
-  .highlights {
-    grid-column: 1 / -1;
+  .stage {
+    z-index: 1;
+    height: 42svh;
+    padding: 0.5rem 0;
+    border-left: 0;
+    border-bottom: 1px solid var(--color-border);
+    clip-path: inset(0 -100vw);
+  }
+
+  .project {
+    min-height: 0;
+    padding-right: 0;
+  }
+
+  /* The band sits at the pinned stage's lower edge here, so a reveal would only
+     fire as the logo slid under the stage. */
+  .intro {
+    opacity: 1;
+    transform: none;
   }
 }
 
 /* Reduced motion: the active color still flips, just instantly. */
 @media (prefers-reduced-motion: reduce) {
   .heading {
+    transition: none;
+  }
+
+  .intro,
+  .projectTitle,
+  .body {
     transition: none;
   }
 }

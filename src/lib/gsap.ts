@@ -2,7 +2,7 @@ import { gsap } from 'gsap'
 
 // GSAP is ticker-only in this codebase: its ticker drives Lenis's RAF (see
 // src/lib/lenis.ts). Nothing animates through GSAP itself — the canvas scene
-// owns all motion (specs/gradient-descent).
+// owns all motion (specs/lorenz-background).
 
 export function prefersReducedMotion(): boolean {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false

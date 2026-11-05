@@ -8,7 +8,7 @@ describe('Hero', () => {
     render(<Hero />)
     expect(screen.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' })).toBeInTheDocument()
     expect(screen.getByText('AI Engineer')).toBeInTheDocument()
-    expect(screen.getByText('HCM City, Vietnam')).toBeInTheDocument()
+    expect(screen.getByText('Ho Chi Minh City, Vietnam')).toBeInTheDocument()
   })
 
   it('no longer shows the placeholder copy', () => {

@@ -42,12 +42,12 @@ test.describe('swiss poster contract', () => {
     await expect(tile).toHaveCSS('border-radius', '0px')
   })
 
-  test('exactly one canvas — the descent specimen; decorative and hidden from AT', async ({
+  test('exactly one canvas — the Lorenz backdrop; decorative and hidden from AT', async ({
     page,
   }) => {
     await page.goto('/')
     expect(await page.locator('canvas').count()).toBe(1)
-    const canvas = page.locator('[data-descent-canvas]')
+    const canvas = page.locator('[data-lorenz-canvas]')
     await expect(canvas).toBeAttached()
     await expect(canvas).toHaveAttribute('aria-hidden', 'true')
   })
@@ -67,7 +67,7 @@ test.describe('paper default, persisted choice', () => {
     await page.goto('/')
 
     // No stored choice — the OS dark preference owns first paint.
-    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(10, 10, 10)')
+    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(10, 26, 51)')
 
     const toggle = page.getByRole('button', { name: /switch to/i })
     await toggle.click()

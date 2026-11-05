@@ -28,7 +28,7 @@ describe('Technologies', () => {
     vi.unstubAllGlobals()
   })
 
-  it('renders all 6 categories', () => {
+  it('renders every category', () => {
     render(<Technologies />)
     expect(screen.getByRole('heading', { level: 2, name: 'Technologies' })).toBeInTheDocument()
     for (const group of technologies) {

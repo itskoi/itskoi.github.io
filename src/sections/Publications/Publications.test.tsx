@@ -32,14 +32,14 @@ describe('Publications', () => {
     expect(screen.getByRole('heading', { level: 2, name: 'Publications' })).toBeInTheDocument()
     const articles = screen.getAllByRole('article')
     expect(articles).toHaveLength(2)
-    expect(within(articles[0]).getByText(/IEEE-RIVF/)).toBeInTheDocument()
+    expect(within(articles[0]).getByText(/IEEE RIVF/)).toBeInTheDocument()
   })
 
   it('emphasizes the owner name in each author list', () => {
     render(<Publications />)
     const owners = document.querySelectorAll('[data-owner]')
     expect(owners).toHaveLength(2)
-    for (const el of owners) expect(el.textContent).toBe('Võ Bách Khôi')
+    for (const el of owners) expect(el.textContent).toBe('Bach-Khoi Vo')
   })
 
   it('links each paper to its DOI in a new tab', () => {
