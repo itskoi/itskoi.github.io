@@ -31,9 +31,6 @@
   grid-row: 2;
 }
 
-/* A plate from the nav to the viewport's bottom and right edges, so the Lorenz
-   canvas never tangles with the diagram's lines. The clipped shadow paints the
-   bleed past the measure without adding scrollable overflow. */
 .stage {
   grid-column: 7 / 13;
   grid-row: 1 / span 2;
@@ -43,9 +40,6 @@
   height: calc(100svh - 4rem);
   padding: 1.5rem 0 1.5rem var(--grid-gutter);
   border-left: 1px solid var(--color-border);
-  background: var(--color-bg);
-  box-shadow: 0 0 0 100vw var(--color-bg);
-  clip-path: inset(0 -100vw 0 0);
 }
 
 .stageInner {
@@ -197,6 +191,10 @@
     padding: 0.5rem 0;
     border-left: 0;
     border-bottom: 1px solid var(--color-border);
+    /* Opaque here because the text scrolls underneath. The clipped shadow paints the
+       bleed to the screen edges without adding scrollable overflow. */
+    background: var(--color-bg);
+    box-shadow: 0 0 0 100vw var(--color-bg);
     clip-path: inset(0 -100vw);
   }
 

@@ -61,11 +61,19 @@ test.describe('two-column Experience (1280×720)', () => {
       expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(720)
     }
 
-    // The plate bleeds to the viewport edge without adding sideways scroll.
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - window.innerWidth,
     )
     expect(overflow).toBeLessThanOrEqual(0)
+  })
+
+  test('the stage is transparent, so the backdrop shows through as it does behind the text', async ({
+    page,
+  }) => {
+    await open(page)
+    const stage = page.getByRole('complementary', { name: /illustration/i })
+    await expect(stage).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
+    await expect(stage).toHaveCSS('box-shadow', 'none')
   })
 
   test('the active project is marked in the text column too', async ({ page }) => {
@@ -259,6 +267,14 @@ test.describe('phone (390×844)', () => {
       (el) => el.getAnimations({ subtree: true }).filter((a) => 'animationName' in a).length,
     )
     expect(building).toBeGreaterThan(0)
+  })
+
+  test('the stage stays opaque, because the text scrolls underneath it', async ({ page }) => {
+    await open(page)
+    await expect(page.getByRole('complementary', { name: /illustration/i })).toHaveCSS(
+      'background-color',
+      'rgb(255, 255, 255)',
+    )
   })
 
   test('company logos and descriptions are already showing as they scroll into view', async ({
