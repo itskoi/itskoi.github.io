@@ -75,3 +75,37 @@
     scrollbar-width: none;
   }
 }
+
+/* Back to top: an icon square in the page margin's bottom-right corner, past the illustration
+   stage's edge so it never covers the stage's caption; clear of the phone's safe area. */
+.top {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right, 0px));
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.top:hover,
+.top:focus-visible {
+  color: var(--color-accent-strong);
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.top:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 4px var(--color-accent);
+}

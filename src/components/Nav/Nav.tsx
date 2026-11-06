@@ -40,6 +40,30 @@ export function Nav() {
           )
         })}
       </ul>
+      {/* Fixed in the corner, not in the bar; it lives here because Nav knows when you're past the hero. */}
+      {activeId && (
+        <button
+          type="button"
+          className={styles.top}
+          onClick={() => scrollTo(0)}
+          aria-label="Back to top"
+          title="Back to top"
+        >
+          <svg
+            viewBox="0 0 16 16"
+            width="16"
+            height="16"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M8 13V3M3.5 7.5L8 3l4.5 4.5" />
+          </svg>
+        </button>
+      )}
       <ThemeToggle />
     </nav>
   )

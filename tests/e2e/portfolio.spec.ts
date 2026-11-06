@@ -24,10 +24,29 @@ test.describe('portfolio page', () => {
     )
   })
 
+  test('Back to top returns to the hero', async ({ page }) => {
+    await page.goto('/')
+    const top = page.getByRole('button', { name: 'Back to top' })
+    await expect(top).toHaveCount(0)
+
+    await page.getByRole('navigation').getByRole('link', { name: 'Education' }).click()
+    await expect(page.getByRole('heading', { level: 2, name: 'Education' })).toBeInViewport()
+    await expect(top).toBeVisible()
+    const box = await top.boundingBox()
+    const viewport = page.viewportSize()
+    expect((box?.x ?? 0) + (box?.width ?? 0)).toBeGreaterThan((viewport?.width ?? 0) * 0.8)
+    expect((box?.y ?? 0) + (box?.height ?? 0)).toBeGreaterThan((viewport?.height ?? 0) * 0.8)
+
+    await top.click()
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(2)
+    await expect(page.getByRole('heading', { level: 1 })).toBeInViewport()
+    await expect(top).toHaveCount(0)
+  })
+
   test('renders key content across the page', async ({ page }) => {
     await page.goto('/')
     await expect(page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Wao' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Wao', exact: true })).toBeVisible()
     await expect(page.getByText('University of Science')).toBeVisible()
     await expect(page.getByText("IEEE RIVF'23", { exact: true })).toBeVisible()
   })
