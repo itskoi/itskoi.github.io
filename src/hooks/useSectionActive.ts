@@ -37,15 +37,29 @@ export function useActiveId(ids: readonly string[]): string | undefined {
       .filter((el): el is HTMLElement => el !== null)
     if (elements.length === 0) return
 
+    // Elements on the band, oldest entry first; the active id is the latest to enter.
+    const onBand = new Set<Element>()
+    let current: string | undefined
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) setActiveId(entry.target.id)
+          onBand.delete(entry.target)
+          if (entry.isIntersecting) {
+            onBand.add(entry.target)
+            current = entry.target.id
+          }
+        }
+        // The active element left while another stays on the band: that one never "enters"
+        // again, so hand over to it rather than keep an element that is gone.
+        const remaining = [...onBand]
+        if (remaining.length > 0 && !remaining.some((el) => el.id === current)) {
+          current = remaining[remaining.length - 1].id
         }
         // Half the viewport is the band's lower edge (ACTIVE_BAND's -50%).
         if (elements[0].getBoundingClientRect().top > window.innerHeight / 2) {
-          setActiveId(undefined)
+          current = undefined
         }
+        setActiveId(current)
       },
       { rootMargin: ACTIVE_BAND, threshold: 0 },
     )

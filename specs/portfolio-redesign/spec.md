@@ -63,6 +63,7 @@ The resume (`docs/resume.tex`, `docs/resume.html`) was rewritten around projects
 ### 2026-11-06
 
 - Added: clicking a project title scrolls that project onto the band, so its illustration shows, at the owner's request. — `src/sections/Experience/Experience.test.tsx`, `tests/e2e/experience-scenes.spec.ts`
+- Fixed: on screens taller than about 960px, clicking a title above the current project showed the project above it instead. The clicked project's top now lands just above the band's top edge, so the project above has left the band. — `tests/e2e/experience-scenes.spec.ts` "clicking a title above the current project shows that project"
 
 ### 2026-11-05
 

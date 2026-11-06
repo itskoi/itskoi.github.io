@@ -18,6 +18,22 @@ const open = async (page: Page) => {
 
 const scene = (page: Page, id: string) => page.locator(`[data-scene="${id}"]`)
 
+test.describe('tall screen (1280×1000)', () => {
+  test.use({ viewport: { width: 1280, height: 1000 } })
+
+  // Regression: scrolling up to a clicked title used to leave the project above it on the band.
+  test('clicking a title above the current project shows that project', async ({ page }) => {
+    await open(page)
+    await scrollToProject(page, 'sdd')
+    await expect(scene(page, 'sdd')).toHaveAttribute('data-active', 'true')
+
+    await page.locator('#meals h4 a').click()
+    await expect(scene(page, 'meals')).toHaveAttribute('data-active', 'true')
+    await page.waitForTimeout(1500)
+    await expect(scene(page, 'meals')).toHaveAttribute('data-active', 'true')
+  })
+})
+
 test.describe('two-column Experience (1280×720)', () => {
   test.use({ viewport: { width: 1280, height: 720 } })
 

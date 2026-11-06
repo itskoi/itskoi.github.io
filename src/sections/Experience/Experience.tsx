@@ -7,12 +7,14 @@ import styles from './Experience.module.css'
 
 const PROJECT_IDS = experience.flatMap((item) => item.projects.map((project) => project.id))
 
-// Lands a project's title just above the band's middle (ACTIVE_BAND spans 45–50%), so it becomes
-// active. An absolute position from the real scrollY, because Lenis may not have seen a native jump yet.
+// Lands a project's top just above the band's top edge (ACTIVE_BAND spans 45–50%), so the project
+// fills the band and the one above it has left: whichever enters the band last becomes active, so
+// any overlap would hand the band back to the project above when scrolling up. An absolute position
+// from the real scrollY, because Lenis may not have seen a native jump yet.
 const scrollToProject = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
   event.preventDefault()
   const top = document.getElementById(id)?.getBoundingClientRect().top ?? 0
-  scrollTo(top + window.scrollY + 24 - window.innerHeight * 0.475)
+  scrollTo(top + window.scrollY + 16 - window.innerHeight * 0.45)
 }
 
 const emphasize = (text: string) =>

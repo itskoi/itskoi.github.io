@@ -118,6 +118,32 @@ describe('useActiveId', () => {
     expect(result.current).toBe('b')
   })
 
+  // Regression: b sat on the band's edge while a was active, so b never "entered" again when a left.
+  it('hands over to an id still on the band when the active one leaves', () => {
+    document.body.innerHTML = '<div id="a"></div><div id="b"></div>'
+    const { observerClass } = stubIntersectionObserver()
+    const { result } = renderHook(() => useActiveId(IDS))
+    const callback = observerClass.mock.calls[0]?.[0]
+    const cross = (id: string, isIntersecting: boolean) =>
+      act(() => {
+        callback?.(
+          [
+            {
+              isIntersecting,
+              target: document.getElementById(id),
+            } as unknown as IntersectionObserverEntry,
+          ],
+          undefined as unknown as IntersectionObserver,
+        )
+      })
+
+    cross('b', true)
+    cross('a', true)
+    expect(result.current).toBe('a')
+    cross('a', false)
+    expect(result.current).toBe('b')
+  })
+
   it('clears once the band is above the first element, so returning counts as a change', () => {
     document.body.innerHTML = '<div id="a"></div><div id="b"></div>'
     const { observerClass } = stubIntersectionObserver()

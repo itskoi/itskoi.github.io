@@ -38,9 +38,9 @@ describe('Experience', () => {
     const title = screen.getByRole('link', { name: 'Meal suggestions' })
     expect(title).toHaveAttribute('href', '#meals')
     fireEvent.click(title)
-    // jsdom puts every element at the top, so the target is the band offset itself:
-    // the title's top lands just above the band's middle (ACTIVE_BAND spans 45–50%).
-    expect(scrollTo).toHaveBeenCalledWith(24 - window.innerHeight * 0.475)
+    // jsdom puts every element at the top, so the target is the band offset itself: the
+    // project's top lands just above the band's top edge (ACTIVE_BAND spans 45–50%).
+    expect(scrollTo).toHaveBeenCalledWith(16 - window.innerHeight * 0.45)
   })
 
   const projects = experience.flatMap((item) => item.projects)
