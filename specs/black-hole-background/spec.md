@@ -41,3 +41,7 @@
 - Changed, at the owner's request: on the paper theme the disk stays red. Hot dots mix toward a new `--scene-hot` token, the deeper accent on paper and white on dark, because mixing toward ink read as muddy maroon and a heavy black ring on white. — `tests/e2e/blackHole.spec.ts`, `src/styles/global.test.ts`
 - Changed, at the owner's request: the black hole shows on the dark theme only, and the Lorenz backdrop returns for the light theme, restored unchanged. This reverses the criterion that removed the Lorenz scene, and the `--scene-hot` token goes with the paper version, so hot dots mix toward `--scene-figure-rgb` again. — `src/App.test.tsx`, `tests/e2e/lorenz.spec.ts`, `tests/e2e/blackHole.spec.ts`
 - Changed, at the owner's request: patches of the ring are pink, a half mix of `--color-accent` and `--scene-figure-rgb`, and the rest stays white. The patches follow the disk's texture, so they swirl with it. — `src/components/BlackHoleScene/blackHoleField.test.ts`, `src/components/BlackHoleScene/BlackHoleScene.test.tsx`
+
+### 2026-11-06
+
+- Fixed, at the owner's report: the near half of the disk passes in front of the ring, hiding it as far as the disk is bright, instead of the ring cutting across the disk. The disk runs up to the ring with no dark box beside it: the far half is no longer dimmed near the shadow, and the inner edge moves from 13 to 11.5 units, just past the ring. — `src/components/BlackHoleScene/blackHoleField.test.ts`

@@ -58,6 +58,31 @@ describe('shadeField', () => {
     expect(ringDots).toBeGreaterThan(10)
   })
 
+  it('hides the ring behind the near disk, not in front of it', () => {
+    const inks = shade(2)
+    const level = (ink: number) => ink - (ink >= RING_INK ? RING_INK : DISK_INK)
+    const upper: number[] = []
+    const lower: number[] = []
+    for (let row = 0; row < ROWS; row++) {
+      for (let col = 0; col < COLS; col++) {
+        const radius = Math.hypot(col + 0.5 - HOLE_COL, row + 0.5 - HOLE_ROW)
+        if (Math.abs(radius - RING_RADIUS) > 0.2) continue
+        ;(row + 0.5 < HOLE_ROW ? upper : lower).push(level(inks[at(col, row)]))
+      }
+    }
+    expect(Math.min(...upper)).toBe(17)
+    expect(Math.min(...lower)).toBeLessThan(17)
+  })
+
+  it('runs the disk up to the ring, with no dark gap beside it', () => {
+    for (const t of [0, 2, 4, 6]) {
+      const inks = shade(t)
+      for (let row = HOLE_ROW - 3; row <= HOLE_ROW; row++)
+        for (let col = HOLE_COL - 16; col < HOLE_COL - 12; col++)
+          expect(inks[at(col, row)]).toBeGreaterThanOrEqual(DISK_INK + 8)
+    }
+  })
+
   it('marks patches of the ring pink, leaves the rest white, and swirls them with the disk', () => {
     const pinkDots = (inks: Uint8Array) => inks.filter((ink) => ink >= RING_INK).length
     const whiteRingDots = (inks: Uint8Array) => {

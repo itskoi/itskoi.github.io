@@ -14,7 +14,7 @@ export const INK_COUNT = RING_INK + DISK_LEVELS
 // In the piece's units.
 const SHADOW = 10.5 // the source's is 9.5; the owner asked for a slightly larger ring
 const DISK_TILT = 0.2
-const DISK_INNER = 13
+const DISK_INNER = 11.5 // just past the ring, so no dark gap opens between them
 const DISK_OUTER = 46
 const ROLL = -0.08
 const COS_ROLL = Math.cos(ROLL)
@@ -200,8 +200,9 @@ export function shadeField(field: Field, t: number, holeCol: number, holeRow: nu
         const doppler = 1 - 0.5 * (u / diskRadius)
         const texture = diskTexture(diskRadius, Math.atan2(depth, u), t)
         const disk = temperature * edge * doppler * (0.45 + 0.9 * texture)
-        const dimmed = depth < 0 && radius < SHADOW * 2.1
-        intensity = Math.max(intensity, dimmed ? disk * 0.6 : disk)
+        // The near half is in front: as bright as it is, it hides the ring behind it.
+        const behind = depth > 0 ? intensity * (1 - clamp(disk)) : intensity
+        intensity = Math.max(behind, disk)
       }
 
       if (intensity > 0.06) {
