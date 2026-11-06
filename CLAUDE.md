@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-A single-page portfolio SPA built with TypeScript + React 19, bundled by Vite, with Bun as the package manager and script runner. Smooth scrolling is handled by Lenis wired into GSAP's ticker. The page's backdrop is a time-driven Lorenz attractor on one canvas (`src/components/LorenzScene/`, spec: `specs/lorenz-background`); Experience adds one-shot CSS build-ins on inline SVG illustrations (`src/components/ProjectScene/`, spec: `specs/portfolio-redesign`).
+A single-page portfolio SPA built with TypeScript + React 19, bundled by Vite, with Bun as the package manager and script runner. Smooth scrolling is handled by Lenis wired into GSAP's ticker. The page's backdrop is one time-driven canvas that follows the theme: a binary star orbit on light (`src/components/BinaryStarScene/`, spec: `specs/binary-star-background`), a halftone black hole on dark (`src/components/BlackHoleScene/`, spec: `specs/black-hole-background`); Experience adds one-shot CSS build-ins on inline SVG illustrations (`src/components/ProjectScene/`, spec: `specs/portfolio-redesign`).
 
 Work in this repo follows **Spec-Driven Development (SDD) + Test-Driven Development (TDD)**. See `specs/README.md` and `specs/constitution.md` for the full methodology — the short version is below.
 

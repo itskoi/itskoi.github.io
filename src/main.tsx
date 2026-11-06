@@ -10,7 +10,7 @@ import '@/styles/global.css'
 
 // Resolve the theme before first paint so the correct tokens apply immediately
 // (no flash of the wrong mode). Leaves data-theme unset when there is no stored
-// choice, letting the prefers-color-scheme CSS path own first paint.
+// choice, letting the dark :root palette own first paint.
 initTheme()
 
 const root = document.getElementById('root')

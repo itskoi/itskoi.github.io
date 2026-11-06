@@ -1,6 +1,8 @@
-import { LorenzScene } from '@/components/LorenzScene/LorenzScene'
+import { BinaryStarScene } from '@/components/BinaryStarScene/BinaryStarScene'
+import { BlackHoleScene } from '@/components/BlackHoleScene/BlackHoleScene'
 import { Nav } from '@/components/Nav/Nav'
 import { useSmoothScroll } from '@/hooks/useSmoothScroll'
+import { useTheme } from '@/hooks/useTheme'
 import { Education } from '@/sections/Education/Education'
 import { Experience } from '@/sections/Experience/Experience'
 import { Hero } from '@/sections/Hero/Hero'
@@ -9,9 +11,10 @@ import { Technologies } from '@/sections/Technologies/Technologies'
 
 export function App() {
   useSmoothScroll()
+  const { theme } = useTheme()
   return (
     <>
-      <LorenzScene />
+      {theme === 'dark' ? <BlackHoleScene /> : <BinaryStarScene />}
       <Nav />
       <main>
         <Hero />

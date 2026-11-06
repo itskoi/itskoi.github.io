@@ -1,0 +1,28 @@
+.canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  pointer-events: none;
+  transition:
+    opacity 0.6s ease,
+    filter 0.6s ease;
+}
+
+/* Full strength over the hero; quiet wherever it runs under small text. Blur alone
+   isn't enough, because the solid black star would still hide black text. */
+.canvas[data-dim="true"] {
+  opacity: 0.4;
+}
+
+.canvas[data-blur="true"] {
+  filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas {
+    transition: none;
+  }
+}

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@/lib/lenis', () => ({
   createSmoothScroll: () => ({ lenis: {}, destroy: vi.fn() }),
@@ -15,6 +15,23 @@ describe('App', () => {
     for (const name of ['Experience', 'Education', 'Publications', 'Technologies']) {
       expect(screen.getByRole('heading', { level: 2, name })).toBeInTheDocument()
     }
+  })
+
+  describe('backdrop', () => {
+    afterEach(() => {
+      delete document.documentElement.dataset.theme
+    })
+
+    it.each([
+      ['light', 'data-binary-star-canvas'],
+      ['dark', 'data-black-hole-canvas'],
+    ])('on the %s theme, draws one canvas: %s', (theme, attribute) => {
+      document.documentElement.dataset.theme = theme
+      const { container } = render(<App />)
+      const canvases = container.querySelectorAll('canvas')
+      expect(canvases).toHaveLength(1)
+      expect(canvases[0]).toHaveAttribute(attribute)
+    })
   })
 
   it('no longer renders the Placeholder section', () => {

@@ -11,15 +11,15 @@
     filter 0.6s ease;
 }
 
-/* Full strength over the hero; quiet wherever it runs sharp under small text.
-   Blur protects the text on its own, so a blurred canvas needs no dimming. */
-.canvas[data-dim="true"] {
-  opacity: 0.4;
+/* Full strength over the hero; quiet under small text, because the disk's dots
+   are dense enough to fail contrast at full strength, sharp or blurred. */
+.canvas[data-dim="true"],
+.canvas[data-blur="true"] {
+  opacity: 0.25;
 }
 
 .canvas[data-blur="true"] {
   filter: blur(6px);
-  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {

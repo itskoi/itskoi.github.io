@@ -56,24 +56,12 @@
   margin-bottom: 1.5rem;
 }
 
-/* Opacity alone hides it, so the page doesn't shift on reveal and screen readers
-   still get the description. */
 .intro {
   display: flex;
   align-items: center;
   gap: 1rem;
   min-height: 3rem;
   margin-bottom: 1.25rem;
-  opacity: 0;
-  transform: translateY(6px);
-  transition:
-    opacity 0.45s ease-out,
-    transform 0.45s ease-out;
-}
-
-.entry[data-active="true"] .intro {
-  opacity: 1;
-  transform: none;
 }
 
 /* White in both themes: the logos are made for light backgrounds. */
@@ -81,6 +69,7 @@
   flex: none;
   width: auto;
   height: 3rem;
+  border-radius: 0.5rem;
   background: #fff;
 }
 
@@ -120,12 +109,11 @@
   color: var(--color-fg-muted);
 }
 
-/* min-height gives each project dwell time under the band as you scroll. */
 .project {
-  min-height: 62vh;
+  margin-left: 1.5rem;
   padding-block: 1.75rem 2.5rem;
   padding-right: var(--grid-gutter);
-  border-top: 1px solid var(--color-border);
+  border-top: 1px dashed var(--color-border);
 }
 
 .projectTitle {
@@ -138,6 +126,18 @@
 
 .project[data-active="true"] .projectTitle {
   color: var(--color-accent-strong);
+}
+
+.details {
+  margin-top: 0.75rem;
+}
+
+.summary {
+  width: fit-content;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  color: var(--color-fg-muted);
+  cursor: pointer;
 }
 
 .stack {
@@ -169,9 +169,24 @@
 }
 
 .note {
+  margin-left: 1.5rem;
   padding-block: 1.75rem 2.5rem;
-  border-top: 1px solid var(--color-border);
+  padding-right: var(--grid-gutter);
+  border-top: 1px dashed var(--color-border);
   color: var(--color-fg-muted);
+}
+
+/* Without this the section ends early and pushes the pinned stage up over the last project.
+   This is the distance from the title on the band's middle to the screen's bottom. It also
+   stands in for the section's bottom padding, which would only widen the gap before Education. */
+@media (min-width: 769px) {
+  .section {
+    padding-bottom: 0;
+  }
+
+  .entry:last-child > .project:last-child {
+    min-height: calc(52.5vh + 1.5rem);
+  }
 }
 
 @media (max-width: 768px) {
@@ -199,15 +214,7 @@
   }
 
   .project {
-    min-height: 0;
     padding-right: 0;
-  }
-
-  /* The band sits at the pinned stage's lower edge here, so a reveal would only
-     fire as the logo slid under the stage. */
-  .intro {
-    opacity: 1;
-    transform: none;
   }
 }
 
@@ -217,7 +224,6 @@
     transition: none;
   }
 
-  .intro,
   .projectTitle,
   .body {
     transition: none;

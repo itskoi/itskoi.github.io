@@ -7,7 +7,7 @@ export interface SceneColors {
 }
 
 const STORAGE_KEY = 'theme'
-const DEFAULT_SCENE: SceneColors = { r: 10, g: 10, b: 10 }
+const DEFAULT_SCENE: SceneColors = { r: 255, g: 255, b: 255 }
 
 const listeners = new Set<(theme: Theme) => void>()
 
@@ -33,18 +33,6 @@ function writeStorage(theme: Theme): void {
   }
 }
 
-function prefersDark(): boolean {
-  return (
-    typeof window !== 'undefined' &&
-    typeof window.matchMedia === 'function' &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  )
-}
-
-function osTheme(): Theme {
-  return prefersDark() ? 'dark' : 'light'
-}
-
 function applyAttribute(theme: Theme): void {
   document.documentElement.dataset.theme = theme
 }
@@ -56,7 +44,7 @@ function emit(theme: Theme): void {
 export function getTheme(): Theme {
   return isTheme(document.documentElement.dataset.theme)
     ? (document.documentElement.dataset.theme as Theme)
-    : osTheme()
+    : 'dark'
 }
 
 export function setTheme(theme: Theme): void {
@@ -81,8 +69,7 @@ export function onThemeChange(cb: (theme: Theme) => void): () => void {
 /**
  * Resolve the theme once, before React mounts (see main.tsx), so the correct
  * tokens apply at first paint. When no choice is stored the data-theme attribute
- * is left unset on purpose — the `prefers-color-scheme` CSS path then owns first
- * paint, while getTheme() still resolves via the OS at runtime.
+ * is left unset on purpose — the dark `:root` palette then owns first paint.
  */
 export function initTheme(): void {
   const stored = readStorage()

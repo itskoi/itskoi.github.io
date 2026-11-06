@@ -33,6 +33,14 @@ A personal portfolio SPA. Single page, smooth-scrolling, motion-forward. The sit
 
 ## Changes
 
+### 2026-11-05 — binary star backdrop
+
+1. **Motion (amends the black hole note below).** A binary star orbit replaces the Lorenz attractor as the light theme's canvas (`specs/binary-star-background`). The dark theme keeps the black hole, and both still run on time, not scroll.
+
+### 2026-11-05 — black hole backdrop
+
+1. **Motion (amends the Lorenz note below).** The page's one canvas now follows the theme: the Lorenz attractor on light, a halftone black hole on dark (`specs/black-hole-background`). Both run on time, not scroll.
+
 ### 2026-11-05 — Lorenz backdrop
 
 1. **Motion (amends the 2026-08-31 note).** The Lorenz attractor replaces the gradient-descent field as the page's one canvas (`specs/lorenz-background`). It runs on time, not scroll, so scroll no longer drives any animation.

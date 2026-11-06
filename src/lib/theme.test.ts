@@ -15,27 +15,27 @@ beforeEach(reset)
 afterEach(reset)
 
 describe('initTheme', () => {
-  it('defaults to light (paper) when nothing is stored and the OS preference is unknown', () => {
+  it('defaults to dark when nothing is stored', () => {
     initTheme()
-    expect(getTheme()).toBe('light')
+    expect(getTheme()).toBe('dark')
   })
 
-  it('leaves data-theme unset when no choice is stored (OS CSS path owns first paint)', () => {
+  it('leaves data-theme unset when no choice is stored (the dark :root owns first paint)', () => {
     initTheme()
     expect(document.documentElement.getAttribute('data-theme')).toBeNull()
   })
 
   it('applies a stored choice and sets data-theme', () => {
-    window.localStorage.setItem('theme', 'dark')
+    window.localStorage.setItem('theme', 'light')
     initTheme()
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
-    expect(getTheme()).toBe('dark')
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light')
+    expect(getTheme()).toBe('light')
   })
 
-  it('resolves from the OS preference when nothing is stored', () => {
+  it('ignores an OS light preference when nothing is stored', () => {
     vi.stubGlobal(
       'matchMedia',
-      (query: string) => ({ matches: query.includes('dark'), media: query }) as MediaQueryList,
+      (query: string) => ({ matches: query.includes('light'), media: query }) as MediaQueryList,
     )
     initTheme()
     expect(document.documentElement.getAttribute('data-theme')).toBeNull()
@@ -80,7 +80,7 @@ describe('readSceneColors', () => {
     expect(readSceneColors()).toEqual({ r: 250, g: 250, b: 250 })
   })
 
-  it('falls back to ink when the token is missing (paper is the default mode)', () => {
-    expect(readSceneColors()).toEqual({ r: 10, g: 10, b: 10 })
+  it('falls back to white ink when the token is missing (dark is the default mode)', () => {
+    expect(readSceneColors()).toEqual({ r: 255, g: 255, b: 255 })
   })
 })

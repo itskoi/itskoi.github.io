@@ -1,16 +1,16 @@
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  /* Palette — paper is the default (white, black, red); dark is navy, white, orange. */
-  --color-bg: #ffffff;
-  --color-fg: #0a0a0a;
-  --color-fg-muted: #55595f;
+  /* Palette — dark is the default (black, white, red); paper is white, black, red. */
+  --color-bg: #000000;
+  --color-fg: #ffffff;
+  --color-fg-muted: #a3a3a3;
   --color-border: color-mix(in srgb, var(--color-fg) 15%, transparent);
-  --color-accent: #e30613; /* Swiss red — non-text + large text (≥ 3:1) */
-  --color-accent-strong: #c00016; /* red for small text (≥ 4.5:1) */
+  --color-accent: #ff1f1f;
+  --color-accent-strong: #ff1f1f;
 
-  /* Scene layer (canvas): monochrome ink on paper. */
-  --scene-figure-rgb: 10 10 10;
+  /* Scene layer (canvas): white ink on the black field. */
+  --scene-figure-rgb: 255 255 255;
 
   /* Type — one grotesque carries display and body; mono carries data labels. */
   --font-sans: "Geist Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -33,34 +33,19 @@
   --grid-inline: max(var(--grid-margin), calc((100% - var(--grid-max-width)) / 2));
 }
 
-:root[data-theme="dark"] {
-  color-scheme: dark;
+/* Paper is opt-in through the toggle; the OS preference is not consulted. */
+:root[data-theme="light"] {
+  color-scheme: light;
 
-  --color-bg: #0a1a33; /* dark navy */
-  --color-fg: #ffffff;
-  --color-fg-muted: #a9b8cf;
+  --color-bg: #ffffff;
+  --color-fg: #0a0a0a;
+  --color-fg-muted: #55595f;
   --color-border: color-mix(in srgb, var(--color-fg) 15%, transparent);
-  --color-accent: #ff7a1a; /* orange */
-  --color-accent-strong: #ff9a4d;
+  --color-accent: #e30613; /* Swiss red — non-text + large text (≥ 3:1) */
+  --color-accent-strong: #c00016; /* red for small text (≥ 4.5:1) */
 
-  /* Scene layer flips to white ink on the navy field. */
-  --scene-figure-rgb: 255 255 255;
-}
-
-/* First visit (no explicit choice) follows the OS preference; unknown OS → paper. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    color-scheme: dark;
-
-    --color-bg: #0a1a33;
-    --color-fg: #ffffff;
-    --color-fg-muted: #a9b8cf;
-    --color-border: color-mix(in srgb, var(--color-fg) 15%, transparent);
-    --color-accent: #ff7a1a;
-    --color-accent-strong: #ff9a4d;
-
-    --scene-figure-rgb: 255 255 255;
-  }
+  /* Scene layer flips to black ink on paper. */
+  --scene-figure-rgb: 10 10 10;
 }
 
 /* Narrow screens carry a 6-column grid. */

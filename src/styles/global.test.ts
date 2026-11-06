@@ -158,7 +158,8 @@ describe('global token contract', () => {
     it('every section is separated by a hairline rule, not a panel', () => {
       for (const sheet of sectionSheets) {
         expect(sheet).toMatch(/border-top:\s*1px solid var\(--color-border\)/)
-        expect(sheet).not.toMatch(/border-radius/)
+        // The company logos are the one rounded exception, at the owner's request.
+        expect(sheet.replace(/\.logo\s*\{[^}]*\}/, '')).not.toMatch(/border-radius/)
         expect(sheet).not.toMatch(/color-mix\(in srgb, var\(--color-surface\)/)
       }
     })
@@ -197,28 +198,19 @@ describe('global token contract', () => {
     })
   })
 
-  describe('paper-default palette', () => {
-    it('defines the light palette (paper + Swiss red) on :root', () => {
-      expect(css).toMatch(/:root\s*\{[\s\S]*?--color-bg:\s*#ffffff/i)
-      expect(css).toMatch(/--color-fg:\s*#0a0a0a/i)
-      expect(css).toMatch(/--color-accent:\s*#e30613/i)
-      expect(css).toMatch(/--color-accent-strong:\s*#c00016/i)
+  describe('dark-default palette', () => {
+    it('defines the dark palette (black, white, red) on :root', () => {
+      const rootBlock = css.match(/:root\s*\{([^}]*)\}/)?.[1] ?? ''
+      expect(rootBlock).toMatch(/--color-bg:\s*#000000/i)
+      expect(rootBlock).toMatch(/--color-fg:\s*#ffffff/i)
+      expect(rootBlock).toMatch(/--color-accent:\s*#ff1f1f/i)
+      expect(rootBlock).toMatch(/color-scheme:\s*dark/)
     })
 
-    it('dark mode is navy, white, and orange on both the attribute and OS paths', () => {
-      for (const token of [
-        /--color-bg:\s*#0a1a33/gi,
-        /--color-fg:\s*#ffffff/gi,
-        /--color-accent:\s*#ff7a1a/gi,
-      ]) {
-        expect(css.match(token)).toHaveLength(2)
-      }
-    })
-
-    it('overrides every token under [data-theme="dark"] (the inverse poster mode)', () => {
-      const darkBlock = css.match(/\[data-theme="dark"\]\s*\{([\s\S]*?)\n\}/)
-      expect(darkBlock, '[data-theme="dark"] block must exist').toBeTruthy()
-      const block = darkBlock?.[1] ?? ''
+    it('overrides every token with paper (white, black, Swiss red) under [data-theme="light"]', () => {
+      const lightBlock = css.match(/:root\[data-theme="light"\]\s*\{([^}]*)\}/)
+      expect(lightBlock, '[data-theme="light"] block must exist').toBeTruthy()
+      const block = lightBlock?.[1] ?? ''
       for (const token of [
         '--color-bg',
         '--color-fg',
@@ -230,12 +222,16 @@ describe('global token contract', () => {
       ]) {
         expect(block).toContain(token)
       }
+      expect(block).toMatch(/--color-bg:\s*#ffffff/i)
+      expect(block).toMatch(/--color-fg:\s*#0a0a0a/i)
+      expect(block).toMatch(/--color-accent:\s*#e30613/i)
+      expect(block).toMatch(/--color-accent-strong:\s*#c00016/i)
+      expect(block).toMatch(/color-scheme:\s*light/)
     })
 
-    it('follows the OS dark preference on first visit (no explicit data-theme)', () => {
-      expect(css).toMatch(
-        /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{[\s\S]*?:root:not\(\[data-theme\]\)/,
-      )
+    it('ignores the OS preference: one palette per mode, no prefers-color-scheme path', () => {
+      expect(css).not.toMatch(/prefers-color-scheme/)
+      expect(css).not.toMatch(/\[data-theme="dark"\]/)
     })
 
     it('declares color-scheme for native controls', () => {

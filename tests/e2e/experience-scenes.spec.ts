@@ -57,7 +57,8 @@ test.describe('two-column Experience (1280×720)', () => {
       expect(text).not.toBeNull()
       expect(box).not.toBeNull()
       expect((text?.x ?? 0) + (text?.width ?? 0)).toBeLessThanOrEqual(box?.x ?? 0)
-      expect(box?.y ?? -1).toBeGreaterThanOrEqual(0)
+      // Pinned at 4rem: anything less means the section's end is pushing the stage up.
+      expect(box?.y ?? -1).toBeCloseTo(64, 0)
       expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(720)
     }
 
@@ -67,6 +68,16 @@ test.describe('two-column Experience (1280×720)', () => {
     expect(overflow).toBeLessThanOrEqual(0)
   })
 
+  test('the last project is followed only by the room the pinned stage needs', async ({ page }) => {
+    await open(page)
+    const gap = await page.evaluate(() => {
+      const top = (id: string) => document.getElementById(id)?.getBoundingClientRect().top ?? 0
+      return top('education') - top('sentiment')
+    })
+    // The title on the band's middle to the screen's bottom edge: 52.5% of 720, plus 24px.
+    expect(gap).toBeLessThanOrEqual(403)
+  })
+
   test('the stage is transparent, so the backdrop shows through as it does behind the text', async ({
     page,
   }) => {
@@ -74,6 +85,79 @@ test.describe('two-column Experience (1280×720)', () => {
     const stage = page.getByRole('complementary', { name: /illustration/i })
     await expect(stage).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)')
     await expect(stage).toHaveCSS('box-shadow', 'none')
+  })
+
+  test('a project shows its title, and its details only after clicking Read details', async ({
+    page,
+  }) => {
+    await open(page)
+    const project = page.locator('#meals')
+    const body = project.locator('details p').first()
+    const stack = project.locator('details ul')
+
+    await expect(project.getByRole('heading', { level: 4 })).toBeVisible()
+    await expect(body).toBeHidden()
+    await expect(stack).toBeHidden()
+
+    await project.getByText('Read details').click()
+    await expect(body).toBeVisible()
+    await expect(stack).toBeVisible()
+
+    await project.getByText('Read details').click()
+    await expect(body).toBeHidden()
+  })
+
+  test('the wheel still reaches the page end once opened details make it taller', async ({
+    page,
+  }) => {
+    await open(page)
+    const pageHeight = () => page.evaluate(() => document.documentElement.scrollHeight)
+    const collapsed = await pageHeight()
+    for (const id of PROJECTS) await page.locator(`#${id} summary`).click()
+    const expanded = await pageHeight()
+    expect(expanded).toBeGreaterThan(collapsed)
+
+    await page.mouse.move(640, 360)
+    // Lenis picks up the new height after a short debounce, so keep wheeling until it has.
+    await expect
+      .poll(async () => {
+        await page.mouse.wheel(0, 100000)
+        return page.evaluate(() => window.scrollY + window.innerHeight)
+      })
+      .toBeGreaterThanOrEqual(expanded - 1)
+  })
+
+  test('the wheel slows on a collapsed project and recovers once it is opened', async ({
+    page,
+  }) => {
+    await open(page)
+    await scrollToProject(page, 'meals')
+    await expect(scene(page, 'meals')).toHaveAttribute('data-active', 'true')
+    const summary = page.locator('#meals summary')
+    await summary.hover()
+
+    const wheelTravel = async () => {
+      const from = await page.evaluate(() => window.scrollY)
+      await page.mouse.wheel(0, 60)
+      await page.waitForTimeout(1500)
+      return (await page.evaluate(() => window.scrollY)) - from
+    }
+
+    const collapsed = await wheelTravel()
+    await summary.click()
+    const opened = await wheelTravel()
+    expect(collapsed).toBeGreaterThan(0)
+    expect(collapsed).toBeLessThan(opened * 0.5)
+  })
+
+  test('projects are indented under their role, with no gap between titles', async ({ page }) => {
+    await open(page)
+    const role = await page.locator('#wao h3').boundingBox()
+    const companion = await page.locator('#companion').boundingBox()
+    const meals = await page.locator('#meals').boundingBox()
+    expect(companion?.x ?? 0).toBeGreaterThan(role?.x ?? 0)
+    expect(companion?.height ?? 720).toBeLessThan(720 * 0.3)
+    expect(meals?.y ?? 0).toBeCloseTo((companion?.y ?? 0) + (companion?.height ?? 0), 0)
   })
 
   test('the active project is marked in the text column too', async ({ page }) => {
@@ -173,19 +257,42 @@ test.describe('two-column Experience (1280×720)', () => {
     await expect(page.locator('[data-scene][data-active="true"]')).toHaveCount(0)
   })
 
-  test('a company logo and description appear when its entry reaches the band', async ({
-    page,
-  }) => {
+  test('projects are divided by dashed rules, companies by solid ones', async ({ page }) => {
     await open(page)
-    const intro = (id: string) => page.locator(`#${id} header > div`).first()
+    await expect(page.locator('#meals')).toHaveCSS('border-top-style', 'dashed')
+    await expect(page.locator('#uniquify')).toHaveCSS('border-top-style', 'solid')
+  })
 
-    await expect(intro('wao')).toHaveCSS('opacity', '0')
-    await scrollToProject(page, 'companion')
-    await expect(intro('wao')).toHaveCSS('opacity', '1')
-    await expect(intro('uniquify')).toHaveCSS('opacity', '0')
+  test('a note lines up with the projects above it', async ({ page }) => {
+    await open(page)
+    const note = page.getByText(/^Built AI training modules/)
+    const project = await page.locator('#text-to-image').boundingBox()
+    const box = await note.boundingBox()
+    expect(box?.x).toBe(project?.x)
+    await expect(note).toHaveCSS('border-top-style', 'dashed')
+  })
 
-    await scrollToProject(page, 'rag')
-    await expect(intro('uniquify')).toHaveCSS('opacity', '1')
+  test('company logos have rounded corners', async ({ page }) => {
+    await open(page)
+    const logos = page.locator('#experience article img')
+    expect(await logos.count()).toBeGreaterThan(0)
+    for (const logo of await logos.all()) await expect(logo).toHaveCSS('border-radius', '8px')
+  })
+
+  test('a company logo and description always show', async ({ page }) => {
+    await open(page)
+    const visibility = (id: string) =>
+      page.locator(`#${id} header > div > *`).evaluateAll((els) =>
+        els.map((el) => {
+          let opacity = 1
+          for (let node: Element | null = el; node; node = node.parentElement) {
+            opacity *= Number(getComputedStyle(node).opacity)
+          }
+          return opacity
+        }),
+      )
+
+    for (const id of ['wao', 'uniquify', 'clc']) expect(await visibility(id)).toEqual([1, 1])
     await expect(page.locator('#uniquify img')).toHaveJSProperty('complete', true)
     expect(
       await page.locator('#uniquify img').evaluate((el: HTMLImageElement) => el.naturalWidth),
@@ -221,8 +328,9 @@ test.describe('palette', () => {
       return { accent, fg, bg: getComputedStyle(document.body).backgroundColor }
     })
 
-  test('light is white, black, and red', async ({ page }) => {
+  test('light is white, black, and red, via the toggle', async ({ page }) => {
     await open(page)
+    await page.getByRole('button', { name: /switch to light/i }).click()
     expect(await tokens(page)).toEqual({
       bg: 'rgb(255, 255, 255)',
       fg: 'rgb(10, 10, 10)',
@@ -230,15 +338,22 @@ test.describe('palette', () => {
     })
   })
 
-  test('dark is navy, white, and orange, via the toggle', async ({ page }) => {
+  test('dark is black, white, and red by default', async ({ page }) => {
     await open(page)
-    await page.getByRole('button', { name: /switch to dark/i }).click()
     expect(await tokens(page)).toEqual({
-      bg: 'rgb(10, 26, 51)',
+      bg: 'rgb(0, 0, 0)',
       fg: 'rgb(255, 255, 255)',
-      accent: 'rgb(255, 122, 26)',
+      accent: 'rgb(255, 31, 31)',
     })
   })
+})
+
+test('Read details is the muted gray in both themes', async ({ page }) => {
+  await open(page)
+  const summary = page.getByText('Read details').first()
+  await expect(summary).toHaveCSS('color', 'rgb(163, 163, 163)')
+  await page.getByRole('button', { name: /switch to light/i }).click()
+  await expect(summary).toHaveCSS('color', 'rgb(85, 89, 95)')
 })
 
 test.describe('phone (390×844)', () => {
@@ -273,7 +388,7 @@ test.describe('phone (390×844)', () => {
     await open(page)
     await expect(page.getByRole('complementary', { name: /illustration/i })).toHaveCSS(
       'background-color',
-      'rgb(255, 255, 255)',
+      'rgb(0, 0, 0)',
     )
   })
 
@@ -281,8 +396,8 @@ test.describe('phone (390×844)', () => {
     page,
   }) => {
     await open(page)
-    await expect(page.locator('#wao header > div').first()).toHaveCSS('opacity', '1')
-    await expect(page.locator('#uniquify header > div').first()).toHaveCSS('opacity', '1')
+    await expect(page.locator('#wao header > div > p')).toHaveCSS('opacity', '1')
+    await expect(page.locator('#uniquify header > div > p')).toHaveCSS('opacity', '1')
   })
 
   test('the stage pins under the nav, scenes switch, and the page never scrolls sideways', async ({

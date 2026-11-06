@@ -1,6 +1,6 @@
 import { expect, type Page, test } from '@playwright/test'
 
-const canvas = (page: Page) => page.locator('[data-lorenz-canvas]')
+const canvas = (page: Page) => page.locator('[data-black-hole-canvas]')
 const frame = (page: Page) => canvas(page).evaluate((el) => (el as HTMLCanvasElement).toDataURL())
 
 const open = async (page: Page) => {
@@ -9,7 +9,7 @@ const open = async (page: Page) => {
   await page.waitForTimeout(300)
 }
 
-// Counts painted dots and how many of them carry the accent hue.
+// Counts painted pixels and how many of them carry the accent hue.
 const census = (page: Page) =>
   canvas(page).evaluate((el) => {
     const c = el as HTMLCanvasElement
@@ -28,14 +28,14 @@ const census = (page: Page) =>
     return { painted, accented }
   })
 
-test('paints the orbit and an accent comet', async ({ page }) => {
+test('paints the field and an accent disk', async ({ page }) => {
   await open(page)
   const { painted, accented } = await census(page)
   expect(painted).toBeGreaterThan(1000)
   expect(accented).toBeGreaterThan(50)
 })
 
-test('the comet travels with time, with no scrolling', async ({ page }) => {
+test('the disk swirls with time, with no scrolling', async ({ page }) => {
   await open(page)
   const before = await frame(page)
   await page.waitForTimeout(250)
@@ -58,7 +58,7 @@ test('full strength over the hero, dimmed under sharp content', async ({ page })
   await page.locator('#publications').evaluate((el) => {
     window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY)
   })
-  await expect(canvas(page)).toHaveCSS('opacity', '0.4')
+  await expect(canvas(page)).toHaveCSS('opacity', '0.25')
 })
 
 test('blurs while Experience is the active section, and only then', async ({ page }) => {
@@ -74,14 +74,22 @@ test('blurs while Experience is the active section, and only then', async ({ pag
   await expect(canvas(page)).toHaveCSS('filter', 'none')
   await scrollToMiddleOf('experience')
   await expect(canvas(page)).toHaveCSS('filter', 'blur(6px)')
-  await expect(canvas(page)).toHaveCSS('opacity', '1')
+  await expect(canvas(page)).toHaveCSS('opacity', '0.25')
   await scrollToMiddleOf('publications')
   await expect(canvas(page)).toHaveCSS('filter', 'none')
 })
 
-test('dark theme repaints in orange', async ({ page }) => {
+test('the disk runs hot to white', async ({ page }) => {
   await open(page)
-  await page.getByRole('button', { name: /switch to dark/i }).click()
-  await page.waitForTimeout(300)
-  expect((await census(page)).accented).toBeGreaterThan(50)
+  // Only disk dots are fully opaque: the field and stars carry alpha.
+  const white = await canvas(page).evaluate((el) => {
+    const c = el as HTMLCanvasElement
+    const { data } = c.getContext('2d')?.getImageData(0, 0, c.width, c.height) ?? { data: [] }
+    let count = 0
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] === 255 && data[i] > 240 && data[i + 1] > 240 && data[i + 2] > 240) count += 1
+    }
+    return count
+  })
+  expect(white).toBeGreaterThan(50)
 })

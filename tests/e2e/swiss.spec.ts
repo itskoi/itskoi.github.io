@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test'
 
 test.describe('swiss poster contract', () => {
-  test('opens on paper (light default) with no stored choice', async ({ page }) => {
+  test('opens dark with no stored choice', async ({ page }) => {
     await page.goto('/')
-    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(255, 255, 255)')
+    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(0, 0, 0)')
     expect(await page.locator('html').getAttribute('data-theme')).toBeNull()
   })
 
@@ -42,12 +42,12 @@ test.describe('swiss poster contract', () => {
     await expect(tile).toHaveCSS('border-radius', '0px')
   })
 
-  test('exactly one canvas — the Lorenz backdrop; decorative and hidden from AT', async ({
+  test('exactly one canvas — the black hole backdrop; decorative and hidden from AT', async ({
     page,
   }) => {
     await page.goto('/')
     expect(await page.locator('canvas').count()).toBe(1)
-    const canvas = page.locator('[data-lorenz-canvas]')
+    const canvas = page.locator('[data-black-hole-canvas]')
     await expect(canvas).toBeAttached()
     await expect(canvas).toHaveAttribute('aria-hidden', 'true')
   })
@@ -60,14 +60,15 @@ test.describe('swiss poster contract', () => {
   })
 })
 
-test.describe('paper default, persisted choice', () => {
-  test.use({ colorScheme: 'dark' })
+test.describe('dark default, persisted choice', () => {
+  test.use({ colorScheme: 'light' })
 
-  test('OS dark applies ink mode; a manual flip persists across reload', async ({ page }) => {
+  test('opens dark despite an OS light preference; a flip to paper persists across reload', async ({
+    page,
+  }) => {
     await page.goto('/')
 
-    // No stored choice — the OS dark preference owns first paint.
-    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(10, 26, 51)')
+    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(0, 0, 0)')
 
     const toggle = page.getByRole('button', { name: /switch to/i })
     await toggle.click()

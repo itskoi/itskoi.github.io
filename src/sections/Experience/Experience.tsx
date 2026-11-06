@@ -4,7 +4,6 @@ import { useActiveId, useSectionActive } from '@/hooks/useSectionActive'
 import styles from './Experience.module.css'
 
 const PROJECT_IDS = experience.flatMap((item) => item.projects.map((project) => project.id))
-const ENTRY_IDS = experience.map((item) => item.id)
 
 const emphasize = (text: string) =>
   text.split('**').map((part, index) => (index % 2 ? <strong key={part}>{part}</strong> : part))
@@ -13,7 +12,6 @@ export function Experience() {
   const active = useSectionActive('experience')
   // The stage is in view from the section's top, so it shouldn't wait for the first project.
   const activeProject = useActiveId(PROJECT_IDS) ?? (active ? PROJECT_IDS[0] : undefined)
-  const activeEntry = useActiveId(ENTRY_IDS)
 
   return (
     <section
@@ -34,12 +32,7 @@ export function Experience() {
         </aside>
         <div className={styles.entries}>
           {experience.map((item) => (
-            <article
-              key={item.id}
-              id={item.id}
-              className={styles.entry}
-              data-active={item.id === activeEntry}
-            >
+            <article key={item.id} id={item.id} className={styles.entry}>
               <header className={styles.entryHeader}>
                 <div className={styles.intro}>
                   {/* Decorative: the company's name is right below it. */}
@@ -67,18 +60,26 @@ export function Experience() {
                   data-active={project.id === activeProject}
                 >
                   <h4 className={styles.projectTitle}>{project.title}</h4>
-                  {project.stack.length > 0 && (
-                    <ul className={styles.stack}>
-                      {project.stack.map((tool) => (
-                        <li key={tool}>{tool}</li>
-                      ))}
-                    </ul>
-                  )}
-                  {project.body.map((paragraph) => (
-                    <p key={paragraph} className={styles.body}>
-                      {emphasize(paragraph)}
-                    </p>
-                  ))}
+                  <details className={styles.details}>
+                    <summary
+                      className={styles.summary}
+                      aria-label={`Read details: ${project.title}`}
+                    >
+                      Read details
+                    </summary>
+                    {project.stack.length > 0 && (
+                      <ul className={styles.stack}>
+                        {project.stack.map((tool) => (
+                          <li key={tool}>{tool}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {project.body.map((paragraph) => (
+                      <p key={paragraph} className={styles.body}>
+                        {emphasize(paragraph)}
+                      </p>
+                    ))}
+                  </details>
                 </div>
               ))}
               {item.notes?.map((note) => (

@@ -65,6 +65,22 @@ describe('Experience', () => {
     expect(container.textContent).not.toContain('**')
   })
 
+  it('shows only the title of a project until its details are opened', () => {
+    render(<Experience />)
+    for (const project of projects) {
+      const block = document.getElementById(project.id) as HTMLElement
+      const details = block.querySelector('details') as HTMLDetailsElement
+      expect(details.open).toBe(false)
+      expect(details.querySelector('summary')).toHaveTextContent('Read details')
+      expect(details.querySelector('summary')).toHaveAccessibleName(
+        `Read details: ${project.title}`,
+      )
+      expect(block.querySelector('h4')?.closest('details')).toBeNull()
+      for (const tool of project.stack) expect(details).toHaveTextContent(tool)
+      expect(details).toHaveTextContent(project.body[0].replaceAll('**', ''))
+    }
+  })
+
   it('keeps the non-project resume note', () => {
     render(<Experience />)
     expect(screen.getByText('AI training modules').tagName).toBe('STRONG')
@@ -128,30 +144,6 @@ describe('Experience', () => {
       expect(within(article).getByText(item.about)).toBeInTheDocument()
       expect(item.about.length).toBeLessThanOrEqual(70)
     }
-  })
-
-  it('reveals a company only while the band is inside its entry', () => {
-    const observerClass = stubBandObserver()
-    render(<Experience />)
-    const entries = () => experience.map((item) => document.getElementById(item.id))
-    for (const entry of entries()) expect(entry).toHaveAttribute('data-active', 'false')
-
-    act(() => {
-      observerClass.mock.calls[2]?.[0](
-        [
-          {
-            isIntersecting: true,
-            target: document.getElementById('uniquify'),
-          } as unknown as IntersectionObserverEntry,
-        ],
-        undefined as unknown as IntersectionObserver,
-      )
-    })
-    expect(entries().map((entry) => entry?.getAttribute('data-active'))).toEqual([
-      'false',
-      'true',
-      'false',
-    ])
   })
 
   it('marks the heading active when its section crosses the shared band', () => {

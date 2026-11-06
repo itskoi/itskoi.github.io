@@ -32,9 +32,9 @@ test.describe('portfolio page', () => {
     await expect(page.getByText("IEEE RIVF'23", { exact: true })).toBeVisible()
   })
 
-  test('renders the Lorenz canvas behind the content', async ({ page }) => {
+  test('renders the black hole canvas behind the content (dark default)', async ({ page }) => {
     await page.goto('/')
-    await expect(page.locator('[data-lorenz-canvas]')).toBeAttached()
+    await expect(page.locator('[data-black-hole-canvas]')).toBeAttached()
     // Content stays visible on top of the canvas.
     await expect(page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' })).toBeVisible()
   })
@@ -44,7 +44,7 @@ test.describe('portfolio page', () => {
   }) => {
     await page.goto('/')
     await page.getByRole('heading', { level: 1, name: 'Võ Bách Khôi' }).waitFor()
-    const canvas = page.locator('[data-lorenz-canvas]')
+    const canvas = page.locator('[data-black-hole-canvas]')
     await expect(canvas).toBeAttached()
 
     // Enter Education, where the figure sits behind full-width text.
