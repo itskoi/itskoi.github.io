@@ -1,0 +1,627 @@
+:root {
+  --bg: #edf2eb;
+  --fg: #1e2e26;
+  --muted: #55665c;
+  --rule: #c9d5cb;
+  --accent: #bf3b2b;
+  --on-accent: #fff7f3;
+  --display: "Alegreya", Georgia, serif;
+  --body: "Alegreya Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "DM Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #131b17;
+    --fg: #e5ede6;
+    --muted: #9db0a4;
+    --rule: #2f3d35;
+    --accent: #f0806c;
+    --on-accent: #2a0f0a;
+    color-scheme: dark;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 17px / 1.5 var(--body);
+}
+.app {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  height: 100dvh;
+  background: var(--scene);
+}
+.sidebar {
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  backdrop-filter: blur(10px);
+  min-width: 0;
+  overflow-y: auto;
+  padding: 24px 20px 24px max(20px, env(safe-area-inset-left, 0px));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+.stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+h1,
+h2 {
+  font-family: var(--display);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0;
+}
+h1 {
+  font-family: "Pixelify Sans", var(--mono);
+  font-weight: 600;
+  font-size: 2.2rem;
+  color: var(--accent);
+}
+h2 {
+  font-size: 1.6rem;
+}
+p {
+  margin: 0;
+}
+button {
+  font: 700 15px var(--body);
+  color: var(--fg);
+  background: none;
+  cursor: pointer;
+  border: 1px solid var(--muted);
+  border-radius: 3px;
+  padding: 5px 12px;
+  min-height: 36px;
+}
+button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+button[aria-pressed="true"],
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.notice {
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  padding: 8px 12px;
+}
+.hint {
+  font-size: 15px;
+  color: var(--muted);
+}
+.empty,
+.stage-note {
+  color: var(--on-scene);
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  text-align: center;
+}
+.count {
+  color: var(--on-scene);
+  position: absolute;
+  z-index: 1;
+  top: 16px;
+  inset-inline: 0;
+  text-align: center;
+  font: 500 clamp(2rem, 5vw, 3.25rem) var(--mono);
+  font-variant-numeric: tabular-nums;
+  /* The garden can grow behind the timer, and clicks must still reach the trees. */
+  text-shadow:
+    0 0 8px var(--halo),
+    0 0 2px var(--halo);
+  pointer-events: none;
+}
+.picker {
+  display: grid;
+  gap: 8px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.label {
+  font-weight: 700;
+}
+hr {
+  align-self: stretch;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+.garden {
+  position: relative;
+  height: 100%;
+}
+.scroller {
+  height: 100%;
+  overflow: auto;
+}
+.world {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.world svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.tree-scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+[data-scheme="sky"] {
+  --scene: linear-gradient(180deg, #7cc4ee 0%, #bfe6f5 55%, #fdf3d8 100%);
+  --on-scene: #14323f;
+  --halo: #e6f6fb;
+  --cast: #5f8ea3;
+  --bird: #2c4552;
+}
+[data-scheme="dawn"] {
+  --scene: linear-gradient(170deg, #a9b4ea 0%, #e7a6c4 48%, #ffd7a8 100%);
+  --on-scene: #2b2140;
+  --halo: #ffeedd;
+  --cast: #8d7a9e;
+  --bird: #3a2f55;
+}
+[data-scheme="sunset"] {
+  --scene: linear-gradient(175deg, #3a2463 0%, #a83e72 42%, #f28a5e 75%, #ffd28a 100%);
+  --on-scene: #fff4e6;
+  --halo: #3a2463;
+  --cast: #5b2a55;
+  --bird: #201236;
+}
+[data-scheme="lagoon"] {
+  --scene: linear-gradient(170deg, #0e6e78 0%, #2fb7a8 50%, #c5f2df 100%);
+  --on-scene: #f2fffb;
+  --halo: #0b5560;
+  --cast: #2c8b88;
+  --bird: #083d45;
+}
+[data-scheme="blossom"] {
+  --scene: linear-gradient(165deg, #f9d5e5 0%, #f6b9cf 50%, #d9c4f2 100%);
+  --on-scene: #4a1f3a;
+  --halo: #fff0f6;
+  --cast: #b98aa8;
+  --bird: #5a2a4a;
+}
+[data-scheme="night"] {
+  --scene: linear-gradient(180deg, #070b20 0%, #141d4a 55%, #3a3275 100%);
+  --on-scene: #e8ecff;
+  --halo: #070b20;
+  --cast: #02040e;
+  --bird: #c9d3ff;
+}
+.settings {
+  align-self: stretch;
+  margin-top: auto;
+  border-top: 1px solid var(--rule);
+  padding-top: 12px;
+}
+.settings summary {
+  font-weight: 700;
+  cursor: pointer;
+}
+.settings-body {
+  display: grid;
+  gap: 16px;
+  margin-top: 12px;
+}
+.minutes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.minutes span:first-child {
+  flex: 1;
+}
+.minutes input {
+  width: 72px;
+  min-height: 36px;
+  padding: 4px 8px;
+  font: 500 15px var(--mono);
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--muted);
+  border-radius: 3px;
+}
+.minutes input[aria-invalid="true"] {
+  border-color: var(--accent);
+}
+.swatch,
+.swatch:hover,
+.swatch[aria-pressed="true"] {
+  background: var(--scene);
+  color: var(--on-scene);
+  border-color: transparent;
+}
+.swatch[aria-pressed="true"] {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.tree-card {
+  align-self: stretch;
+  background: var(--scene);
+  border-radius: 3px;
+}
+.tree-card .tree-scene {
+  height: auto;
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 760px) {
+  body {
+    font-size: 16px;
+  }
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+  }
+  .stage {
+    order: -1;
+    height: 60dvh;
+  }
+}
+
+.t {
+  cursor: pointer;
+}
+.t:focus {
+  outline: none;
+}
+.t:focus-visible .hit {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+.can {
+  animation: pour 1.7s ease-in-out both;
+}
+.drops > * {
+  animation: fall 0.7s ease-in both;
+}
+.wet {
+  animation: soak 2.6s linear both;
+}
+.t.w .art {
+  animation: sway 0.8s ease-in-out;
+}
+.swim {
+  animation: swim 16s linear infinite;
+}
+.swim.other {
+  animation-duration: 23s;
+  animation-direction: reverse;
+}
+.flap {
+  animation: flap 0.28s ease-in-out infinite alternate;
+}
+.beat {
+  animation: beat 0.46s ease-in-out infinite alternate;
+}
+.w1 {
+  animation: w1 12s ease-in-out infinite alternate;
+}
+.w2 {
+  animation: w2 15s ease-in-out infinite alternate;
+}
+.w3 {
+  animation: w3 10s ease-in-out infinite alternate;
+}
+.fly {
+  animation: cross 26s linear infinite;
+}
+.breathe {
+  animation: breathe 2.6s ease-in-out infinite alternate;
+}
+.wag {
+  animation: wag 0.62s ease-in-out infinite alternate;
+}
+.wag-fast {
+  animation: wag-fast 0.24s ease-in-out infinite alternate;
+}
+.wag-small {
+  animation: wag-small 0.42s ease-in-out infinite alternate;
+}
+.tail-cat {
+  animation: tail-cat 3.4s ease-in-out infinite alternate;
+}
+.tail-slow {
+  animation: tail-cat 5.6s ease-in-out infinite alternate;
+}
+.tail-twitch {
+  animation: tail-cat 1.7s ease-in-out infinite alternate;
+}
+.bob {
+  animation: bob 3.2s ease-in-out infinite alternate;
+}
+.tilt {
+  animation: tilt 8s ease-in-out infinite;
+}
+.pant {
+  animation: pant 0.46s ease-in-out infinite alternate;
+}
+.tongue {
+  animation: tongue 0.46s ease-in-out infinite alternate;
+}
+.flick {
+  animation: flick 6.4s linear infinite;
+}
+.blink {
+  opacity: 0;
+  animation: blink 4.6s linear infinite;
+}
+.island {
+  --lift: -10px;
+  /* Its own compositor layer, so floating a huge garden costs no repaint. */
+  will-change: transform;
+  animation: float 3.6s ease-in-out infinite alternate;
+}
+.tree-float {
+  --lift: -3px;
+  animation: float 3.6s ease-in-out infinite alternate;
+}
+.island-shadow {
+  animation: shadow-fade 3.6s ease-in-out infinite alternate;
+}
+@keyframes float {
+  to {
+    transform: translateY(var(--lift));
+  }
+}
+@keyframes shadow-fade {
+  to {
+    opacity: 0.65;
+  }
+}
+@keyframes pour {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  15% {
+    opacity: 1;
+    transform: none;
+  }
+  45%,
+  80% {
+    opacity: 1;
+    transform: rotate(9deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+@keyframes fall {
+  0% {
+    opacity: 0;
+    transform: none;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+    transform: translateY(var(--d));
+  }
+}
+@keyframes soak {
+  0% {
+    opacity: 0;
+  }
+  25%,
+  60% {
+    opacity: 0.34;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes sway {
+  30% {
+    transform: rotate(1.1deg);
+  }
+  70% {
+    transform: rotate(-1.1deg);
+  }
+}
+@keyframes hold {
+  0%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes swim {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes flap {
+  to {
+    transform: scaleX(0.2);
+  }
+}
+@keyframes beat {
+  to {
+    transform: scaleY(0.2);
+  }
+}
+@keyframes w1 {
+  25% {
+    transform: translate(18px, -12px);
+  }
+  50% {
+    transform: translate(-12px, -24px);
+  }
+  75% {
+    transform: translate(14px, 6px);
+  }
+  100% {
+    transform: translate(-18px, 2px);
+  }
+}
+@keyframes w2 {
+  25% {
+    transform: translate(-20px, -6px);
+  }
+  50% {
+    transform: translate(10px, 12px);
+  }
+  75% {
+    transform: translate(24px, -16px);
+  }
+  100% {
+    transform: translate(-6px, -22px);
+  }
+}
+@keyframes w3 {
+  33% {
+    transform: translate(12px, 14px);
+  }
+  66% {
+    transform: translate(-16px, -14px);
+  }
+  100% {
+    transform: translate(20px, -20px);
+  }
+}
+@keyframes breathe {
+  to {
+    transform: scaleY(1.03);
+  }
+}
+@keyframes wag {
+  from {
+    transform: rotate(-13deg);
+  }
+  to {
+    transform: rotate(13deg);
+  }
+}
+@keyframes wag-fast {
+  from {
+    transform: rotate(-24deg);
+  }
+  to {
+    transform: rotate(24deg);
+  }
+}
+@keyframes wag-small {
+  from {
+    transform: rotate(-9deg);
+  }
+  to {
+    transform: rotate(9deg);
+  }
+}
+@keyframes tail-cat {
+  from {
+    transform: rotate(-7deg);
+  }
+  to {
+    transform: rotate(9deg);
+  }
+}
+@keyframes bob {
+  to {
+    transform: translateY(-0.7px) rotate(1.4deg);
+  }
+}
+@keyframes tilt {
+  0%,
+  55%,
+  100% {
+    transform: none;
+  }
+  65%,
+  85% {
+    transform: rotate(-9deg);
+  }
+}
+@keyframes pant {
+  to {
+    transform: translateY(0.7px);
+  }
+}
+@keyframes tongue {
+  from {
+    transform: scaleY(0.82);
+  }
+  to {
+    transform: scaleY(1.12);
+  }
+}
+@keyframes flick {
+  0%,
+  88%,
+  100% {
+    transform: none;
+  }
+  91% {
+    transform: rotate(-6deg) translateY(-0.5px);
+  }
+  94% {
+    transform: rotate(3deg);
+  }
+}
+@keyframes blink {
+  0%,
+  93%,
+  98%,
+  100% {
+    opacity: 0;
+  }
+  94%,
+  97% {
+    opacity: 1;
+  }
+}
+@keyframes cross {
+  to {
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .can,
+  .drops > * {
+    animation: hold 1.7s linear both;
+  }
+  .t.w .art,
+  .island,
+  .tree-float,
+  .island-shadow {
+    animation: none;
+  }
+  .life,
+  .life * {
+    animation: none;
+  }
+}
