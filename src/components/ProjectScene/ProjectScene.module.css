@@ -35,9 +35,62 @@
   color: var(--color-fg-muted);
 }
 
+/* Highlights: a big red value over a short label, quoted from the resume (specs/project-io-scenes). */
+.highlights {
+  padding-left: 1.67%;
+}
+
+.highlights ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+}
+
+.highlights li {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.highlights strong {
+  font-family: var(--font-sans);
+  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--color-accent-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.highlights small {
+  font-size: 0.5em;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.highlights span,
+.highlights p {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-fg-muted);
+}
+
+.highlights p {
+  margin-top: 0.35rem;
+}
+
 @media (max-width: 768px) {
   .caption {
     font-size: 0.75rem;
+  }
+
+  .highlights strong {
+    font-size: 1.25rem;
+  }
+
+  .highlights span,
+  .highlights p {
+    font-size: 0.6875rem;
   }
 }
 
@@ -102,10 +155,42 @@
   fill: var(--color-accent-strong);
 }
 
+.stepLabel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  fill: var(--color-accent-strong);
+  dominant-baseline: central;
+}
+
+.strong {
+  font-weight: 600;
+}
+
 .label {
   font-size: 12px;
   letter-spacing: 0.08em;
   fill: var(--color-fg-muted);
+}
+
+.small {
+  font-size: 13px;
+}
+
+.cross {
+  fill: none;
+  stroke: var(--color-fg-muted);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}
+
+.big {
+  font-family: var(--font-sans);
+  font-size: 30px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  fill: var(--color-accent-strong);
+  dominant-baseline: central;
 }
 
 .middle {
@@ -116,13 +201,38 @@
   text-anchor: end;
 }
 
-.result {
-  font-family: var(--font-sans);
-  font-size: 30px;
-  font-weight: 650;
-  letter-spacing: -0.02em;
-  fill: var(--color-accent-strong);
-  dominant-baseline: central;
+/* Step controls for scenes that play in steps (specs/project-io-scenes). */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 1.67%;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+}
+
+.controls button {
+  font: inherit;
+  color: var(--color-fg);
+  background: none;
+  border: 1px solid var(--color-border);
+  padding: 0.25rem 0.65rem;
+  cursor: pointer;
+}
+
+.controls button:hover {
+  border-color: var(--color-fg);
+}
+
+.controls button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.where {
+  margin-left: 0.5rem;
+  color: var(--color-fg-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Build-ins. */
@@ -138,10 +248,6 @@
 .growY {
   transform-box: fill-box;
   transform-origin: center;
-}
-
-.dim {
-  opacity: 0.2;
 }
 
 .scene[data-active="true"] .pop {
@@ -162,10 +268,6 @@
 
 .scene[data-active="true"] .growY {
   animation: growY 0.35s ease-out var(--d, 0s) backwards;
-}
-
-.scene[data-active="true"] .dim {
-  animation: dim 0.5s ease-out var(--d, 0s) backwards;
 }
 
 .scene[data-active="true"] .rerank {
@@ -203,12 +305,6 @@
   }
 }
 
-@keyframes dim {
-  from {
-    opacity: 1;
-  }
-}
-
 @keyframes rerank {
   from {
     transform: translateY(var(--dy));
@@ -226,7 +322,6 @@
   .scene[data-active="true"] .draw,
   .scene[data-active="true"] .grow,
   .scene[data-active="true"] .growY,
-  .scene[data-active="true"] .dim,
   .scene[data-active="true"] .rerank {
     animation: none;
   }

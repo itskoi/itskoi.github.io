@@ -33,6 +33,10 @@ A personal portfolio SPA. Single page, smooth-scrolling, motion-forward. The sit
 
 ## Changes
 
+### 2026-11-06 — stepped project scenes
+
+1. **Motion (amends the project illustrations note).** A project scene can play in steps (`specs/project-io-scenes`): a JS timeout moves between steps, and each step's build-in stays CSS-only and under 5 s. A full play runs longer than 5 s, so stepped scenes carry Pause, Back and Next controls. Wao Companion is the first.
+
 ### 2026-11-05 — binary star backdrop
 
 1. **Motion (amends the black hole note below).** A binary star orbit replaces the Lorenz attractor as the light theme's canvas (`specs/binary-star-background`). The dark theme keeps the black hole, and both still run on time, not scroll.
