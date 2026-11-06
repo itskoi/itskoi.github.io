@@ -23,18 +23,13 @@ describe('portfolio data', () => {
     const pageText = JSON.stringify({ experience, education, publications, technologies })
 
     it('has the 3 resume roles newest-first, without the removed internship', () => {
-      expect(experience.map((item) => item.company)).toEqual([
-        'Wao',
-        'Uniquify',
-        'Computational Linguistics Center (CLC), HCMUS',
-      ])
+      expect(experience.map((item) => item.company)).toEqual(['Wao', 'Uniquify', 'CLC'])
       expect(pageText).not.toContain('ITR')
     })
 
     it('carries the resume title and dates for Wao', () => {
       expect(experience[0].role).toBe('AI Engineer')
       expect(experience[0].period).toBe('Mar 2025 – Nov 2026')
-      expect(experience[0].context).toContain('Sole AI engineer')
     })
 
     it('lists the Wao projects in the resume order', () => {
@@ -84,10 +79,7 @@ describe('portfolio data', () => {
         .replace(/<style[\s\S]*?<\/style>/g, '')
         .replace(/<[^>]+>/g, '')
         .replace(/\s+/g, ' ')
-      const resumeTexts = experience.flatMap((item) => [
-        ...(item.context ? [item.context] : []),
-        ...(item.notes ?? []),
-      ])
+      const resumeTexts = experience.flatMap((item) => item.notes ?? [])
       const texts = [...resumeTexts, ...projects.flatMap((project) => project.body)]
 
       it.each(resumeTexts)('keeps the resume wording: %s', (text) => {

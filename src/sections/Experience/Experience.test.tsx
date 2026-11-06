@@ -1,9 +1,12 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { experience } from '@/data/portfolio'
 import { Experience } from './Experience'
 import styles from './Experience.module.css'
+
+const { scrollTo } = vi.hoisted(() => ({ scrollTo: vi.fn() }))
+vi.mock('@/lib/lenis', () => ({ scrollTo }))
 
 function stubBandObserver() {
   const observer = { observe: vi.fn(), unobserve: vi.fn(), disconnect: vi.fn() }
@@ -29,6 +32,17 @@ describe('Experience', () => {
     vi.unstubAllGlobals()
   })
 
+  it('scrolls a project onto the band when its title is clicked, so its illustration shows', () => {
+    stubBandObserver()
+    render(<Experience />)
+    const title = screen.getByRole('link', { name: 'Meal suggestions' })
+    expect(title).toHaveAttribute('href', '#meals')
+    fireEvent.click(title)
+    // jsdom puts every element at the top, so the target is the band offset itself:
+    // the title's top lands just above the band's middle (ACTIVE_BAND spans 45–50%).
+    expect(scrollTo).toHaveBeenCalledWith(24 - window.innerHeight * 0.475)
+  })
+
   const projects = experience.flatMap((item) => item.projects)
 
   const activeScene = (container: HTMLElement) =>
@@ -49,7 +63,6 @@ describe('Experience', () => {
       within(first).getByRole('heading', { level: 3, name: 'AI Engineer' }),
     ).toBeInTheDocument()
     expect(within(first).getByRole('link', { name: 'Wao' })).toBeInTheDocument()
-    expect(within(first).getByText('Sole AI engineer').tagName).toBe('STRONG')
   })
 
   it('renders every project as a heading with its stack and its bold results', () => {
@@ -136,13 +149,14 @@ describe('Experience', () => {
     expect(document.getElementById('companion')).toHaveAttribute('data-active', 'false')
   })
 
-  it('gives every company a logo and a short description', () => {
+  it('gives every company a logo and an optional short description', () => {
     render(<Experience />)
     for (const item of experience) {
       const article = document.getElementById(item.id) as HTMLElement
       expect(article.querySelector('img')).toHaveAttribute('src', item.logo)
-      expect(within(article).getByText(item.about)).toBeInTheDocument()
-      expect(item.about.length).toBeLessThanOrEqual(70)
+      const about = item.about ? ` — ${item.about}` : ''
+      expect(article.querySelector('header')).toHaveTextContent(`${item.company}${about}`)
+      expect(about.length).toBeLessThanOrEqual(73)
     }
   })
 

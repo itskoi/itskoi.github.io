@@ -167,6 +167,35 @@ test.describe('two-column Experience (1280×720)', () => {
     await expect(page.locator('#companion')).toHaveAttribute('data-active', 'false')
   })
 
+  test('clicking a project title scrolls to it and shows its illustration', async ({ page }) => {
+    await open(page)
+    await page.locator('#voice h4 a').click()
+    await expect(scene(page, 'voice')).toHaveAttribute('data-active', 'true')
+    await expect(page.locator('#voice')).toBeInViewport()
+  })
+
+  test('companion can be paused and stepped', async ({ page }) => {
+    await open(page)
+    await scrollToProject(page, 'companion')
+    const companion = scene(page, 'companion')
+    await expect(companion).toHaveAttribute('data-active', 'true')
+    const where = companion.getByRole('status')
+
+    await companion.getByRole('button', { name: 'Pause' }).click()
+    await expect(where).toHaveText('Input')
+    await companion.getByRole('button', { name: 'Next' }).click()
+    await expect(where).toHaveText('Step 1 / 7')
+    await expect(companion.getByRole('img')).toContainText('STEP 1 / 7 · INPUT GUARDRAIL')
+    await page.waitForTimeout(2500)
+    await expect(where).toHaveText('Step 1 / 7')
+    // Paused stops the steps, not the drawing: the step must be fully drawn, not frozen invisible.
+    await expect(companion.getByText(/^STEP 1 \/ 7/)).toHaveCSS('opacity', '1')
+    await expect(companion.getByText('guardrail', { exact: true })).toHaveCSS('opacity', '1')
+
+    await companion.getByRole('button', { name: 'Play' }).click()
+    await expect(where).toHaveText('Step 2 / 7', { timeout: 3000 })
+  })
+
   test('builds in under 5 seconds, holds, and replays on re-entry', async ({ page }) => {
     await open(page)
     const longest = (id: string) =>
@@ -187,15 +216,18 @@ test.describe('two-column Experience (1280×720)', () => {
       expect(animation.iterations).toBe(1)
     }
 
-    // Holding: nothing still runs once the build-in is over.
+    // Voice plays its steps (specs/project-io-scenes), then holds on its result with nothing running.
+    const where = scene(page, 'voice').getByRole('status')
+    await expect(where).toHaveText('Result', { timeout: 15000 })
     await expect
-      .poll(async () => (await longest('voice')).filter((a) => a.name).length, { timeout: 7000 })
+      .poll(async () => (await longest('voice')).filter((a) => a.name).length, { timeout: 5000 })
       .toBe(0)
 
     await scrollToProject(page, 'companion')
     await expect(scene(page, 'companion')).toHaveAttribute('data-active', 'true')
     await scrollToProject(page, 'voice')
     await expect(scene(page, 'voice')).toHaveAttribute('data-active', 'true')
+    await expect(where).toHaveText('Input')
     expect((await longest('voice')).filter((a) => a.name).length).toBeGreaterThan(0)
   })
 
@@ -238,13 +270,16 @@ test.describe('two-column Experience (1280×720)', () => {
     await open(page)
     await scrollToProject(page, 'companion')
     await expect(scene(page, 'companion')).toHaveAttribute('data-active', 'true')
-    await expect.poll(() => building(page, 'companion'), { timeout: 7000 }).toBe(0)
+    // Companion plays in steps (specs/project-io-scenes), so starting over means back on its input.
+    const where = scene(page, 'companion').getByRole('status')
+    await expect(where).toHaveText('Step 1 / 7', { timeout: 3000 })
 
     await page.evaluate(() => window.scrollTo(0, 0))
     await expect(scene(page, 'companion')).toHaveAttribute('data-active', 'false')
 
     await scrollToProject(page, 'companion')
     await expect(scene(page, 'companion')).toHaveAttribute('data-active', 'true')
+    await expect(where).toHaveText('Input')
     expect(await building(page, 'companion')).toBeGreaterThan(0)
   })
 

@@ -31,12 +31,11 @@ export interface Project {
 export interface ExperienceItem {
   id: string // the DOM id the scroll tracking observes
   logo: string
-  about: string
+  about?: string
   role: string
   company: string
   period: string
   href?: string
-  context?: string
   projects: readonly Project[]
   notes?: readonly string[]
 }
@@ -90,7 +89,6 @@ export const experience: readonly ExperienceItem[] = [
     company: 'Wao',
     period: 'Mar 2025 – Nov 2026',
     href: 'https://apps.apple.com/vn/app/wao-food-calorie-counter/id6737834587',
-    context: '**Sole AI engineer** on a ~6-person product team.',
     projects: [
       {
         id: 'companion',
@@ -130,7 +128,7 @@ export const experience: readonly ExperienceItem[] = [
   {
     id: 'uniquify',
     logo: uniquifyLogo,
-    about: 'Semiconductor company: SoC design services and DDR memory IP.',
+    about: 'Semiconductor company.',
     role: 'AI Engineer',
     company: 'Uniquify',
     period: 'Oct 2023 – Feb 2025',
@@ -151,9 +149,9 @@ export const experience: readonly ExperienceItem[] = [
   {
     id: 'clc',
     logo: clcLogo,
-    about: 'University research center for Vietnamese language processing.',
     role: 'Research Assistant',
-    company: 'Computational Linguistics Center (CLC), HCMUS',
+    about: 'Computational Linguistics Center, HCMUS',
+    company: 'CLC',
     period: 'Apr 2022 – Sep 2023',
     projects: [
       {

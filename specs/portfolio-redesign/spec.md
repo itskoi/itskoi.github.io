@@ -60,6 +60,10 @@ The resume (`docs/resume.tex`, `docs/resume.html`) was rewritten around projects
 
 ## Changes
 
+### 2026-11-06
+
+- Added: clicking a project title scrolls that project onto the band, so its illustration shows, at the owner's request. — `src/sections/Experience/Experience.test.tsx`, `tests/e2e/experience-scenes.spec.ts`
+
 ### 2026-11-05
 
 - Added: experience text bolds short key phrases so a reader can skim it, at the owner's request. Wording stays identical to the resume, and bold stays under half of each text. Qualifiers that keep a claim accurate, such as "simulated users", are bolded with the numbers they qualify. — `src/data/portfolio.test.ts`, `src/sections/Experience/Experience.test.tsx`

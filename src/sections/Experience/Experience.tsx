@@ -1,9 +1,19 @@
+import type { MouseEvent } from 'react'
 import { ProjectScene } from '@/components/ProjectScene/ProjectScene'
 import { experience } from '@/data/portfolio'
 import { useActiveId, useSectionActive } from '@/hooks/useSectionActive'
+import { scrollTo } from '@/lib/lenis'
 import styles from './Experience.module.css'
 
 const PROJECT_IDS = experience.flatMap((item) => item.projects.map((project) => project.id))
+
+// Lands a project's title just above the band's middle (ACTIVE_BAND spans 45–50%), so it becomes
+// active. An absolute position from the real scrollY, because Lenis may not have seen a native jump yet.
+const scrollToProject = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
+  event.preventDefault()
+  const top = document.getElementById(id)?.getBoundingClientRect().top ?? 0
+  scrollTo(top + window.scrollY + 24 - window.innerHeight * 0.475)
+}
 
 const emphasize = (text: string) =>
   text.split('**').map((part, index) => (index % 2 ? <strong key={part}>{part}</strong> : part))
@@ -34,23 +44,26 @@ export function Experience() {
           {experience.map((item) => (
             <article key={item.id} id={item.id} className={styles.entry}>
               <header className={styles.entryHeader}>
-                <div className={styles.intro}>
-                  {/* Decorative: the company's name is right below it. */}
-                  <img src={item.logo} alt="" className={styles.logo} />
-                  <p className={styles.about}>{item.about}</p>
-                </div>
                 <p className={styles.period}>{item.period}</p>
-                <h3 className={styles.role}>{item.role}</h3>
-                <p className={styles.company}>
-                  {item.href ? (
-                    <a href={item.href} target="_blank" rel="noreferrer noopener">
-                      {item.company}
-                    </a>
-                  ) : (
-                    item.company
-                  )}
-                </p>
-                {item.context && <p className={styles.context}>{emphasize(item.context)}</p>}
+                <div className={styles.title}>
+                  <h3 className={styles.role}>{item.role}</h3>
+                  <div className={styles.intro}>
+                    {/* Decorative: the company's name opens the description beside it. */}
+                    <img src={item.logo} alt="" className={styles.logo} />
+                    <p className={styles.about}>
+                      <span className={styles.company}>
+                        {item.href ? (
+                          <a href={item.href} target="_blank" rel="noreferrer noopener">
+                            {item.company}
+                          </a>
+                        ) : (
+                          item.company
+                        )}
+                      </span>
+                      {item.about && ` — ${item.about}`}
+                    </p>
+                  </div>
+                </div>
               </header>
               {item.projects.map((project) => (
                 <div
@@ -59,7 +72,14 @@ export function Experience() {
                   className={styles.project}
                   data-active={project.id === activeProject}
                 >
-                  <h4 className={styles.projectTitle}>{project.title}</h4>
+                  <h4 className={styles.projectTitle}>
+                    <a
+                      href={`#${project.id}`}
+                      onClick={(event) => scrollToProject(event, project.id)}
+                    >
+                      {project.title}
+                    </a>
+                  </h4>
                   <details className={styles.details}>
                     <summary
                       className={styles.summary}
