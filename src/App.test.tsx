@@ -25,12 +25,14 @@ describe('App', () => {
     it.each([
       ['light', 'data-binary-star-canvas'],
       ['dark', 'data-black-hole-canvas'],
-    ])('on the %s theme, draws one canvas: %s', (theme, attribute) => {
+    ])('on the %s theme, draws one backdrop canvas: %s', (theme, attribute) => {
       document.documentElement.dataset.theme = theme
       const { container } = render(<App />)
-      const canvases = container.querySelectorAll('canvas')
-      expect(canvases).toHaveLength(1)
-      expect(canvases[0]).toHaveAttribute(attribute)
+      const backdrops = container.querySelectorAll(
+        'canvas[data-binary-star-canvas], canvas[data-black-hole-canvas]',
+      )
+      expect(backdrops).toHaveLength(1)
+      expect(backdrops[0]).toHaveAttribute(attribute)
     })
   })
 

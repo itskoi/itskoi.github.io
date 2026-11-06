@@ -7,6 +7,7 @@
   padding-top: 7rem; /* clears the fixed top nav */
   padding-bottom: 3.5rem;
   text-align: left;
+  overflow-x: clip; /* the name's particle canvas bleeds past the viewport */
 }
 
 .poster {
@@ -19,6 +20,21 @@
   font-weight: 650;
   line-height: 1;
   letter-spacing: -0.045em;
+  position: relative;
+  height: 1em;
+}
+
+/* The particle canvas overhangs the name by the bleed (the name sits in the
+   content box), so particles flying off during the spiral intro or a burst
+   have room before the canvas's faded edge. */
+.particles {
+  --bleed-y: 3em;
+  --bleed-x: 1.5em;
+  position: absolute;
+  inset: calc(-1 * var(--bleed-y)) calc(-1 * var(--bleed-x));
+  width: auto;
+  height: auto;
+  padding: var(--bleed-y) var(--bleed-x);
 }
 
 .role {

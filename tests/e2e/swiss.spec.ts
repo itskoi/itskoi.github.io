@@ -42,11 +42,9 @@ test.describe('swiss poster contract', () => {
     await expect(tile).toHaveCSS('border-radius', '0px')
   })
 
-  test('exactly one canvas — the black hole backdrop; decorative and hidden from AT', async ({
-    page,
-  }) => {
+  test('two canvases — the hero name and the decorative black hole backdrop', async ({ page }) => {
     await page.goto('/')
-    expect(await page.locator('canvas').count()).toBe(1)
+    expect(await page.locator('canvas').count()).toBe(2)
     const canvas = page.locator('[data-black-hole-canvas]')
     await expect(canvas).toBeAttached()
     await expect(canvas).toHaveAttribute('aria-hidden', 'true')
