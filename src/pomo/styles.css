@@ -211,9 +211,12 @@ hr {
   --cast: #02040e;
   --bird: #c9d3ff;
 }
+/* Pushes itself and the settings below it to the bottom of the sidebar. */
+.view-toggle {
+  margin-top: auto;
+}
 .settings {
   align-self: stretch;
-  margin-top: auto;
   border-top: 1px solid var(--rule);
   padding-top: 12px;
 }

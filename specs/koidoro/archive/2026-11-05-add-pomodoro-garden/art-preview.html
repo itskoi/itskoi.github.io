@@ -1,0 +1,989 @@
+<title>Koidoro Isometric Garden</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: the garden is the hero and fills the page width; the Work screen, tree table, decorations and rules follow beneath it. */
+:root {
+  --bg: #EDF2EB;
+  --fg: #1E2E26;
+  --muted: #55665C;
+  --rule: #C9D5CB;
+  --accent: #BF3B2B;
+  --on-accent: #FFF7F3;
+  --sky: #CFE4EA;
+  --cast: #6E93A0;
+  --bird: #34454E;
+  --display: "Alegreya", Georgia, serif;
+  --body: "Alegreya Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "DM Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131B17; --fg: #E5EDE6; --muted: #9DB0A4; --rule: #2F3D35;
+    --accent: #F0806C; --on-accent: #2A0F0A; --sky: #1B2B33; --cast: #0B1418; --bird: #C9D8DE; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131B17; --fg: #E5EDE6; --muted: #9DB0A4; --rule: #2F3D35;
+  --accent: #F0806C; --on-accent: #2A0F0A; --sky: #1B2B33; --cast: #0B1418; --bird: #C9D8DE; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 400 17px/1.5 var(--body); }
+.wrap {
+  max-width: 1160px; margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2 { font-family: var(--display); font-weight: 700; line-height: 1.1; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); }
+h2 { font-size: 1.9rem; }
+header { padding-block: 40px 20px; }
+header p { max-width: 62ch; margin: 10px 0 0; color: var(--muted); }
+section { padding-block: 36px; border-top: 1px solid var(--rule); display: grid; gap: 14px; }
+section.first { border-top: 0; padding-top: 0; }
+section > p { margin: 0; max-width: 65ch; }
+.scroller { background: var(--sky); border-radius: 3px; overflow-x: auto; }
+.scroller svg { display: block; width: 100%; height: auto; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.controls label, .label { font-weight: 700; }
+input[type="range"] { flex: 1 1 200px; min-width: 0; height: 28px; margin: 0; accent-color: var(--accent); }
+.readout { font: 500 15px var(--mono); font-variant-numeric: tabular-nums; }
+.hint { font-size: 15px; color: var(--muted); margin: 0; }
+button {
+  font: 700 15px var(--body); color: var(--fg); background: none; cursor: pointer;
+  border: 1px solid var(--muted); border-radius: 3px; padding: 5px 12px; min-height: 36px;
+}
+button:hover { border-color: var(--accent); color: var(--accent); }
+button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.work { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 24px; align-items: center; }
+.work-scene { position: relative; background: var(--sky); border-radius: 3px; }
+.work-scene svg { display: block; width: 100%; height: auto; }
+.count { position: absolute; top: 14px; inset-inline: 0; text-align: center; font: 500 clamp(1.6rem, 4vw, 2.3rem) var(--mono); font-variant-numeric: tabular-nums; }
+.side { display: grid; gap: 16px; min-width: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+
+table { width: 100%; table-layout: fixed; border-collapse: collapse; }
+th { font-weight: 700; text-align: left; font-size: 15px; padding: 4px; vertical-align: middle; line-height: 1.2; }
+th span { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
+thead th span { font: 400 12px var(--mono); }
+td { padding: 0; }
+td svg { display: block; width: 100%; height: auto; }
+col.name { width: 17%; }
+
+.decor { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.decor.pets { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+figure { margin: 0; min-width: 0; }
+.decor svg { display: block; width: 100%; height: auto; background: var(--sky); border-radius: 3px; }
+figcaption { margin-top: 6px; font-size: 15px; line-height: 1.3; }
+figcaption b { display: block; }
+figcaption span { color: var(--muted); }
+
+dl { margin: 0; display: grid; gap: 12px; }
+dl div { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 12px; }
+dt { font-weight: 700; }
+dd { margin: 0; max-width: 62ch; }
+footer { padding-block: 8px 56px; }
+
+.t { cursor: pointer; }
+.t:focus { outline: none; }
+.t:focus-visible .hit { stroke: var(--accent); stroke-width: 2.5; }
+.can { animation: pour 1.7s ease-in-out both; }
+.drops > * { animation: fall .7s ease-in both; }
+.wet { animation: soak 2.6s linear both; }
+.t.w .art { animation: sway .8s ease-in-out; }
+.swim { animation: swim 16s linear infinite; }
+.swim.other { animation-duration: 23s; animation-direction: reverse; }
+.flap { animation: flap .28s ease-in-out infinite alternate; }
+.beat { animation: beat .46s ease-in-out infinite alternate; }
+.w1 { animation: w1 12s ease-in-out infinite alternate; }
+.w2 { animation: w2 15s ease-in-out infinite alternate; }
+.w3 { animation: w3 10s ease-in-out infinite alternate; }
+.fly { animation: cross 26s linear infinite; }
+.breathe { animation: breathe 2.6s ease-in-out infinite alternate; }
+.wag { animation: wag .62s ease-in-out infinite alternate; }
+.wag-fast { animation: wag-fast .24s ease-in-out infinite alternate; }
+.wag-small { animation: wag-small .42s ease-in-out infinite alternate; }
+.tail-cat { animation: tail-cat 3.4s ease-in-out infinite alternate; }
+.bob { animation: bob 3.2s ease-in-out infinite alternate; }
+.tilt { animation: tilt 8s ease-in-out infinite; }
+.pant { animation: pant .46s ease-in-out infinite alternate; }
+.tongue { animation: tongue .46s ease-in-out infinite alternate; }
+.flick { animation: flick 6.4s linear infinite; }
+.blink { opacity: 0; animation: blink 4.6s linear infinite; }
+@keyframes pour { 0% { opacity: 0; transform: translateY(-8px); } 15% { opacity: 1; transform: none; } 45%, 80% { opacity: 1; transform: rotate(9deg); } 100% { opacity: 0; transform: translateY(-6px); } }
+@keyframes fall { 0% { opacity: 0; transform: none; } 15% { opacity: 1; } 100% { opacity: .2; transform: translateY(var(--d)); } }
+@keyframes soak { 0% { opacity: 0; } 25%, 60% { opacity: .34; } 100% { opacity: 0; } }
+@keyframes sway { 30% { transform: rotate(1.1deg); } 70% { transform: rotate(-1.1deg); } }
+@keyframes hold { 0%, 80% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes swim { to { transform: rotate(360deg); } }
+@keyframes flap { to { transform: scaleX(.2); } }
+@keyframes beat { to { transform: scaleY(.2); } }
+@keyframes w1 { 25% { transform: translate(18px, -12px); } 50% { transform: translate(-12px, -24px); } 75% { transform: translate(14px, 6px); } 100% { transform: translate(-18px, 2px); } }
+@keyframes w2 { 25% { transform: translate(-20px, -6px); } 50% { transform: translate(10px, 12px); } 75% { transform: translate(24px, -16px); } 100% { transform: translate(-6px, -22px); } }
+@keyframes w3 { 33% { transform: translate(12px, 14px); } 66% { transform: translate(-16px, -14px); } 100% { transform: translate(20px, -20px); } }
+@keyframes breathe { to { transform: scaleY(1.03); } }
+@keyframes wag { from { transform: rotate(-13deg); } to { transform: rotate(13deg); } }
+@keyframes wag-fast { from { transform: rotate(-24deg); } to { transform: rotate(24deg); } }
+@keyframes wag-small { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+@keyframes tail-cat { from { transform: rotate(-7deg); } to { transform: rotate(9deg); } }
+@keyframes bob { to { transform: translateY(-.7px) rotate(1.4deg); } }
+@keyframes tilt { 0%, 55%, 100% { transform: none; } 65%, 85% { transform: rotate(-9deg); } }
+@keyframes pant { to { transform: translateY(.7px); } }
+@keyframes tongue { from { transform: scaleY(.82); } to { transform: scaleY(1.12); } }
+@keyframes flick { 0%, 88%, 100% { transform: none; } 91% { transform: rotate(-6deg) translateY(-.5px); } 94% { transform: rotate(3deg); } }
+@keyframes blink { 0%, 93%, 98%, 100% { opacity: 0; } 94%, 97% { opacity: 1; } }
+@keyframes cross { to { transform: translate(var(--dx), var(--dy)); } }
+.paused .life, .paused .life * { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .can, .drops > * { animation: hold 1.7s linear both !important; }
+  .t.w .art { animation: none; }
+  .life, .life * { animation: none !important; }
+}
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 760px) {
+  body { font-size: 16px; }
+  .work { grid-template-columns: minmax(0, 1fr); }
+  .decor, .decor.pets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  dl div { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="defs"></defs></svg>
+
+<header class="wrap">
+  <h1>Koidoro isometric garden</h1>
+  <p>Vietnamese trees, ponds, dogs and cats, built from small cubes on plots of land and drawn in code with no image files. This is a sample garden, so you can see how yours would look.</p>
+</header>
+
+<main class="wrap">
+  <section class="first" aria-labelledby="h-break">
+    <h2 id="h-break">Break session</h2>
+    <div class="scroller" id="garden" tabindex="-1"></div>
+    <div class="controls">
+      <label for="count">Trees in the garden</label>
+      <input id="count" type="range" min="1" max="120" value="30">
+      <button id="pause" type="button">Pause animals</button>
+    </div>
+    <p class="readout" id="count-out" style="margin:0"></p>
+    <p class="hint" id="alive"></p>
+    <p class="hint">Select a tree to water it. On a keyboard, tab into the garden, use the arrow keys to move between trees, and press Enter to water.</p>
+  </section>
+
+  <section aria-labelledby="h-work">
+    <h2 id="h-work">Work session</h2>
+    <div class="work">
+      <div class="work-scene">
+        <div class="count" id="left"></div>
+        <svg id="work-art" viewBox="-78 -118 156 156" role="img"></svg>
+      </div>
+      <div class="side">
+        <div>
+          <span class="label" id="pick">Choose your tree, then start</span>
+          <div class="chips" id="chips" role="group" aria-labelledby="pick"></div>
+          <p class="hint" id="note" style="margin-top:8px"></p>
+        </div>
+        <div class="controls">
+          <label for="elapsed">Time elapsed</label>
+          <input id="elapsed" type="range" min="0" max="1500" step="10" value="1500">
+          <button id="play" type="button">Play at 60×</button>
+        </div>
+        <p class="readout" id="stage-out" style="margin:0"></p>
+        <p class="hint">A tree only reaches Mature if the session runs to 00:00. Abandon it earlier and it stays at its current stage.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-species">
+    <h2 id="h-species">Six Vietnamese trees, four stages</h2>
+    <table id="species"></table>
+  </section>
+
+  <section aria-labelledby="h-decor">
+    <h2 id="h-decor">Decorations and animals</h2>
+    <div class="decor" id="decor"></div>
+  </section>
+
+  <section aria-labelledby="h-pets">
+    <h2 id="h-pets">Dogs and cats</h2>
+    <div class="decor pets" id="pets"></div>
+  </section>
+
+  <section aria-labelledby="h-rules">
+    <h2 id="h-rules">How the garden behaves</h2>
+    <dl>
+      <div><dt>Choosing a tree</dt><dd>You pick one of the six before each Work session. The sample garden above uses a random mix.</dd></div>
+      <div><dt>Where trees go</dt><dd>Each tree takes the next plot in a square spiral out from the centre. Once planted, it never moves.</dd></div>
+      <div><dt>Decorations</dt><dd>Some plots along the spiral hold a pond, rocks, a meadow or a buffalo. They arrive by themselves as the garden grows.</dd></div>
+      <div><dt>Dogs and cats</dt><dd>Each pet arrives once, by itself, and stays in its spot on the grass at the front of the garden, wagging, blinking and looking around. As the garden grows, pets settle further out, so trees never hide them.</dd></div>
+      <div><dt>Other animals</dt><dd id="animals-rule"></dd></div>
+      <div><dt>Empty plots</dt><dd>Grass plots surround the trees, so the edge of the garden stays soft as it grows.</dd></div>
+      <div><dt>Big gardens</dt><dd>The garden shrinks to fit the screen. Once a plot would be narrower than 28 pixels, it scrolls sideways instead.</dd></div>
+      <div><dt>Watering</dt><dd>A watering can pours over the tree and the soil darkens for a moment, then fades. Nothing about the tree changes.</dd></div>
+    </dl>
+  </section>
+</main>
+<footer class="wrap"><p class="hint">All of this is sample art and sample data, generated from the same code each time.</p></footer>
+<p class="sr" id="live" aria-live="polite"></p>
+
+<script>
+/* ---------- Geometry: a plot is 8 x 8 cubes, and each cube is 4 units on the screen ---------- */
+const U = 4;
+const P = (a, b, c) => [(a - b) * U, (a + b) * U / 2 - c * U];
+const n2 = (v) => +v.toFixed(1);
+const quad = (ps, fill, extra = '') => `<path d="M${ps.map(([x, y]) => `${n2(x)} ${n2(y)}`).join('L')}Z" fill="${fill}" stroke="${fill}" stroke-width=".3"${extra}/>`;
+const mix = (hex, t) => {
+  const n = parseInt(hex.slice(1), 16), to = t < 0 ? 0 : 255, a = Math.abs(t);
+  const f = (s) => Math.round(((n >> s) & 255) * (1 - a) + to * a).toString(16).padStart(2, '0');
+  return `#${f(16)}${f(8)}${f(0)}`;
+};
+const rnd = (...v) => {
+  let h = 2166136261;
+  for (const x of v) { h ^= Math.round(x * 7) + 1000; h = Math.imul(h, 16777619); h ^= h >>> 13; }
+  return ((h >>> 0) % 10000) / 10000;
+};
+const TOP = 1, LEFT = 2, RIGHT = 4;
+function box(x, y, z, dx, dy, dz, c, faces = 7) {
+  let s = '';
+  if (faces & LEFT) s += quad([P(x, y + dy, z + dz), P(x + dx, y + dy, z + dz), P(x + dx, y + dy, z), P(x, y + dy, z)], c);
+  if (faces & RIGHT) s += quad([P(x + dx, y, z + dz), P(x + dx, y + dy, z + dz), P(x + dx, y + dy, z), P(x + dx, y, z)], mix(c, -.2));
+  if (faces & TOP) s += quad([P(x, y, z + dz), P(x + dx, y, z + dz), P(x + dx, y + dy, z + dz), P(x, y + dy, z + dz)], mix(c, .14));
+  return s;
+}
+// Draws cubes back to front and leaves out faces another cube hides.
+function vox(list) {
+  const at = new Set(list.map(([x, y, z]) => `${x},${y},${z}`));
+  return [...list].sort((a, b) => a[0] + a[1] + a[2] - b[0] - b[1] - b[2]).map(([x, y, z, c]) => {
+    const f = (at.has(`${x},${y},${z + 1}`) ? 0 : TOP) | (at.has(`${x},${y + 1},${z}`) ? 0 : LEFT) | (at.has(`${x + 1},${y},${z}`) ? 0 : RIGHT);
+    return f ? box(x, y, z, 1, 1, 1, c, f) : '';
+  }).join('');
+}
+const decal = (x, y, s, c, z = .02, o = '') => quad([P(x, y, z), P(x + s, y, z), P(x + s, y + s, z), P(x, y + s, z)], c, o);
+
+/* ---------- Trees: many small cubes, lit once and drawn to an image, so a huge garden stays fast ---------- */
+const SPECIES = {
+  phuong: { name: 'Phượng', en: 'Flame tree', note: 'The red tree that blooms as school ends for summer.', seed: '#8A5A34', bud: 'phuong', fallen: 'phuong', shadow: 36 },
+  mai: { name: 'Mai', en: 'Yellow apricot', note: 'The yellow blossom of Tết in the south.', seed: '#6B4A2D', bud: 'mai', fallen: 'mai', shadow: 28 },
+  dao: { name: 'Đào', en: 'Peach blossom', note: 'The pink blossom of Tết in the north.', seed: '#9A6A48', bud: 'dao', fallen: 'dao', shadow: 30 },
+  da: { name: 'Đa', en: 'Banyan', note: 'The great tree that shades the village gate.', seed: '#5E7A3A', shadow: 40 },
+  tre: { name: 'Tre', en: 'Bamboo', note: 'The bamboo that rings the villages.', seed: '#B5A36A', shadow: 26 },
+  dua: { name: 'Dừa', en: 'Coconut palm', note: 'The palm of the Mekong Delta and the coast.', seed: '#5A3D24', shadow: 26 },
+};
+const IDS = Object.keys(SPECIES);
+const STAGES = [['Seed', '0:00'], ['Sprout', '8:20'], ['Sapling', '16:40'], ['Mature', '25:00']];
+const HEIGHT = [18, 34, 54, 78];
+
+// Five tones from shadow to highlight. Shadows lean cool and highlights lean warm.
+const PAL = {
+  phuong: ['#7A1A1E', '#B52A22', '#DE4527', '#F2752F', '#FFB65E'],
+  mai: ['#A8660F', '#D9941A', '#F2BE2B', '#FADD55', '#FFF4A8'],
+  dao: ['#A84868', '#D3708F', '#EE97B2', '#F9C0D0', '#FFE9EE'],
+  da: ['#143A2C', '#205C38', '#37803E', '#62A447', '#A6CC60'],
+  leaf: ['#1D472D', '#2C6936', '#478C3E', '#72AD4B', '#ABCF68'],
+  bamboo: ['#1F5A33', '#2F7A3A', '#4F9C41', '#7FBF4E', '#C2E274'],
+  palm: ['#17523A', '#277440', '#449845', '#78BA4E', '#BADB69'],
+  culm: ['#3A6E2E', '#55913A', '#78AE45', '#9FC95A', '#D6E58B'],
+  sheath: ['#5B4A26', '#7E6A34', '#A3914A', '#BFB064', '#DDD08C'],
+  bark: ['#2B1C16', '#46302A', '#66483A', '#86664E', '#A98A6C'],
+  plum: ['#22141A', '#3A2329', '#553638', '#6F4C48', '#8E6A5E'],
+  rootwood: ['#3A2B20', '#574232', '#755A44', '#927557', '#B39674'],
+  tan: ['#4A3626', '#6E5238', '#92724F', '#B0916A', '#D0B48E'],
+  coco: ['#2C1B10', '#4A2F1B', '#6B4626', '#8C6236', '#AC8450'],
+  soil: ['#3F2A1C', '#5A3E2A', '#755438', '#8F6C4A', '#AB8A64'],
+  stone: ['#5F5D58', '#7C7A74', '#9A9891', '#B6B4AC', '#D2D0C8'],
+  corgi: ['#A8581E', '#CC7A2E', '#E29A45', '#EFB768', '#F9D596'],
+  cream: ['#C9B08C', '#E0CBA8', '#F0E0C4', '#F8EEDC', '#FFFAF0'],
+  goldenRich: ['#8E5418', '#B97723', '#D69A38', '#E8B95B', '#F5D58C'],
+  goldenLight: ['#BC8636', '#D8A654', '#EBC37A', '#F5D99E', '#FCECC6'],
+  goldenEar: ['#6E3E12', '#8E5518', '#A96C22', '#BF8433', '#D29C4B'],
+  shiba: ['#A64E1C', '#C76A28', '#DE883A', '#EDA75C', '#F7C68A'],
+  ginger: ['#B86A1E', '#D98A2C', '#EEA848', '#F7C470', '#FDE0A4'],
+  gingerStripe: ['#8E4E14', '#AE681C', '#C8802A', '#DC9A3C', '#EAB458'],
+  whitecat: ['#B9B4AC', '#D6D1C9', '#EBE7DF', '#F6F3EC', '#FFFFFF'],
+  blackcat: ['#0F0E14', '#1C1A24', '#2C2936', '#413E4D', '#5F5C6E'],
+  pink: ['#C77B8B', '#E09AA8', '#F0B6C0', '#F8CFD6', '#FFE6EA'],
+};
+const toneCache = new Map();
+function tone(pal, v) {
+  const i = Math.round(Math.min(1, Math.max(0, v)) * 40), key = pal + i;
+  if (!toneCache.has(key)) {
+    const stops = PAL[pal] || [pal, pal];
+    const at = (i / 40) * (stops.length - 1), a = Math.min(stops.length - 2, Math.floor(at)), t = at - a;
+    const ch = (h, n) => parseInt(h.slice(1 + n * 2, 3 + n * 2), 16);
+    toneCache.set(key, `rgb(${[0, 1, 2].map((n) => Math.round(ch(stops[a], n) * (1 - t) + ch(stops[a + 1], n) * t)).join(',')})`);
+  }
+  return toneCache.get(key);
+}
+const K = (x, y, z) => (x + 128) | ((y + 128) << 8) | ((z + 16) << 16);
+const put = (g, x, y, z, p, v) => { if (z >= 0) g.set(K(x, y, z), { x, y, z, p, v }); };
+// A puff of foliage. Each puff is lit as its own ball, which is what makes a crown look soft and full.
+function lump(g, cx, cy, cz, r, rz, p, o = {}) {
+  const rr = Math.ceil(r) + 1, rh = Math.ceil(rz) + 1;
+  for (let z = Math.floor(cz) - rh; z <= cz + rh; z++) for (let y = Math.floor(cy) - rr; y <= cy + rr; y++) for (let x = Math.floor(cx) - rr; x <= cx + rr; x++) {
+    const dx = (x + .5 - cx) / r, dy = (y + .5 - cy) / r, dz = (z + .5 - cz) / rz, d = dx * dx + dy * dy + dz * dz, n = rnd(x, y, z, 1);
+    if (d > 1 - n * (o.fluff ?? .2) || (o.holes && d > .3 && rnd(x, y, z, 9) < o.holes)) continue;
+    const light = -dx * .38 + dy * .38 + dz * .84;
+    let pal = p, v = .5 + light * .42 + (n - .5) * .2 + (o.lift || 0);
+    if (o.under && dz < -.05 && rnd(z, y, x, 2) < .75) { pal = o.under; v -= .05; }
+    if (o.speck && rnd(y, x, z, 5) < o.speck[1]) pal = o.speck[0];
+    if (o.stripe && z % o.stripe[0] === 0) pal = o.stripe[1];
+    put(g, x, y, z, pal, v);
+    if (o.bloom && dz > .1 && d > .5 && rnd(x, z, y, 8) < o.bloom) put(g, x, y, z + 1, p, .86 + n * .14);
+  }
+}
+// A trunk or branch along a line, tapering from r0 to r1.
+function limb(g, pts, r0, r1, p, o = {}) {
+  let total = 0;
+  for (let i = 1; i < pts.length; i++) total += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1], pts[i][2] - pts[i - 1][2]);
+  let run = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const [a, b] = [pts[i - 1], pts[i]], len = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]) || 1;
+    for (let s = 0; s <= len; s += .35) {
+      const t = s / len, px = a[0] + (b[0] - a[0]) * t, py = a[1] + (b[1] - a[1]) * t, pz = a[2] + (b[2] - a[2]) * t;
+      const r = Math.max(.72, r0 + (r1 - r0) * ((run + s) / total)), c = Math.ceil(r) + 1;
+      for (let dz = -c; dz <= c; dz++) for (let dy = -c; dy <= c; dy++) for (let dx = -c; dx <= c; dx++) {
+        const x = Math.floor(px) + dx, y = Math.floor(py) + dy, z = Math.floor(pz) + dz;
+        const ox = x + .5 - px, oy = y + .5 - py, oz = z + .5 - pz;
+        if (Math.hypot(ox, oy, oz) > r) continue;
+        let v = .5 + (-ox + oy) / r * .22 + (rnd(x, y, z, 3) - .5) * .2;
+        if (o.band && z % o.band === 0) v -= .17;
+        put(g, x, y, z, p, v + (o.lift || 0));
+      }
+    }
+    run += len;
+  }
+}
+const SHAPES = {
+  phuong(g, k) {
+    const L = (pts, a, b) => limb(g, pts.map((q) => q.map((n) => n * k)), Math.max(a * k, .72), Math.max(b * k, .72), 'bark');
+    const B = (x, y, z, r, rz, lift) => lump(g, x * k, y * k, z * k, r * k, rz * k, 'phuong', { under: 'leaf', bloom: .22, speck: ['leaf', .05], lift });
+    L([[0, 0, 0], [0, 0, 11]], 2.5, 1.7);
+    L([[0, 0, 0], [4, 1, 0]], 1.3, .7); L([[0, 0, 0], [-2, 4, 0]], 1.2, .7); L([[0, 0, 0], [-3, -3, 0]], 1.1, .7);
+    L([[0, 0, 10], [5, -3, 16], [7, -5, 19]], 1.3, .7); L([[0, 0, 10], [-5, 3, 16], [-7, 5, 19]], 1.3, .7);
+    L([[0, 0, 11], [2, 5, 18]], 1.1, .7); L([[0, 0, 11], [-2, -5, 18]], 1.1, .7); L([[0, 0, 11], [0, 0, 20]], 1.2, .7);
+    [[7, -6, 21, 4.4, 2.5], [-7, 6, 21, 4.4, 2.5], [6, 5, 20.5, 4.6, 2.5], [-6, -5, 21, 4.6, 2.5], [6.5, -1, 22, 5, 2.8], [-6, 1.5, 22, 5, 2.8], [1, 6, 22, 5, 2.8], [-1, -6, 22.5, 5, 2.8]].forEach((b) => B(...b));
+    B(0, 0, 25, 7.4, 3, .05);
+    if (k === 1) { B(3.5, -2.5, 27, 3.8, 1.9, .1); B(-3, 3, 27, 3.6, 1.9, .1); }
+  },
+  mai(g, k) {
+    const L = (pts, a, b) => limb(g, pts.map((q) => q.map((n) => n * k)), Math.max(a * k, .72), Math.max(b * k, .72), 'plum');
+    const B = (x, y, z, r, rz) => lump(g, x * k, y * k, z * k, r * k, rz * k, 'mai', { holes: .34, fluff: .32, bloom: .2, speck: ['leaf', .07], lift: .03 });
+    L([[0, 0, 0], [-2, 2, 5], [1, -1, 11], [0, 0, 17]], 2.5, 1);
+    L([[0, 0, 0], [3, 1, 0]], 1.2, .7); L([[0, 0, 0], [-2, -3, 0]], 1.1, .7);
+    L([[1, -1, 10], [5, -3, 13], [8, -6, 17]], 1.2, .72); L([[-1, 1, 7], [-5, 2, 11], [-8, 5, 16]], 1.2, .72);
+    L([[-1, 1, 6], [-3, -3, 9], [-6, -4, 12]], .9, .72); L([[1, -1, 9], [4, 3, 12], [6, 5, 14]], .9, .72);
+    [[8, -6, 18.5, 3.9, 3], [-8, 5, 17.5, 4, 3], [0, 0, 20, 4.6, 3.8], [-6.5, -4.5, 13, 3.1, 2.4], [6.5, 5, 15, 3.2, 2.5], [3.5, -2, 15, 3.1, 2.6], [-3.5, 2, 14.5, 3, 2.5]].forEach((b) => B(...b));
+  },
+  dao(g, k) {
+    const L = (pts, a, b) => limb(g, pts.map((q) => q.map((n) => n * k)), Math.max(a * k, .72), Math.max(b * k, .72), 'plum');
+    const B = (x, y, z, r, rz, lift = 0) => lump(g, x * k, y * k, z * k, r * k, rz * k, 'dao', { holes: .08, bloom: .24, lift });
+    L([[0, 0, 0], [1, -1, 6], [0, 0, 11]], 2.3, 1.4);
+    L([[0, 0, 0], [3, 1, 0]], 1.1, .7); L([[0, 0, 0], [-2, 3, 0]], 1.1, .7);
+    L([[0, 0, 9], [5, -3, 14]], 1, .72); L([[0, 0, 9], [-5, 3, 14]], 1, .72); L([[0, 0, 9], [1, 5, 13]], .9, .72); L([[0, 0, 9], [-1, -5, 14]], .9, .72);
+    [[6, -4, 15.5, 4.6, 3.3], [-6, 4, 15.5, 4.6, 3.3], [1.5, 6, 15, 4.4, 3.1], [-1.5, -6, 16, 4.4, 3.2]].forEach((b) => B(...b));
+    B(0, 0, 19, 6.8, 4.6, .03); B(3, -2, 23, 3.6, 2.6, .1); B(-3, 2.5, 22.5, 3.6, 2.6, .1);
+  },
+  da(g, k) {
+    const L = (pts, a, b, p = 'bark') => limb(g, pts.map((q) => q.map((n) => n * k)), Math.max(a * k, .72), Math.max(b * k, .72), p);
+    const B = (x, y, z, r, rz, lift = 0) => lump(g, x * k, y * k, z * k, r * k, rz * k, 'da', { lift, fluff: .16 });
+    L([[0, 0, 0], [0, 0, 15]], 3.4, 2.4);
+    L([[-3, 2, 0], [-1, 1, 14]], 1.7, 1); L([[3, -1, 0], [1, 0, 14]], 1.5, 1); L([[1, 3, 0], [0, 1, 13]], 1.3, 1);
+    L([[0, 0, 0], [5, 1, 0]], 1.5, .7); L([[0, 0, 0], [-1, 5, 0]], 1.5, .7); L([[0, 0, 0], [-4, -3, 0]], 1.3, .7);
+    if (k === 1) [[-8, -3, 0], [7, -6, 3], [8, 3, 0], [-4, 8, 0], [-9, 3, 5], [2, 8, 2], [-2, -8, 4], [6, 7, 0], [5, 0, 6], [-5, 1, 3], [-6, -7, 6], [8, -3, 7]].forEach(([x, y, z0]) => L([[x + .5, y + .5, z0], [x + .5, y + .5, 19]], .8, .72, 'rootwood'));
+    [[7, -3, 20, 5.8, 3.6], [-7, 3, 20, 5.8, 3.6], [2, 7, 20, 5.8, 3.4], [-2, -7, 20.5, 5.8, 3.6], [6, 6, 18.5, 4.4, 2.8], [-6, -6, 19, 4.4, 2.8], [8, -7, 19, 3.8, 2.4], [-8, 7, 19, 3.8, 2.4]].forEach((b) => B(...b));
+    B(0, 0, 24, 8, 4.6, .02); B(4, -2.5, 28.5, 4.4, 2.6, .08); B(-3.5, 3, 28, 4.6, 2.6, .08); B(0, -5, 26, 3.8, 2.3, .05);
+  },
+  tre(g, k) {
+    const culms = [[0, 0, 38, .5, -.5], [-3, -1, 35, -3, -.5], [0, -3, 36, .5, -3.5], [2, 0, 34, 3.5, .5], [-1, 2, 32, -.5, 3.5], [3, -3, 29, 4, -3], [-4, 2, 27, -4, 2.5]];
+    (k < 1 ? culms.slice(0, 4) : culms).forEach(([x, y, h, bx, by], ci) => {
+      const H = Math.round(h * k);
+      for (let z = 0; z < H; z++) {
+        const t = z / H, cx = x * k + bx * k * t * t, cy = y * k + by * k * t * t;
+        put(g, Math.round(cx), Math.round(cy), z, 'culm', z % 5 === 4 ? .95 : .42 + rnd(ci, z) * .12 - (x + y > 2 ? .05 : 0));
+      }
+      // Thin sprays high on each stalk, so the stalks stay visible and the clump stays slender.
+      for (let z = H * .55; z < H + 1; z += 3.4) {
+        const t = z / H, cx = x * k + bx * k * t * t, cy = y * k + by * k * t * t;
+        for (let side = 0; side < 2; side++) {
+          const a = rnd(ci, Math.round(z), side, 4) * 6.28, len = (2.4 + rnd(ci, Math.round(z), side, 5) * 2.6) * Math.max(k, .7);
+          for (let j = 1; j <= len; j++) {
+            const px = Math.round(cx + Math.cos(a) * j), py = Math.round(cy + Math.sin(a) * j), pz = Math.round(z + .7 * j - .24 * j * j), v = .34 + t * .3 + rnd(px, py, pz) * .22;
+            put(g, px, py, pz, 'bamboo', v);
+          }
+        }
+      }
+    });
+  },
+  dua(g, k) {
+    const q = (p) => p.map((n) => n * k), T = q([2, -2, 31]);
+    lump(g, ...q([-2, 2, 0]), 3 * k + .6, 1.8 * k + .4, 'tan', { fluff: .05 });
+    limb(g, [[-2, 2, 0], [-1.6, 1.6, 10], [-.4, .4, 20], [2, -2, 31]].map(q), Math.max(1.7 * k, .8), Math.max(1.05 * k, .72), 'tan', { band: 3 });
+    const kk = Math.max(k, .55), fronds = k < 1 ? 6 : 9;
+    for (let i = 0; i < fronds; i++) {
+      const a = (i * 6.283) / fronds + rnd(i, 21) * .35, ca = Math.cos(a), sa = Math.sin(a), len = (11.5 + rnd(i, 22) * 2.2) * kk, rise = (3.5 + rnd(i, 23) * 2.5) * kk, fall = (13 + rnd(i, 24) * 3) * kk;
+      const steps = Math.ceil(len * 1.5);
+      for (let s = 0; s <= steps; s++) {
+        const t = s / steps, x = T[0] + ca * len * t, y = T[1] + sa * len * t, z = T[2] + 1 + rise * t * 1.4 - fall * t * t;
+        put(g, Math.round(x), Math.round(y), Math.round(z), 'palm', .66 + rnd(i, s) * .14);
+        if (s % 2) continue;
+        const w = Math.round(2.4 * kk * Math.sin(Math.PI * Math.min(1, t + .12)));
+        for (let e = -w; e <= w; e++) {
+          if (e) put(g, Math.round(x - sa * e), Math.round(y + ca * e), Math.round(z - 1 - Math.abs(e) * .7), 'palm', .32 + t * .24 + rnd(i, s, e) * .2 + (e > 0 ? .08 : -.04));
+        }
+      }
+    }
+    lump(g, T[0], T[1], T[2] + 1, 2 * kk, 1.6 * kk, 'palm', { fluff: .05, lift: .06 });
+    if (k === 1) [[1.6, .4], [-.4, 1.8], [-1.8, -.2], [.8, -1.6], [2, 1.8]].forEach(([dx, dy], i) => lump(g, T[0] + dx, T[1] + dy, T[2] - 1.6 - (i % 2), 1.45, 1.45, 'coco', { fluff: .02 }));
+  },
+};
+const soilBed = (g, r) => {
+  lump(g, 0, 0, 0, r, 1.5, 'soil', { fluff: .3, lift: -.04 });
+  for (let i = 0; i < 6; i++) { const a = i * 1.05 + rnd(i, 31), R = r - 1 + rnd(i, 32) * 2; put(g, Math.round(Math.cos(a) * R), Math.round(Math.sin(a) * R), 1, 'stone', .5 + rnd(i, 33) * .4); }
+};
+function buildTree(id, stage) {
+  const g = new Map(), sp = SPECIES[id];
+  if (stage === 0) {
+    soilBed(g, 5.5);
+    lump(g, 0, 0, 0, 3.6, 3, 'soil', { fluff: .12 });
+    lump(g, -.5, .5, 3.4, 1.5, 1.1, sp.seed, { fluff: .02, lift: .08 });
+  } else if (stage === 1) {
+    soilBed(g, 6);
+    if (id === 'tre') {
+      for (let z = 0; z < 12; z++) { const r = 2.3 - z * .17; lump(g, 0, 0, z + .5, Math.max(r, .72), .9, z > 8 ? 'bamboo' : 'sheath', { fluff: .02, lift: z % 3 ? 0 : -.1 }); }
+      [[1, -1, 12], [-1, 1, 12], [0, 0, 13], [2, -2, 13], [-2, 1, 13]].forEach(([x, y, z]) => put(g, x, y, z, 'bamboo', .75));
+    } else if (id === 'dua') {
+      lump(g, 0, 0, 2.4, 3.1, 2.8, 'coco', { fluff: .03 });
+      for (let a = 0; a < 5; a++) for (let j = 0; j < 9; j++) put(g, Math.round(Math.cos(a * 1.26 + .4) * j * .85), Math.round(Math.sin(a * 1.26 + .4) * j * .85), Math.round(5 + j * 1.4 - j * j * .12), 'palm', .4 + j * .05);
+    } else {
+      limb(g, [[0, 0, 0], [0, 0, 6], [1, -1, 10]], 1, .72, 'leaf', { lift: .05 });
+      lump(g, -3.4, 1.4, 9.6, 3.1, 1.2, 'leaf', { fluff: .08, lift: .1 });
+      lump(g, 3.2, -3.4, 11, 3.1, 1.2, 'leaf', { fluff: .08, lift: .1 });
+      lump(g, 2, 1.4, 8, 2.2, 1, 'leaf', { fluff: .08 });
+      lump(g, 1, -1, 12, 1.6, 1.6, sp.bud || 'leaf', { fluff: .05, lift: .1 });
+    }
+  } else if (stage === 2) {
+    soilBed(g, 6.5);
+    SHAPES[id](g, id === 'tre' ? .6 : id === 'dua' ? .52 : .58);
+  } else {
+    SHAPES[id](g, 1);
+    if (sp.fallen) for (let i = 0; i < 20; i++) { const a = rnd(i, 41) * 6.28, r = 3.5 + rnd(i, 42) * 3.4; put(g, Math.round(Math.cos(a) * r), Math.round(Math.sin(a) * r), 0, sp.fallen, .6 + rnd(i, 43) * .3); }
+  }
+  return g;
+}
+const TU = 2; // A tree cube is half a plot cube.
+// Paints cubes back to front, skipping hidden faces and darkening faces with cubes above them.
+function paint(ctx, g, tu) {
+  const TP = (a, b, c) => [(a - b) * tu, (a + b) * tu / 2 - c * tu];
+  ctx.lineWidth = .22;
+  const has = (x, y, z) => g.has(K(x, y, z));
+  const fill = (color, a, b, d, e) => {
+    ctx.fillStyle = color; ctx.strokeStyle = color;
+    ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...b); ctx.lineTo(...d); ctx.lineTo(...e); ctx.closePath(); ctx.fill(); ctx.stroke();
+  };
+  [...g.values()].sort((a, b) => a.x + a.y + a.z - b.x - b.y - b.z).forEach(({ x, y, z, p, v }) => {
+    if (!has(x, y + 1, z)) fill(tone(p, v - .07 - (has(x, y + 1, z + 1) ? .09 : 0)), TP(x, y + 1, z + 1), TP(x + 1, y + 1, z + 1), TP(x + 1, y + 1, z), TP(x, y + 1, z));
+    if (!has(x + 1, y, z)) fill(tone(p, v - .21 - (has(x + 1, y, z + 1) ? .09 : 0)), TP(x + 1, y, z + 1), TP(x + 1, y + 1, z + 1), TP(x + 1, y + 1, z), TP(x + 1, y, z));
+    if (!has(x, y, z + 1)) {
+      const crowd = (has(x + 1, y, z + 1) ? 1 : 0) + (has(x, y + 1, z + 1) ? 1 : 0) + (has(x - 1, y, z + 1) ? 1 : 0) + (has(x, y - 1, z + 1) ? 1 : 0);
+      fill(tone(p, v + .11 - crowd * .05), TP(x, y, z + 1), TP(x + 1, y, z + 1), TP(x + 1, y + 1, z + 1), TP(x, y + 1, z + 1));
+    }
+  });
+}
+const SPRITE = { x: -60, y: -100, w: 120, h: 132, scale: 5 };
+function treeArt(id, stage) {
+  const g = buildTree(id, stage);
+  const c = document.createElement('canvas');
+  c.width = SPRITE.w * SPRITE.scale; c.height = SPRITE.h * SPRITE.scale;
+  const ctx = c.getContext('2d');
+  ctx.scale(SPRITE.scale, SPRITE.scale);
+  ctx.translate(-SPRITE.x, -SPRITE.y);
+  // A soft shadow falls away from the light, onto the grass.
+  const R = [12, 15, 21, Math.min(SPECIES[id].shadow * .82, 30)][stage];
+  ctx.save();
+  // Clipped to the plot, so a shadow never lands on the sky at the edge of the garden.
+  ctx.beginPath(); ctx.moveTo(0, -16); ctx.lineTo(32, 0); ctx.lineTo(0, 16); ctx.lineTo(-32, 0); ctx.closePath(); ctx.clip();
+  ctx.translate(R * .24, R * .1);
+  ctx.scale(1, .5);
+  const grad = ctx.createRadialGradient(0, 0, R * .2, 0, 0, R);
+  grad.addColorStop(0, 'rgba(18,46,28,.46)');
+  grad.addColorStop(.7, 'rgba(18,46,28,.26)');
+  grad.addColorStop(1, 'rgba(18,46,28,0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath(); ctx.arc(0, 0, R, 0, 6.3); ctx.fill();
+  ctx.restore();
+  paint(ctx, g, TU);
+  return `<image href="${c.toDataURL('image/png')}" x="${SPRITE.x}" y="${SPRITE.y}" width="${SPRITE.w}" height="${SPRITE.h}"/>`;
+}
+
+/* ---------- Dogs and cats: smaller cubes for more detail. Each is drawn in parts, so the parts can move while the pet stays in its spot ---------- */
+const DARK = '#17151A';
+const eyes = (parts, y, z, ex, color, lid) => {
+  for (const s of [-1, 1]) {
+    const x = s < 0 ? -ex - 1 : ex;
+    for (const [dx, dz] of [[0, 0], [1, 0], [0, 1], [1, 1]]) {
+      put(parts.head, x + dx, y, z + dz, color, .5);
+      put(parts.lids, x + dx, y, z + dz, lid, .46);
+    }
+    put(parts.head, x, y, z + 1, '#FFFFFF', .9); // catchlight, so the eye looks alive
+    if (color !== DARK) put(parts.head, x + 1, y, z, DARK, .5); // pupil on a coloured eye
+  }
+};
+function earPair(g, y, z0, h, wide, x, coat, inner) {
+  for (const s of [-1, 1]) for (let i = 0; i < h; i++) {
+    const r = (h - i) / h * wide + .5;
+    lump(g, s * x, y, z0 + i + .5, r, .8, coat, { fluff: 0 });
+    if (inner && i < h - 1) lump(g, s * x, y + r * .55, z0 + i + .5, Math.max(r * .5, .6), .7, inner, { fluff: 0 });
+  }
+}
+function sittingDog(parts, coat, chest, muzzle) {
+  const b = parts.body, h = parts.head, soft = { fluff: .12 };
+  lump(b, 0, -3.5, 4, 5, 4.2, coat, soft);
+  for (const s of [-1, 1]) lump(b, s * 3.6, -.5, 1.3, 2.1, 1.4, chest, soft);
+  lump(b, 0, -1, 9.5, 4.4, 6.6, coat, soft);
+  lump(b, 0, 2.4, 9, 3.1, 5, chest, { fluff: .24 });
+  for (const s of [-1, 1]) {
+    limb(b, [[s * 2, 3, 0], [s * 2, 2.6, 8]], 1.5, 1.4, chest, { lift: .1 });
+    lump(b, s * 2, 4.2, 1, 1.8, 1.2, chest, soft);
+  }
+  lump(h, 0, 2, 18.5, 6, 5.4, coat, { fluff: .08, lift: .04 });
+  lump(h, 0, 7, 16.4, 3, 2.4, muzzle, { fluff: 0, lift: .08 });
+  for (const x of [-1, 0]) put(h, x, 10, 17, '#1B1A1E', .5);
+  eyes(parts, 7, 20, 2, DARK, coat);
+}
+const PETS = {
+  corgi: {
+    name: 'Corgi', tu: 1.1, tailAt: [0, -9, 8], tail: 'wag-fast', headAt: [0, 3, 10], headMove: 'bob', draw(p) {
+      for (const [x, y] of [[-2.5, -7], [2.5, -7], [-2.5, 1], [2.5, 1]]) limb(p.body, [[x, y, 0], [x, y, 4]], 1.5, 1.4, 'cream', { lift: .08 });
+      lump(p.body, 0, -6, 7, 4.4, 3.8, 'corgi', { fluff: .1 });
+      lump(p.body, 0, -1, 7.2, 4.4, 3.8, 'corgi', { fluff: .1 });
+      lump(p.body, 0, 2.4, 6.4, 3.7, 3.9, 'cream', { fluff: .2 });
+      lump(p.tail, 0, -11, 9, 1.7, 1.7, 'corgi', { fluff: 0 });
+      lump(p.head, 0, 5, 13.5, 5.4, 4.8, 'corgi', { fluff: .06, lift: .04 });
+      lump(p.head, 0, 9.5, 12, 2.8, 2.2, 'cream', { fluff: 0, lift: .08 });
+      lump(p.head, 0, 9.6, 15.4, 1.2, 2.2, 'cream', { fluff: 0, lift: .1 }); // white blaze up the forehead
+      for (const x of [-1, 0]) put(p.head, x, 12, 12, '#1B1A1E', .5);
+      eyes(p, 9, 14, 2, DARK, 'corgi');
+      earPair(p.ears, 4.4, 17, 7, 1.9, 3.6, 'corgi', 'pink');
+    },
+  },
+  golden: {
+    // Broad head, long muzzle, ears hanging past the jaw, a feathered neck and chest, and a long plume of a tail.
+    name: 'Golden retriever', tu: 1.25, tailAt: [2, -6, 2], tail: 'wag', headAt: [0, 1, 14], headMove: 'pant', draw(p) {
+      const b = p.body, h = p.head, fur = 'goldenRich', light = 'goldenLight', coat = { fluff: .22, speck: ['goldenEar', .07] };
+      limb(p.tail, [[2, -6, 2], [6, -8, 2.5], [11, -7, 4]], 1.6, 1.1, fur);
+      lump(p.tail, 5, -8, 2, 2.6, 2, light, { fluff: .45 });
+      lump(p.tail, 9, -7.6, 2.8, 2.4, 1.8, light, { fluff: .45 });
+      lump(p.tail, 12, -6.8, 4.4, 1.6, 1.4, light, { fluff: .3 });
+      lump(b, 0, -3.5, 4.2, 5.4, 4.4, fur, coat);
+      for (const s of [-1, 1]) lump(b, s * 4, -.5, 1.3, 2.2, 1.4, light, { fluff: .1 });
+      lump(b, 0, -1, 10, 4.8, 7, fur, coat);
+      for (const s of [-1, 1]) {
+        limb(b, [[s * 2.2, 3.2, 0], [s * 2.2, 2.8, 8]], 1.7, 1.5, fur, { lift: .06 });
+        lump(b, s * 2.6, 1.6, 4, 1.5, 3, light, { fluff: .45 });
+        lump(b, s * 2.2, 4.4, 1, 2, 1.2, light, { fluff: .08 });
+      }
+      lump(b, 0, 1, 14, 5.2, 4, fur, { ...coat, fluff: .3 });
+      lump(b, 0, 4.2, 11, 4.4, 4.6, light, { fluff: .42, lift: .06 });
+      lump(b, 0, 5, 7.6, 3, 3.6, light, { fluff: .5, lift: .06 });
+      lump(h, 0, 2, 19.4, 5.5, 4.5, fur, { fluff: .1, lift: .03 });
+      lump(h, 0, 7.4, 17.4, 3.1, 2.3, light, { fluff: .02, lift: .02 });
+      lump(h, 0, 9.2, 16.9, 2.3, 1.7, light, { fluff: .02 });
+      for (const x of [-1, 0]) put(h, x, 11, 17, '#1B1A1E', .5);
+      for (const x of [-2, -1, 0, 1]) put(h, x, 10, 15, '#3B2418', .5);
+      eyes(p, 7, 20, 2, DARK, fur);
+      for (const s of [-1, 1]) {
+        lump(h, s * 5.4, 2.6, 20.5, 2.3, 1.6, 'goldenEar', { fluff: .18 });
+        lump(h, s * 6.6, 3.4, 17.8, 2.5, 2.6, 'goldenEar', { fluff: .18 });
+        lump(h, s * 6.6, 3.8, 15, 1.8, 2.2, 'goldenEar', { fluff: .18 });
+      }
+      lump(p.tongue, -.5, 10, 13.4, 1.2, 1.7, 'pink', { fluff: 0, lift: .1 });
+    },
+  },
+  shiba: {
+    name: 'Shiba', tu: 1.1, tailAt: [0, -6, 8], tail: 'wag-small', headAt: [0, 1, 14], headMove: 'tilt', draw(p) {
+      lump(p.tail, 0, -8.2, 8.8, 3.1, 3.1, 'shiba', { fluff: .06 }); // curled tail
+      lump(p.tail, 0, -8.8, 9.6, 1.7, 1.7, 'cream', { fluff: 0 });
+      sittingDog(p, 'shiba', 'cream', 'cream');
+      for (const s of [-1, 1]) lump(p.head, s * 3.3, 6, 16, 2.5, 2, 'cream', { fluff: .02, lift: .05 });
+      lump(p.head, 0, 7, 16.4, 3, 2.4, 'cream', { fluff: 0, lift: .08 });
+      for (const x of [-1, 0]) put(p.head, x, 10, 17, '#1B1A1E', .5);
+      eyes(p, 7, 20, 2, DARK, 'shiba');
+      earPair(p.ears, 2, 22, 5, 2, 3.6, 'shiba', 'cream');
+    },
+  },
+  yellow: { name: 'Yellow cat', cat: true, coat: 'ginger', stripe: [3, 'gingerStripe'], muzzle: 'cream', eye: '#3F8A3F', inner: 'pink' },
+  white: { name: 'White cat', cat: true, coat: 'whitecat', muzzle: 'whitecat', eye: '#3F7FC4', inner: 'pink' },
+  black: { name: 'Black cat', cat: true, coat: 'blackcat', muzzle: 'blackcat', eye: '#E9C22E', inner: 'blackcat' },
+};
+function drawCat(p, pet) {
+  const c = { fluff: .08, stripe: pet.stripe };
+  limb(p.tail, [[2.5, -4.5, 1], [5.5, -2, 1], [6, 1.5, 1], [4.5, 3.8, 1]], 1.3, 1, pet.coat);
+  lump(p.body, 0, -2, 3.4, 4.1, 3.5, pet.coat, c);
+  lump(p.body, 0, -.5, 7.4, 3.3, 5.2, pet.coat, c);
+  for (const s of [-1, 1]) {
+    limb(p.body, [[s * 1.6, 2, 0], [s * 1.6, 1.8, 6]], 1.2, 1.1, pet.coat, { lift: .06 });
+    lump(p.body, s * 1.6, 3, .9, 1.5, .9, pet.muzzle === 'cream' ? 'cream' : pet.coat, { fluff: 0, lift: .08 });
+  }
+  lump(p.head, 0, 1.5, 14, 5.4, 4.4, pet.coat, { ...c, lift: .05 });
+  lump(p.head, 0, 5.8, 12.8, 1.9, 1.4, pet.muzzle, { fluff: 0, lift: .1 });
+  put(p.head, -1, 7, 13, 'pink', .35); put(p.head, 0, 7, 13, 'pink', .35);
+  eyes(p, 6, 14, 2, pet.eye, pet.coat);
+  earPair(p.ears, 1, 17, 5, 1.9, 3.4, pet.coat, pet.inner);
+}
+const PET_BOX = { x: -36, y: -46, w: 72, h: 62, scale: 6 };
+const partImage = (paintFn) => {
+  const c = document.createElement('canvas');
+  c.width = PET_BOX.w * PET_BOX.scale; c.height = PET_BOX.h * PET_BOX.scale;
+  const ctx = c.getContext('2d');
+  ctx.scale(PET_BOX.scale, PET_BOX.scale);
+  ctx.translate(-PET_BOX.x, -PET_BOX.y);
+  paintFn(ctx);
+  return `<image href="${c.toDataURL('image/png')}" x="${PET_BOX.x}" y="${PET_BOX.y}" width="${PET_BOX.w}" height="${PET_BOX.h}"/>`;
+};
+function petDefs(id) {
+  const pet = PETS[id], parts = { tail: new Map(), body: new Map(), head: new Map(), ears: new Map(), lids: new Map(), tongue: new Map() };
+  if (pet.cat) Object.assign(pet, { tu: 1.1, tailAt: [2.5, -4.5, 1], tail: 'tail-cat', tailFront: true, headAt: [0, 1, 10], headMove: 'bob' });
+  if (pet.cat) drawCat(parts, pet); else pet.draw(parts);
+  pet.parts = Object.keys(parts).filter((k) => parts[k].size);
+  const base = partImage((ctx) => {
+    ctx.translate(3, 2);
+    ctx.scale(1, .5);
+    const grad = ctx.createRadialGradient(0, 0, 3, 0, 0, 17);
+    grad.addColorStop(0, 'rgba(18,46,28,.42)');
+    grad.addColorStop(1, 'rgba(18,46,28,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(0, 0, 17, 0, 6.3); ctx.fill();
+  });
+  return `<g id="pet-${id}-base">${base}</g>` + pet.parts.map((k) => `<g id="pet-${id}-${k}">${partImage((ctx) => paint(ctx, parts[k], pet.tu))}</g>`).join('');
+}
+// Everything moves around its own joint, so tails wag from the base and heads turn from the neck.
+function petMarkup(id, i) {
+  const pet = PETS[id], d = `animation-delay:${(-i * .83).toFixed(2)}s`;
+  const at = ([x, y, z]) => [(x - y) * pet.tu, (x + y) * pet.tu / 2 - z * pet.tu];
+  const layer = (k) => (pet.parts.includes(k) ? use(`pet-${id}-${k}`) : '');
+  const moving = (inner, cls, pivot) => {
+    if (!inner) return '';
+    const [x, y] = at(pivot);
+    return `<g transform="translate(${x} ${y})"><g class="life ${cls}" style="${d}"><g transform="translate(${-x} ${-y})">${inner}</g></g></g>`;
+  };
+  const tail = moving(layer('tail'), pet.tail, pet.tailAt);
+  const body = moving(layer('body'), 'breathe', [0, 0, 0]);
+  const head = layer('head') + moving(layer('tongue'), 'tongue', [0, 10, 15]) + moving(layer('ears'), 'flick', pet.headAt) + `<g class="life blink" style="${d}">${layer('lids')}</g>`;
+  return use(`pet-${id}-base`) + (pet.tailFront ? body + tail : tail + body) + moving(head, pet.headMove, pet.headAt);
+}
+
+/* ---------- Plots, decorations and the animals that stand still ---------- */
+const GRASS = '#8FC766';
+function plot(v) {
+  let s = '';
+  for (let i = 0; i < 8; i++) {
+    for (const [fx, fy, face] of [[-4 + i, 3, LEFT], [3, -4 + i, RIGHT]]) {
+      const lip = 1 + rnd(i, v, face) * .6, dirt = 2.6 + rnd(i, v, face, 1), rock = dirt + .7 + rnd(i, v, face, 2) * .9;
+      s += box(fx, fy, -rock, 1, 1, rock - dirt, '#6D6A64', face) + box(fx, fy, -dirt, 1, 1, dirt - lip, '#8A6A45', face) + box(fx, fy, -lip, 1, 1, lip, '#74AE52', face);
+    }
+  }
+  s += decal(-4, -4, 8, GRASS, 0);
+  for (let i = 0; i < 12; i++) {
+    const size = rnd(i, v, 5) < .5 ? .5 : 1;
+    s += decal(-4 + rnd(i, v, 1) * (8 - size), -4 + rnd(i, v, 2) * (8 - size), size, rnd(i, v, 3) < .5 ? '#A3D678' : '#7FB85A');
+  }
+  const bits = [[], [['#F6D84E', 3]], [['#FBFBF4', 3], ['#F29FB6', 2]], [['#A9A79F', 3]]][v];
+  bits.forEach(([c, count], b) => {
+    for (let i = 0; i < count; i++) {
+      const x = -3.5 + rnd(i, v, b, 7) * 6.5, y = -3.5 + rnd(i, v, b, 8) * 6.5;
+      s += v === 3 ? box(x, y, 0, .7, .7, .4, c) : box(x + .1, y + .1, 0, .15, .15, .7, '#5C9A42') + box(x, y, .7, .4, .4, .15, c);
+    }
+  });
+  return s;
+}
+// Half-size cubes, so animals can have more detail than trees.
+const small = (list, x, y, z = 0) => { const [sx, sy] = P(x, y, z); return `<g transform="translate(${sx} ${sy}) scale(.5)">${vox(list)}</g>`; };
+function egret() {
+  const w = '#F7F4EA', v = [[0, 0, 0, '#C9A23A'], [0, 0, 1, '#C9A23A'], [0, 0, 2, '#C9A23A']];
+  for (let x = -2; x < 2; x++) for (let z = 3; z < 5; z++) v.push([x, 0, z, w]);
+  v.push([-3, 0, 4, w], [1, 0, 5, w], [1, 0, 6, w], [1, 0, 7, w], [1, 0, 8, w], [2, 0, 8, w], [3, 0, 8, '#E58A33']);
+  return v;
+}
+function pond() {
+  let s = plot(0) + decal(-3.4, -3.4, 6.8, '#6C5A45', .03) + decal(-3, -3, 6, '#5DB3D9', .05) + decal(-1.2, -2.6, 1.6, '#8FD0EA', .07);
+  for (let i = 0; i < 8; i++) {
+    const a = i * .79 + rnd(i, 4), x = Math.cos(a) * 3.3 - .3, y = Math.sin(a) * 3.3 - .3;
+    s += box(x, y, 0, .7, .7, .45, '#A9A79F');
+  }
+  [[-2.5, -1, .1], [1.5, 1.6, .12], [-1.6, 1.9, .1], [1.9, -2.3, .11]].forEach(([x, y, z], i) => {
+    s += decal(x, y, .9, '#4F9A52', z);
+    if (i % 2 === 0) s += box(x + .2, y + .2, z, .5, .5, .3, '#F29FB6') + box(x + .32, y + .32, z + .3, .26, .26, .14, '#FDF3C4');
+  });
+  return s;
+}
+const koi = (x = 0, y = 0) => `<g class="life" transform="matrix(4 2 -4 2 ${x} ${y})"><g class="swim"><ellipse cx="1.1" rx=".2" ry=".62" fill="#F07F2E"/><ellipse cx="1.1" cy="-.15" rx=".13" ry=".24" fill="#FFF7EC"/><path d="M1.1 .55L.84 .95L1.36 .95Z" fill="#F07F2E"/></g><g class="swim other"><ellipse cx="1.9" rx=".18" ry=".55" fill="#FFF7EC"/><ellipse cx="1.9" cy=".1" rx=".12" ry=".2" fill="#D9402F"/><path d="M1.9 .48L1.66 .85L2.14 .85Z" fill="#FFF7EC"/></g></g>`;
+function rocks() {
+  return box(-2.2, -2, 0, 2.6, 2.4, 2, '#9B9992') + decal(-2, -1.8, 1.4, '#7FAE5A', 2.02) + box(-1.6, -1.5, 2, 1.5, 1.4, 1, '#B4B2AA') + box(1, -.6, 0, 1.5, 1.5, 1, '#A9A79F') + decal(1.2, -.4, .8, '#7FAE5A', 1.02) + box(-1, 1.4, 0, 1, 1, .6, '#8F8D86');
+}
+function meadow() {
+  let s = '';
+  const blades = [];
+  for (let i = 0; i < 34; i++) blades.push([-3.7 + rnd(i, 31) * 7.2, -3.7 + rnd(i, 32) * 7.2, .7 + rnd(i, 33) * 1.5, rnd(i, 34) < .5 ? '#5C9A42' : '#74AE52']);
+  blades.sort((a, b) => a[0] + a[1] - b[0] - b[1]).forEach(([x, y, h, c]) => { s += box(x, y, 0, .22, .22, h, c); });
+  [['#F6D84E', 3], ['#F29FB6', 3], ['#FBFBF4', 3]].forEach(([c, n], b) => {
+    for (let i = 0; i < n; i++) {
+      const x = -3.2 + rnd(i, b, 41) * 6, y = -3.2 + rnd(i, b, 42) * 6;
+      s += box(x + .1, y + .1, 0, .15, .15, 1.5, '#4F8F3F') + box(x - .1, y - .1, 1.5, .55, .55, .2, c);
+    }
+  });
+  return s;
+}
+function buffalo() {
+  const b = '#454A4F', d = '#343A3E', h = '#B9AE94', v = [];
+  for (const [x, y] of [[-2, -4], [1, -4], [-2, 3], [1, 3]]) for (let z = 0; z < 3; z++) v.push([x, y, z, d]);
+  for (let y = -5; y < 5; y++) for (let x = -2; x < 2; x++) for (let z = 3; z < 7; z++) v.push([x, y, z, b]);
+  for (let y = 5; y < 8; y++) for (let x = -2; x < 2; x++) for (let z = 3; z < 6; z++) v.push([x, y, z, y === 7 && z === 3 ? '#6A6F72' : b]);
+  v.push([-3, 5, 6, h], [-4, 5, 7, h], [-4, 4, 8, h], [2, 5, 6, h], [3, 5, 7, h], [3, 4, 8, h], [-3, 5, 5, b], [2, 5, 5, b], [0, -6, 6, d], [0, -7, 5, d], [0, -7, 4, d]);
+  return small(v, -.4, -1);
+}
+function can() {
+  const red = '#C9442F', v = [];
+  for (let z = 0; z < 3; z++) for (let y = 0; y < 2; y++) for (let x = 0; x < 3; x++) v.push([x, y, z, z === 2 ? '#DE5B44' : red]);
+  v.push([3, 0, 1, '#DE5B44'], [4, 0, 2, '#DE5B44'], [5, 0, 3, '#E8E2D5'], [-1, 0, 1, '#8E3424'], [-1, 0, 2, '#8E3424'], [0, 0, 3, '#8E3424'], [1, 0, 3, '#8E3424']);
+  return vox(v);
+}
+const defs = [];
+IDS.forEach((id) => [0, 1, 2, 3].forEach((st) => defs.push(`<g id="tree-${id}-${st}">${treeArt(id, st)}</g>`)));
+[0, 1, 2, 3].forEach((v) => defs.push(`<g id="plot-${v}">${plot(v)}</g>`));
+defs.push(`<g id="pond-ground">${pond()}</g><g id="pond">${small(egret(), 3.1, -2.6)}</g><g id="rocks">${rocks()}</g><g id="meadow">${meadow()}</g><g id="buffalo">${buffalo()}</g><g id="can">${can()}</g>`);
+Object.keys(PETS).forEach((id) => defs.push(petDefs(id)));
+document.getElementById('defs').innerHTML = defs.join('');
+const use = (id, extra = '') => `<use href="#${id}"${extra}/>`;
+
+/* ---------- Animals that move ---------- */
+const WINGS = [['#F6D84E', '#E0A81F'], ['#F28A3C', '#C4501F'], ['#8FC7EE', '#3F7FC4'], ['#FBFBF4', '#D8D4C4']];
+function butterfly(x, y, i, scale = 1) {
+  const [a, b] = WINGS[i % WINGS.length];
+  const wing = (dir) => `<g class="flap" style="animation-delay:${i * 37}ms"><path d="M0 0L${dir * 4.6} -3.6L${dir * 3.8} .6Z" fill="${a}"/><path d="M0 0L${dir * 3.4} .6L${dir * 2.4} 3Z" fill="${b}"/></g>`;
+  return `<g transform="translate(${x} ${y}) scale(${scale})"><g class="life w${(i % 3) + 1}" style="animation-delay:${-i * 2.3}s">${wing(-1)}${wing(1)}<rect x="-.5" y="-1.8" width="1" height="3.6" fill="#2E2A26"/></g></g>`;
+}
+function flock(minX, top, width, height) {
+  const scale = Math.max(1, width / 760), dx = width + 120 * scale, dy = -dx * .16;
+  const y0 = top + height * .42;
+  return [[0, 0, 0], [-20, -9, .12], [-26, 9, .2]].map(([ox, oy, lag]) => `<g class="life fly" style="--dx:${dx}px;--dy:${dy}px;animation-delay:${-4 - lag}s"><g transform="translate(${minX - 60 * scale + ox * scale} ${y0 + oy * scale}) scale(${scale})"><path d="M-3.4 0L3.6 -.6L-.2 1.8Z" style="fill:var(--bird)"/><g class="beat" style="animation-delay:${lag * 900}ms"><path d="M-1.6 0L-3.8 -5L1.6 -.2Z" style="fill:var(--bird)"/></g></g></g>`).join('');
+}
+
+/* ---------- The garden ---------- */
+// Spiral order: ring by ring from the centre. A tree's place depends only on its order, so it never moves.
+function spiralCell(limit) {
+  const cells = [[0, 0]];
+  for (let r = 1; cells.length < limit; r++) {
+    for (let x = -r; x <= r; x++) cells.push([x, -r]);
+    for (let y = -r + 1; y <= r; y++) cells.push([r, y]);
+    for (let x = r - 1; x >= -r; x--) cells.push([x, r]);
+    for (let y = r - 1; y > -r; y--) cells.push([-r, y]);
+  }
+  return cells;
+}
+// Spiral positions on the front edges of each ring, so tall trees don't hide them.
+// How many trees it takes for each pet to arrive.
+const PET_ARRIVAL = { corgi: 3, white: 5, shiba: 8, yellow: 11, black: 14, golden: 17 };
+const FEATURES = { 6: 'meadow', 16: 'pond', 18: 'buffalo', 20: 'rocks', 33: 'meadow', 35: 'rocks', 41: 'pond', 61: 'meadow', 63: 'pond', 68: 'buffalo', 70: 'rocks', 95: 'meadow', 98: 'rocks', 106: 'pond' };
+const spiral = spiralCell(220);
+// Ground is drawn with the other plots, in depth order, so its sides never overlap the plot in front.
+const GROUND = { pond: 'pond-ground', rocks: 'plot-1', meadow: 'plot-2', buffalo: 'plot-3' };
+// How many trees it takes for a decoration or pet to arrive.
+function arrivesAt(feature) {
+  let planted = 0;
+  for (let c = 0; c < spiral.length; c++) {
+    if (FEATURES[c] === feature) return planted + 1;
+    if (!FEATURES[c]) planted++;
+  }
+  return Infinity;
+}
+
+function sampleTree(i) {
+  const id = IDS[Math.floor(rnd(i, 11) * IDS.length)];
+  const abandoned = i > 2 && rnd(i, 12) < .18;
+  return { id, stage: abandoned ? Math.floor(rnd(i, 13) * 3) : 3 };
+}
+function gardenSvg(count) {
+  const objects = [];
+  const taken = new Map();
+  let planted = 0;
+  for (let c = 0; planted < count; c++) {
+    const [gx, gy] = spiral[c], f = FEATURES[c];
+    taken.set(`${gx},${gy}`, 1);
+    objects.push(f ? { gx, gy, feature: f } : { gx, gy, i: planted++, ...sampleTree(planted) });
+  }
+  const edge = new Map();
+  objects.forEach(({ gx, gy }) => {
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      const k = `${gx + dx},${gy + dy}`;
+      if (!taken.has(k)) edge.set(k, [gx + dx, gy + dy]);
+    }
+  });
+  const cells = [...objects.map((o) => [o.gx, o.gy, o.feature]), ...[...edge.values()].map(([x, y]) => [x, y, null])]
+    .sort((a, b) => a[0] + a[1] - b[0] - b[1]);
+  const place = (gx, gy) => [(gx - gy) * 32, (gx + gy) * 16];
+  let minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9, cast = '';
+  let s = '';
+  cells.forEach(([gx, gy, feature]) => {
+    const [x, y] = place(gx, gy);
+    minX = Math.min(minX, x - 32); maxX = Math.max(maxX, x + 32); minY = Math.min(minY, y - 16); maxY = Math.max(maxY, y + 16);
+    cast += `M${x} ${y + 12}L${x + 32} ${y + 28}L${x} ${y + 44}L${x - 32} ${y + 28}Z`;
+    s += use(feature ? GROUND[feature] || 'plot-0' : `plot-${Math.floor(rnd(gx, gy, 21) * 4)}`, ` x="${x}" y="${y}"`);
+  });
+  // Pets sit on empty plots with nothing in front of them, spread along the front of the garden, so no tree can hide them.
+  const pets = Object.keys(PET_ARRIVAL).filter((id) => count >= PET_ARRIVAL[id]);
+  const front = [...edge.values()]
+    .filter(([x, y]) => !objects.some((o) => o.gx >= x && o.gy >= y))
+    .sort((a, b) => a[0] - a[1] - b[0] + b[1]);
+  const petItems = pets.map((id, i) => {
+    const [gx, gy] = front[Math.floor(((i + .5) * front.length) / pets.length)];
+    return { gx, gy, feature: `pet-${id}` };
+  });
+  const items = [...objects, ...petItems].sort((a, b) => a.gx + a.gy - b.gx - b.gy);
+  let top = minY, flutter = '', flutterCount = 0;
+  const body = items.map((o) => {
+    const [x, y] = place(o.gx, o.gy);
+    if (o.feature?.startsWith('pet-')) return `<g transform="translate(${x} ${y})">${petMarkup(o.feature.slice(4), Object.keys(PET_ARRIVAL).indexOf(o.feature.slice(4)))}</g>`;
+    if (o.feature === 'pond') return `<g transform="translate(${x} ${y})">${koi()}${use('pond')}</g>`;
+    if (o.feature) {
+      if (o.feature === 'meadow') for (let b = 0; b < 3 && flutterCount < 14; b++) flutter += butterfly(x + (b - 1) * 18, y - 14 - b * 5, flutterCount++);
+      return use(o.feature, ` x="${x}" y="${y}"`);
+    }
+    top = Math.min(top, y - HEIGHT[o.stage] - 22);
+    const label = `${SPECIES[o.id].name} ${STAGES[o.stage][0].toLowerCase()}${o.stage < 3 ? ', from an abandoned session' : ''}`;
+    return `<g class="t" role="button" tabindex="${o.i === 0 ? 0 : -1}" data-i="${o.i}" data-h="${HEIGHT[o.stage]}" data-name="${label}" aria-label="Water this ${label}" transform="translate(${x} ${y})"><path class="hit" d="M0 -16L32 0L0 16L-32 0Z" fill="transparent"/><rect x="-28" y="${-HEIGHT[o.stage]}" width="56" height="${HEIGHT[o.stage]}" fill="transparent"/><g class="art">${use(`tree-${o.id}-${o.stage}`)}</g></g>`;
+  }).join('');
+  const m = 16, w = maxX - minX + m * 2;
+  const vbY = Math.min(top, minY) - m, h = maxY + 46 - vbY;
+  const minPx = ((maxX - minX) / 64) * 28; // shortcut: scrolls past 28px per plot; add drag-to-pan if long scrolling feels bad
+  const birds = count >= 10 ? flock(minX - m, vbY, w, h) : '';
+  return {
+    html: `<svg viewBox="${minX - m} ${vbY} ${w} ${h}" style="min-width:${Math.ceil(minPx)}px;max-height:640px" role="group" aria-label="Sample garden with ${count} trees"><path d="${cast}" style="fill:var(--cast)" opacity=".55"/>${s}${body}<g style="pointer-events:none">${flutter}${birds}</g></svg>`,
+    has: new Set(items.map((o) => o.feature).filter(Boolean)),
+  };
+}
+
+const countInput = document.getElementById('count');
+const countOut = document.getElementById('count-out');
+const alive = document.getElementById('alive');
+const garden = document.getElementById('garden');
+function drawGarden() {
+  const n = +countInput.value;
+  const { html, has } = gardenSvg(n);
+  garden.innerHTML = html;
+  const abandoned = Array.from({ length: n }, (_, i) => sampleTree(i + 1)).filter((t) => t.stage < 3).length;
+  countOut.textContent = `${n} trees: ${n - abandoned} completed, ${abandoned} abandoned · ${(n / 8).toFixed(1)} days at 8 sessions a day`;
+  const list = [];
+  if (has.has('meadow')) list.push('butterflies');
+  if (n >= 10) list.push('birds');
+  if (has.has('pond')) list.push('koi', 'an egret');
+  if (has.has('buffalo')) list.push('a buffalo');
+  Object.entries(PETS).forEach(([id, pet]) => { if (has.has(`pet-${id}`)) list.push(`the ${pet.name.toLowerCase()}`); });
+  alive.textContent = list.length ? `Living here now: ${list.join(', ')}.` : `No animals yet. The corgi arrives at ${PET_ARRIVAL.corgi} trees.`;
+}
+countInput.addEventListener('input', drawGarden);
+drawGarden();
+
+const pause = document.getElementById('pause');
+pause.addEventListener('click', () => {
+  const on = document.body.classList.toggle('paused');
+  pause.textContent = on ? 'Play animals' : 'Pause animals';
+});
+
+/* ---------- Watering: purely for fun, changes nothing ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+const live = document.getElementById('live');
+function water(t) {
+  if (t.querySelector('.can')) return;
+  const h = +t.dataset.h;
+  t.classList.add('w');
+  const wet = document.createElementNS(NS, 'path');
+  wet.setAttribute('class', 'wet');
+  wet.setAttribute('d', 'M0 -14L28 0L0 14L-28 0Z');
+  wet.setAttribute('fill', '#24401F');
+  t.insertBefore(wet, t.querySelector('.art'));
+  const canG = document.createElementNS(NS, 'g');
+  canG.setAttribute('transform', `translate(-30 ${-h - 8})`);
+  canG.innerHTML = `<g class="can">${use('can')}</g>`;
+  const drops = document.createElementNS(NS, 'g');
+  drops.setAttribute('class', 'drops');
+  drops.innerHTML = [-12, -7, -9, -4, -11, -6, -8].map((x, i) => `<rect x="${x + (i % 3) * 3}" y="${-h - 6}" width="2.4" height="3.6" rx="1" fill="#3F93D6" style="--d:${h + 6}px;animation-delay:${450 + i * 110}ms"/>`).join('');
+  t.append(drops, canG);
+  live.textContent = `Watered the ${t.dataset.name}.`;
+  setTimeout(() => { wet.remove(); drops.remove(); canG.remove(); t.classList.remove('w'); }, 2600);
+}
+garden.addEventListener('click', (ev) => { const t = ev.target.closest('.t'); if (t) water(t); });
+garden.addEventListener('keydown', (ev) => {
+  const t = ev.target.closest?.('.t');
+  if (!t) return;
+  if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); water(t); return; }
+  const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[ev.key];
+  if (!step) return;
+  ev.preventDefault();
+  const next = garden.querySelector(`.t[data-i="${+t.dataset.i + step}"]`);
+  if (next) { t.setAttribute('tabindex', '-1'); next.setAttribute('tabindex', '0'); next.focus(); }
+});
+
+/* ---------- Work: choose a tree, then watch it grow ---------- */
+const elapsed = document.getElementById('elapsed');
+const left = document.getElementById('left');
+const stageOut = document.getElementById('stage-out');
+const workArt = document.getElementById('work-art');
+const chips = document.getElementById('chips');
+const note = document.getElementById('note');
+let species = 'phuong';
+const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+function drawWork() {
+  const e = +elapsed.value, st = e >= 1500 ? 3 : Math.floor(e / 500);
+  left.textContent = fmt(1500 - e);
+  stageOut.textContent = `${STAGES[st][0]} · ${fmt(1500 - e)} left`;
+  note.textContent = SPECIES[species].note;
+  elapsed.setAttribute('aria-valuetext', `${fmt(1500 - e)} left, ${STAGES[st][0]} stage`);
+  workArt.setAttribute('aria-label', `${SPECIES[species].name} tree at the ${STAGES[st][0]} stage`);
+  workArt.innerHTML = `<path d="M0 12L32 28L0 44L-32 28Z" style="fill:var(--cast)" opacity=".55"/>${use('plot-1')}${use(`tree-${species}-${st}`)}`;
+}
+chips.innerHTML = IDS.map((id) => `<button type="button" data-sp="${id}" aria-pressed="${id === species}">${SPECIES[id].name} · ${SPECIES[id].en}</button>`).join('');
+chips.addEventListener('click', (ev) => {
+  const b = ev.target.closest('button');
+  if (!b) return;
+  species = b.dataset.sp;
+  chips.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+  drawWork();
+});
+elapsed.addEventListener('input', drawWork);
+drawWork();
+const play = document.getElementById('play');
+let timer = null;
+const stop = () => { clearInterval(timer); timer = null; play.textContent = 'Play at 60×'; };
+play.addEventListener('click', () => {
+  if (timer) return stop();
+  if (+elapsed.value >= 1500) elapsed.value = 0;
+  play.textContent = 'Stop';
+  timer = setInterval(() => {
+    elapsed.value = Math.min(1500, +elapsed.value + 10);
+    drawWork();
+    if (+elapsed.value >= 1500) stop();
+  }, 167);
+});
+elapsed.addEventListener('pointerdown', () => { if (timer) stop(); });
+
+/* ---------- Tree table ---------- */
+document.getElementById('species').innerHTML =
+  `<colgroup><col class="name"><col><col><col><col></colgroup><thead><tr><th scope="col"><span class="sr">Tree</span></th>${STAGES.map(([n, t]) => `<th scope="col">${n}<span>${t}</span></th>`).join('')}</tr></thead><tbody>` +
+  IDS.map((id, r) => `<tr><th scope="row">${SPECIES[id].name}<span>${SPECIES[id].en}</span></th>${[0, 1, 2, 3].map((st) => `<td><svg viewBox="-52 -92 104 124" role="img" aria-label="${SPECIES[id].name}, ${STAGES[st][0]}">${use(`plot-${(r + st) % 4}`)}${use(`tree-${id}-${st}`)}</svg></td>`).join('')}</tr>`).join('') + '</tbody>';
+
+/* ---------- Decorations ---------- */
+const VB = 'viewBox="-46 -54 92 84"';
+document.getElementById('decor').innerHTML = [
+  ['Pond', 'Lotus, koi and an egret', `${use('pond-ground')}${koi()}${use('pond')}`],
+  ['Meadow', 'Tall grass, flowers and butterflies', `${use('plot-2')}${use('meadow')}${butterfly(-16, -16, 0)}${butterfly(14, -22, 1)}${butterfly(4, -8, 2)}`],
+  ['Buffalo', 'A water buffalo at rest', `${use('plot-3')}${use('buffalo')}`],
+  ['Rocks', 'Mossy stones', `${use('plot-1')}${use('rocks')}`],
+].map(([n, d, art]) => `<figure><svg ${VB} role="img" aria-label="${n}: ${d}">${art}</svg><figcaption><b>${n}</b><span>${d}</span></figcaption></figure>`).join('');
+
+/* ---------- Dogs and cats ---------- */
+document.getElementById('pets').innerHTML = Object.entries(PETS).map(([id, pet], i) => `<figure><svg viewBox="-42 -50 84 78" role="img" aria-label="${pet.name}">${use('plot-0')}${petMarkup(id, i)}</svg><figcaption><b>${pet.name}</b><span>Arrives at ${PET_ARRIVAL[id]} trees</span></figcaption></figure>`).join('');
+document.getElementById('animals-rule').textContent = `Butterflies come with the first meadow at ${arrivesAt('meadow')} trees, birds at 10 trees, koi and an egret with the first pond at ${arrivesAt('pond')} trees, and a buffalo at ${arrivesAt('buffalo')} trees.`;
+</script>

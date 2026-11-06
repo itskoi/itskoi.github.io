@@ -21,3 +21,7 @@
 ## References
 
 - Source app: `../koidoro` (its own `openspec/` holds the timer's behavior specs).
+
+## Changes
+
+- **2026-11-06** — Koidoro now lives only in this repo: `src/pomo/` is the source of truth (synced from `../koidoro` one last time), and its behavior specs moved to `specs/koidoro/`. The "keep in sync" out-of-scope item and the drift risk in `plan.md` no longer apply.

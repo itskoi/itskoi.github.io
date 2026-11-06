@@ -52,12 +52,17 @@ export function App() {
   const [settingsProblem, setSettingsProblem] = useState<string | null>(null)
   const [picked, setPicked] = useState<Species | null>(null)
   const [pickedKind, setPickedKind] = useState<Kind | null>(null)
+  const [viewGarden, setViewGarden] = useState(false)
   const [, redraw] = useReducer((n: number) => n + 1, 0)
   const { session, step } = state
   const endsAt = session?.endsAt
   const { endSound } = settings
 
   useEffect(() => setSaveProblem(save(state)), [state])
+  // Every session opens on the garden (started here, resumed or from another tab), so a break can water it.
+  useEffect(() => {
+    if (endsAt !== undefined) setViewGarden(true)
+  }, [endsAt])
   useEffect(() => setSettingsProblem(saveSettings(settings)), [settings])
 
   useEffect(() => {
@@ -198,6 +203,10 @@ export function App() {
           </p>
         )}
 
+        <button type="button" className="view-toggle" onClick={() => setViewGarden((v) => !v)}>
+          {viewGarden ? 'View tree' : 'View garden'}
+        </button>
+
         <SettingsPanel settings={settings} onChange={setSettings} />
       </aside>
 
@@ -205,8 +214,10 @@ export function App() {
         <div className="count" role={session ? 'timer' : undefined}>
           {time}
         </div>
-        {session ? (
-          <Garden trees={state.trees} canWater={!session.species} />
+        {viewGarden ? (
+          <Garden trees={state.trees} canWater={!!session && !session.species} />
+        ) : session?.species ? (
+          <TreeScene species={session.species} stage={stageAt(session, now)} />
         ) : kind === 'Work' ? (
           <TreeScene species={species} stage={0} />
         ) : (

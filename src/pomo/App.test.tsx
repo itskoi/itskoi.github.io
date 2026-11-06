@@ -249,6 +249,28 @@ describe('views', () => {
     expect(screen.queryByRole('button', { name: /^Start/ })).toBeNull()
   })
 
+  it('lets the user view the garden while waiting, without watering', async () => {
+    save(waitingOnBreak)
+    const { user } = setup()
+    await user.click(screen.getByRole('button', { name: 'View garden' }))
+    expect(garden()).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Mai mature' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^Water this/ })).toBeNull()
+    await user.click(screen.getByRole('button', { name: 'View tree' }))
+    expect(garden()).toBeNull()
+  })
+
+  it('switches between the garden and the growing tree during Work', async () => {
+    save({ ...waitingOnBreak, step: 0 })
+    const { user, container } = setup()
+    await user.click(startButton())
+    expect(garden()).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'View tree' }))
+    expect(garden()).toBeNull()
+    const stage = container.querySelector('.stage') as HTMLElement
+    expect(within(stage).getByRole('img', { name: /tree at the Seed stage/ })).toBeInTheDocument()
+  })
+
   it('shows the garden during Work to look at, with the growing tree in the sidebar', async () => {
     save({ ...waitingOnBreak, step: 0 })
     const { user, container } = setup()
