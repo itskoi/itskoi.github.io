@@ -1,12 +1,21 @@
 import { type CSSProperties, memo, useEffect, useMemo, useRef, useState } from 'react'
 import { playWaterSound } from './alert'
-import { butterfly, flock, koi, petals } from './art/decor'
-import { petMarkup } from './art/pets'
+import { butterfly, flock, koi, landingBee, petals } from './art/decor'
+import { PET_FRAME, type PetId, petMarkup } from './art/pets'
 import { HEIGHT, SPECIES, STAGES } from './art/trees'
-import { layout, PET_ORDER, type Plot } from './garden-layout'
+import {
+  arrivedPets,
+  beeSpots,
+  layout,
+  PET_ORDER,
+  type PetSpots,
+  type Plot,
+  settlePets,
+} from './garden-layout'
 import { MATURE, type Tree } from './session'
 
 const WATER_MS = 2600
+export const STEP_MS = 2400 // Longer than the 2s hop in styles.css, so one pet lands before the next sets off.
 const MIN_PLOT_PX = 28
 const PLOT_UNITS = 64
 const MAX_BUTTERFLIES = 14
@@ -16,6 +25,7 @@ const WIDEST_SCREEN = 2.4 // width over height
 
 const place = (gx: number, gy: number) => [(gx - gy) * 32, (gx + gy) * 16]
 const use = (id: string) => `<use href="#${id}"/>`
+const depthOf = (p: Plot) => p.gx + p.gy
 
 function treeLabel({ species, stage }: Tree) {
   const name = `${SPECIES[species].name} ${STAGES[stage].toLowerCase()}`
@@ -30,7 +40,7 @@ function drawScene(plots: Plot[], trees: readonly Tree[]) {
   const minY = Math.min(...xs.map(([, y]) => y)) - 16
   const maxY = Math.max(...xs.map(([, y]) => y)) + 16
 
-  let top = minY
+  let top = minY + 16 + PET_FRAME.y // Room for an animal standing on the back row.
   let cast = ''
   let ground = ''
   let flutter = ''
@@ -40,12 +50,18 @@ function drawScene(plots: Plot[], trees: readonly Tree[]) {
     cast += `M${x} ${y + 12}L${x + 32} ${y + 28}L${x} ${y + 44}L${x - 32} ${y + 28}Z`
     ground += `<use href="#${p.ground}" x="${x}" y="${y}"/>`
     if (p.kind === 'tree') top = Math.min(top, y - HEIGHT[p.tree.stage] - 22)
-    if (p.kind === 'decoration' && p.decoration === 'meadow') {
+    if (p.kind === 'decoration' && (p.decoration === 'meadow' || p.decoration === 'flowers')) {
       for (let b = 0; b < 3 && butterflies < MAX_BUTTERFLIES; b++) {
         flutter += butterfly(x + (b - 1) * 18, y - 14 - b * 5, butterflies++)
       }
     }
   }
+
+  const visiting = new Map<number, string>()
+  beeSpots(plots, trees.length).forEach((plot, i) => {
+    const [x, y] = place(plot.gx, plot.gy)
+    visiting.set(depthOf(plot), (visiting.get(depthOf(plot)) ?? '') + landingBee(x, y, i))
+  })
 
   const margin = 16
   const w = maxX - minX + margin * 2
@@ -57,6 +73,7 @@ function drawScene(plots: Plot[], trees: readonly Tree[]) {
   return {
     cast,
     ground,
+    visiting,
     flying:
       flutter + (trees.length >= 10 ? flock(minX - margin - sideSky, vbY, w + sideSky * 2, h) : ''),
     viewBox: `${minX - margin} ${vbY} ${w} ${h}`,
@@ -64,11 +81,15 @@ function drawScene(plots: Plot[], trees: readonly Tree[]) {
   }
 }
 
-function plotMarkup(p: Plot) {
-  if (p.kind === 'pet') return petMarkup(p.pet, PET_ORDER.indexOf(p.pet))
-  if (p.kind !== 'decoration') return ''
-  return p.decoration === 'pond' ? koi() + use('egret') : use(p.decoration)
+type Roam = {
+  plots: Plot[]
+  at: PetSpots
+  turned: Partial<Record<PetId, boolean>>
+  walking?: { pet: PetId; from: Plot }
 }
+
+const decorationMarkup = (p: Plot & { kind: 'decoration' }) =>
+  p.decoration === 'pond' ? koi() + use('egret') : use(p.decoration)
 
 type Props = { trees: readonly Tree[]; canWater?: boolean }
 
@@ -78,6 +99,19 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
   const [active, setActive] = useState(0)
   const [watering, setWatering] = useState<ReadonlySet<number>>(new Set())
   const [announcement, setAnnouncement] = useState('')
+  const rows = useMemo(() => {
+    const byDepth = new Map<number, Plot[]>()
+    for (const p of plots) byDepth.set(depthOf(p), [...(byDepth.get(depthOf(p)) ?? []), p])
+    return [...byDepth]
+  }, [plots])
+  const [roam, setRoam] = useState<Roam>(() => ({
+    plots,
+    at: settlePets(plots, trees.length),
+    turned: {},
+  }))
+  if (roam.plots !== plots) {
+    setRoam({ plots, at: settlePets(plots, trees.length, roam.at), turned: roam.turned })
+  }
   const svg = useRef<SVGSVGElement>(null)
   const timers = useRef(new Set<ReturnType<typeof setTimeout>>())
 
@@ -87,6 +121,39 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
       for (const t of pending) clearTimeout(t)
     }
   }, [])
+
+  useEffect(() => {
+    const pets = arrivedPets(trees.length)
+    if (!pets.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const open = plots.filter((p) => p.kind === 'grass')
+    const timer = setInterval(() => {
+      // The two extra slots are turns where nobody moves, so a lone pet still rests.
+      const pet = pets[Math.floor(Math.random() * (pets.length + 2))]
+      const pick = Math.random()
+      if (!pet) return
+      setRoam((was) => {
+        const here = was.at[pet]
+        if (was.plots !== plots || !here) return was
+        const taken = Object.values(was.at)
+        const free = open.filter(
+          (s) =>
+            Math.max(Math.abs(s.gx - here.gx), Math.abs(s.gy - here.gy)) === 1 &&
+            !taken.includes(s),
+        )
+        if (!free.length) return was
+        const next = free[Math.floor(pick * free.length)]
+        // Pets are drawn facing left, so one heading right is mirrored, and stays that way when it sits.
+        const right = next.gx - next.gy - here.gx + here.gy
+        return {
+          plots,
+          at: { ...was.at, [pet]: next },
+          turned: right ? { ...was.turned, [pet]: right > 0 } : was.turned,
+          walking: { pet, from: here },
+        }
+      })
+    }, STEP_MS)
+    return () => clearInterval(timer)
+  }, [plots, trees.length])
 
   function water(i: number) {
     setActive(i)
@@ -120,6 +187,13 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
     svg.current?.querySelector<SVGGElement>(`[data-i="${next}"]`)?.focus()
   }
 
+  // On a step a pet is drawn at the nearer of its two plots, so it never walks under what it's in front of.
+  const petsAt = (depth: number) =>
+    (Object.entries(roam.at) as [PetId, Plot][]).filter(([id, spot]) => {
+      const from = roam.walking?.pet === id ? roam.walking.from : spot
+      return Math.max(depthOf(spot), depthOf(from)) === depth
+    })
+
   if (!scene) {
     return <p className="empty">Your garden is empty. Finish a Work session to plant a tree.</p>
   }
@@ -142,86 +216,130 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
           >
             {/* biome-ignore lint/security/noDangerouslySetInnerHtml: markup is generated by this app, with no outside input */}
             <g dangerouslySetInnerHTML={{ __html: scene.ground }} />
-            {plots.map((p) => {
-              if (p.kind === 'grass') return null
-              const [x, y] = place(p.gx, p.gy)
-              const transform = `translate(${x} ${y})`
-              if (p.kind !== 'tree') {
-                return (
-                  <g
-                    key={`${p.gx},${p.gy}`}
-                    transform={transform}
-                    data-pet={p.kind === 'pet' ? p.pet : undefined}
-                    // biome-ignore lint/security/noDangerouslySetInnerHtml: markup is generated by this app, with no outside input
-                    dangerouslySetInnerHTML={{ __html: plotMarkup(p) }}
-                  />
-                )
-              }
-              const h = HEIGHT[p.tree.stage]
-              const wet = watering.has(p.index)
-              const lively = p.index < MAX_LIVELY_TREES
-              const { fallen } = SPECIES[p.tree.species]
-              return (
-                // biome-ignore lint/a11y/noStaticElementInteractions: it has handlers only while its role is button
-                <g
-                  key={p.index}
-                  className={!canWater ? undefined : wet ? 't w' : 't'}
-                  role={canWater ? 'button' : 'img'}
-                  tabIndex={!canWater ? undefined : p.index === active ? 0 : -1}
-                  data-i={p.index}
-                  aria-label={canWater ? `Water this ${treeLabel(p.tree)}` : treeLabel(p.tree)}
-                  transform={transform}
-                  onClick={canWater ? () => water(p.index) : undefined}
-                  onKeyDown={canWater ? (ev) => onKeyDown(ev, p.index) : undefined}
-                >
-                  <path className="hit" d="M0 -16L32 0L0 16L-32 0Z" fill="transparent" />
-                  <rect x="-28" y={-h} width="56" height={h} fill="transparent" />
-                  {wet && <path className="wet" d="M0 -14L28 0L0 14L-28 0Z" fill="#24401F" />}
-                  <g className="art">
+            {/* One group per depth, so a pet changing depth never moves a tree in the page. */}
+            {rows.map(([depth, row]) => (
+              <g key={depth} data-depth={depth}>
+                {row.map((p) => {
+                  if (p.kind === 'grass') return null
+                  const [x, y] = place(p.gx, p.gy)
+                  const transform = `translate(${x} ${y})`
+                  if (p.kind !== 'tree') {
+                    return (
+                      <g
+                        key={`${p.gx},${p.gy}`}
+                        transform={transform}
+                        // biome-ignore lint/security/noDangerouslySetInnerHtml: markup is generated by this app, with no outside input
+                        dangerouslySetInnerHTML={{ __html: decorationMarkup(p) }}
+                      />
+                    )
+                  }
+                  const h = HEIGHT[p.tree.stage]
+                  const wet = watering.has(p.index)
+                  const lively = p.index < MAX_LIVELY_TREES
+                  const { fallen } = SPECIES[p.tree.species]
+                  return (
+                    // biome-ignore lint/a11y/noStaticElementInteractions: it has handlers only while its role is button
                     <g
-                      className={lively && p.tree.stage > 0 ? 'life breeze' : undefined}
-                      style={{ animationDelay: `${-(p.index % BREEZE_PHASES) * 0.8}s` }}
+                      key={p.index}
+                      className={!canWater ? undefined : wet ? 't w' : 't'}
+                      role={canWater ? 'button' : 'img'}
+                      tabIndex={!canWater ? undefined : p.index === active ? 0 : -1}
+                      data-i={p.index}
+                      aria-label={canWater ? `Water this ${treeLabel(p.tree)}` : treeLabel(p.tree)}
+                      transform={transform}
+                      onClick={canWater ? () => water(p.index) : undefined}
+                      onKeyDown={canWater ? (ev) => onKeyDown(ev, p.index) : undefined}
                     >
-                      <use href={`#tree-${p.tree.species}-${p.tree.stage}`} />
-                    </g>
-                  </g>
-                  {lively && fallen && p.tree.stage === MATURE && (
-                    <g
-                      // biome-ignore lint/security/noDangerouslySetInnerHtml: markup is generated by this app, with no outside input
-                      dangerouslySetInnerHTML={{ __html: petals(fallen, h, p.index) }}
-                    />
-                  )}
-                  {wet && (
-                    <>
-                      <g className="drops">
-                        {[-12, -7, -9, -4, -11, -6, -8].map((dx, i) => (
-                          <rect
-                            key={`${dx}`}
-                            x={dx + (i % 3) * 3}
-                            y={-h - 6}
-                            width="2.4"
-                            height="3.6"
-                            rx="1"
-                            fill="#3F93D6"
-                            style={
-                              {
-                                '--d': `${h + 6}px`,
-                                animationDelay: `${450 + i * 110}ms`,
-                              } as CSSProperties
-                            }
-                          />
-                        ))}
-                      </g>
-                      <g transform={`translate(-30 ${-h - 8})`}>
-                        <g className="can">
-                          <use href="#can" />
+                      <path className="hit" d="M0 -16L32 0L0 16L-32 0Z" fill="transparent" />
+                      <rect x="-28" y={-h} width="56" height={h} fill="transparent" />
+                      {wet && <path className="wet" d="M0 -14L28 0L0 14L-28 0Z" fill="#24401F" />}
+                      <g className="art">
+                        <g
+                          className={lively && p.tree.stage > 0 ? 'life breeze' : undefined}
+                          style={{ animationDelay: `${-(p.index % BREEZE_PHASES) * 0.8}s` }}
+                        >
+                          <use href={`#tree-${p.tree.species}-${p.tree.stage}`} />
                         </g>
                       </g>
-                    </>
-                  )}
-                </g>
-              )
-            })}
+                      {lively && fallen && p.tree.stage === MATURE && (
+                        <g
+                          // biome-ignore lint/security/noDangerouslySetInnerHtml: markup is generated by this app, with no outside input
+                          dangerouslySetInnerHTML={{ __html: petals(fallen, h, p.index) }}
+                        />
+                      )}
+                      {wet && (
+                        <>
+                          <g className="drops">
+                            {[-12, -7, -9, -4, -11, -6, -8].map((dx, i) => (
+                              <rect
+                                key={`${dx}`}
+                                x={dx + (i % 3) * 3}
+                                y={-h - 6}
+                                width="2.4"
+                                height="3.6"
+                                rx="1"
+                                fill="#3F93D6"
+                                style={
+                                  {
+                                    '--d': `${h + 6}px`,
+                                    animationDelay: `${450 + i * 110}ms`,
+                                  } as CSSProperties
+                                }
+                              />
+                            ))}
+                          </g>
+                          <g transform={`translate(-30 ${-h - 8})`}>
+                            <g className="can">
+                              <use href="#can" />
+                            </g>
+                          </g>
+                        </>
+                      )}
+                    </g>
+                  )
+                })}
+                {scene.visiting.has(depth) && (
+                  <g
+                    style={{ pointerEvents: 'none' }}
+                    // biome-ignore lint/security/noDangerouslySetInnerHtml: markup is generated by this app, with no outside input
+                    dangerouslySetInnerHTML={{ __html: scene.visiting.get(depth) as string }}
+                  />
+                )}
+                {petsAt(depth).map(([id, spot]) => {
+                  const [x, y] = place(spot.gx, spot.gy)
+                  const from = roam.walking?.pet === id ? roam.walking.from : null
+                  const [fx, fy] = from ? place(from.gx, from.gy) : [x, y]
+                  return (
+                    <g
+                      key={id}
+                      className={from ? 'life step' : undefined}
+                      data-pet={id}
+                      style={
+                        {
+                          pointerEvents: 'none',
+                          transform: `translate(${x}px, ${y}px)`,
+                          '--fx': `${fx}px`,
+                          '--fy': `${fy}px`,
+                        } as CSSProperties
+                      }
+                    >
+                      <g
+                        className={from ? 'hop' : undefined}
+                        onAnimationEnd={() => setRoam((was) => ({ ...was, walking: undefined }))}
+                      >
+                        <g
+                          transform={roam.turned[id] ? 'scale(-1 1)' : undefined}
+                          // biome-ignore lint/security/noDangerouslySetInnerHtml: markup is generated by this app, with no outside input
+                          dangerouslySetInnerHTML={{
+                            __html: petMarkup(id, PET_ORDER.indexOf(id)),
+                          }}
+                        />
+                      </g>
+                    </g>
+                  )
+                })}
+              </g>
+            ))}
             <g
               style={{ pointerEvents: 'none' }}
               // biome-ignore lint/security/noDangerouslySetInnerHtml: markup is generated by this app, with no outside input

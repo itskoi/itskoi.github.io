@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react'
 import { SPECIES_IDS } from '../session'
-import { PET_IDS, partsOf } from './pets'
+import { PLOT_KINDS } from './decor'
+import { PET_IDS, partsOf, WALK_PARTS } from './pets'
 import { Sprites } from './Sprites'
 
 it('defines every sprite the garden and Work view refer to, only once', () => {
@@ -20,9 +21,13 @@ it('defines every sprite the garden and Work view refer to, only once', () => {
   const { container, rerender } = render(<Sprites />)
   const ids = [
     ...SPECIES_IDS.flatMap((id) => [0, 1, 2, 3].map((st) => `tree-${id}-${st}`)),
-    ...[0, 1, 2, 3].map((v) => `plot-${v}`),
-    ...['pond-ground', 'egret', 'rocks', 'meadow', 'buffalo', 'can'],
-    ...PET_IDS.flatMap((id) => [`pet-${id}-base`, ...partsOf(id).map((k) => `pet-${id}-${k}`)]),
+    ...Array.from({ length: PLOT_KINDS }, (_, v) => `plot-${v}`),
+    ...['pond-ground', 'egret', 'rocks', 'meadow', 'flowers', 'reeds', 'boulder', 'can'],
+    ...PET_IDS.flatMap((id) => [
+      `pet-${id}-base`,
+      ...partsOf(id).map((k) => `pet-${id}-${k}`),
+      ...WALK_PARTS.map((k) => `pet-${id}-walk-${k}`),
+    ]),
   ]
   for (const id of ids) expect(container.querySelector(`[id="${id}"]`)).not.toBeNull()
 

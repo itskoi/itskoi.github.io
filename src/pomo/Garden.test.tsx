@@ -1,7 +1,8 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { playWaterSound } from './alert'
-import { Garden } from './Garden'
+import { Garden, STEP_MS } from './Garden'
+import { layout } from './garden-layout'
 import type { Species, Tree } from './session'
 
 vi.mock('./alert', () => ({ playWaterSound: vi.fn() }))
@@ -54,7 +55,14 @@ describe('drawing', () => {
     ['birds', '.fly', 10],
     ['koi', '.swim', 16],
     ['an egret', 'use[href="#egret"]', 16],
-    ['a buffalo', 'use[href="#buffalo"]', 17],
+    ['bees on the ground', '.visit.bee', 7],
+    ['the Buffalo', '[data-pet="buffalo"]', 17],
+    ['the Bear', '[data-pet="bear"]', 21],
+    ['the Monkey', '[data-pet="monkey"]', 26],
+    ['the Elephant', '[data-pet="elephant"]', 32],
+    ['a flower bed', 'use[href="#flowers"]', 17],
+    ['tall grass', 'use[href="#reeds"]', 32],
+    ['a boulder', 'use[href="#boulder"]', 33],
   ])('brings %s (%s) only once they have arrived', (_, selector, count) => {
     const before = show(makeTrees(count - 1))
     expect(before.container.querySelector(selector)).toBeNull()
@@ -216,10 +224,133 @@ describe('tree motion', () => {
   })
 })
 
+describe('pets walking', () => {
+  const drawn = (container: HTMLElement) =>
+    [...container.querySelectorAll<SVGGElement>('[data-pet]')].map((el) => {
+      const [x, y] = (el.style.transform.match(/-?[\d.]+/g) as string[]).map(Number)
+      return { pet: el.dataset.pet as string, gx: (x / 32 + y / 16) / 2, gy: (y / 16 - x / 32) / 2 }
+    })
+  const spots = (container: HTMLElement) =>
+    drawn(container)
+      .sort((a, b) => a.pet.localeCompare(b.pet))
+      .map((p) => `${p.gx},${p.gy}`)
+
+  beforeEach(() => vi.useFakeTimers())
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+  })
+
+  it('walks pets one plot at a time over open grass, never two on a plot', () => {
+    const trees = makeTrees(20)
+    const { container } = show(trees)
+    const plots = layout(trees)
+    let before = spots(container)
+    const visited = new Set(before)
+    for (let step = 0; step < 200; step++) {
+      act(() => void vi.advanceTimersByTime(STEP_MS))
+      const now = spots(container)
+      expect(new Set(now).size).toBe(7)
+      const moved = now.flatMap((at, i) => (at === before[i] ? [] : [[at, before[i]]]))
+      expect(moved.length).toBeLessThanOrEqual(1)
+      for (const [to, from] of moved) {
+        const [gx, gy] = to.split(',').map(Number)
+        const [fx, fy] = from.split(',').map(Number)
+        expect(Math.max(Math.abs(gx - fx), Math.abs(gy - fy))).toBe(1)
+        expect(plots.find((p) => p.gx === gx && p.gy === gy)?.kind).toBe('grass')
+        // A walking pet is drawn at the nearer of the two plots.
+        const walker = container.querySelector('.step') as SVGGElement
+        expect(walker.closest('[data-depth]')).toHaveAttribute(
+          'data-depth',
+          `${Math.max(gx + gy, fx + fy)}`,
+        )
+        visited.add(to)
+      }
+      before = now
+      for (const el of container.querySelectorAll<SVGGElement>('[data-pet]:not(.step)')) {
+        const pet = drawn(container).find((p) => p.pet === el.dataset.pet)
+        expect(el.closest('[data-depth]')).toHaveAttribute(
+          'data-depth',
+          `${(pet?.gx ?? 0) + (pet?.gy ?? 0)}`,
+        )
+      }
+    }
+    expect(visited.size).toBeGreaterThan(7)
+  })
+
+  it('draws pets among the trees, nearer things covering farther ones', () => {
+    const { container } = show(makeTrees(40))
+    const items = [...container.querySelectorAll<SVGGElement>('[data-i], [data-pet]')].map((el) => {
+      const text = el.getAttribute('transform') ?? el.style.transform
+      return { pet: el.hasAttribute('data-pet'), depth: Number(text.match(/-?[\d.]+/g)?.[1]) / 16 }
+    })
+    const depths = items.map((item) => item.depth)
+    expect(depths).toEqual([...depths].sort((a, b) => a - b))
+    expect(items.some((item, i) => item.pet && items[i + 1]?.pet === false)).toBe(true)
+  })
+
+  it('stops walking when the step ends', () => {
+    const { container } = show(makeTrees(3))
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0)
+    act(() => void vi.advanceTimersByTime(STEP_MS))
+    random.mockRestore()
+    fireEvent.animationEnd(container.querySelector('.hop') as Element)
+    expect(container.querySelector('.step')).toBeNull()
+  })
+
+  it('hops only the pet that is walking', () => {
+    const { container } = show(makeTrees(3))
+    expect(container.querySelector('.hop')).toBeNull()
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0)
+    act(() => void vi.advanceTimersByTime(STEP_MS))
+    random.mockRestore()
+    expect(container.querySelector('[data-pet="corgi"].life.step > .hop')).not.toBeNull()
+  })
+
+  it('shows the walking pose only on a step, and turns a pet to face where it walks', () => {
+    const { container } = show(makeTrees(3))
+    const corgi = () => container.querySelector('[data-pet="corgi"]') as SVGGElement
+    expect(corgi().querySelector('.sit')).not.toBeNull()
+    expect(corgi().querySelector('.walk')).not.toBeNull()
+    expect(corgi()).not.toHaveClass('step')
+    const x = () => Number((corgi().style.transform.match(/-?[\d.]+/) as string[])[0])
+    for (let step = 0; step < 60; step++) {
+      const before = x()
+      act(() => void vi.advanceTimersByTime(STEP_MS))
+      if (x() === before) continue
+      const turned = corgi().querySelector('[transform="scale(-1 1)"]') !== null
+      expect(turned).toBe(x() > before)
+    }
+  })
+
+  it('keeps pets on their plots under reduced motion', () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: true }))
+    const { container } = show(makeTrees(20))
+    const home = spots(container)
+    act(() => void vi.advanceTimersByTime(STEP_MS * 50))
+    expect(spots(container)).toEqual(home)
+  })
+})
+
 describe('reduced motion', () => {
   it('marks every moving part so one rule can stop them all', () => {
     const { container } = show(makeTrees(20))
-    for (const selector of ['.fly', '.swim', '.flap', '.breathe', '.blink', '.breeze', '.petal']) {
+    for (const selector of [
+      '.fly',
+      '.swim',
+      '.flap',
+      '.breathe',
+      '.blink',
+      '.breeze',
+      '.petal',
+      '.hop',
+      '.step',
+      '.stride',
+      '.visit',
+      '.air',
+      '.rest',
+      '.fan',
+    ]) {
       for (const el of container.querySelectorAll(selector)) {
         expect(el.closest('.life')).not.toBeNull()
       }

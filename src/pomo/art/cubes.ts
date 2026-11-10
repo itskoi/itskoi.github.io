@@ -49,6 +49,15 @@ export const PAL: Record<string, string[]> = {
   whitecat: ['#B9B4AC', '#D6D1C9', '#EBE7DF', '#F6F3EC', '#FFFFFF'],
   blackcat: ['#0F0E14', '#1C1A24', '#2C2936', '#413E4D', '#5F5C6E'],
   pink: ['#C77B8B', '#E09AA8', '#F0B6C0', '#F8CFD6', '#FFE6EA'],
+  buffalo: ['#33383F', '#4A515A', '#636B75', '#7E8791', '#9CA5AE'],
+  buffaloDark: ['#1E2126', '#2C3037', '#3C4149', '#4E545D', '#646A74'],
+  buffaloMuzzle: ['#8C7C80', '#A8989B', '#C2B3B4', '#D8CBCB', '#ECE2E1'],
+  horn: ['#A89A7C', '#C4B798', '#DCD1B4', '#EDE5CE', '#FBF6E6'],
+  bear: ['#5E3B22', '#80532F', '#A06D40', '#BD8A58', '#D8AA7A'],
+  monkey: ['#5A3A26', '#7A5032', '#996842', '#B48358', '#CFA278'],
+  monkeyFace: ['#C99872', '#E0B48E', '#F0CBA8', '#F9DEC2', '#FFF0DE'],
+  elephant: ['#6F8298', '#8B9DB2', '#A6B7CA', '#C0CFDE', '#DCE6F0'],
+  elephantDark: ['#4A5A6E', '#5F7086', '#76879C', '#8E9EB2', '#A8B6C8'],
 }
 const toneCache = new Map<string, string>()
 export function tone(pal: string, v: number) {

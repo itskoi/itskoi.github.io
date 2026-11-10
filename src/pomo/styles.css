@@ -384,6 +384,41 @@ hr {
 .fly {
   animation: cross 26s linear infinite;
 }
+/* An animation, not a transition: it still plays when the pet's element is moved to redraw it nearer. */
+.step {
+  animation: step 2s linear;
+}
+.hop {
+  animation: hop 0.25s ease-out 8 alternate;
+}
+/* A pet has both poses in its markup. It sits unless it is on a step. */
+.walk,
+.step .sit {
+  display: none;
+}
+.step .walk {
+  display: inline;
+}
+.stride {
+  animation: stride 0.25s ease-in-out infinite alternate;
+}
+.stride.other {
+  animation-direction: alternate-reverse;
+}
+.fan {
+  animation: fan 2.8s ease-in-out infinite alternate;
+}
+.visit {
+  animation: visit var(--d) linear var(--t) infinite;
+}
+/* Wings show only in flight, and the shadow only on the ground, in step with .visit. */
+.air {
+  opacity: 0;
+  animation: air var(--d) linear var(--t) infinite;
+}
+.rest {
+  animation: rest var(--d) linear var(--t) infinite;
+}
 .breathe {
   animation: breathe 2.6s ease-in-out infinite alternate;
 }
@@ -591,6 +626,75 @@ hr {
   }
   100% {
     transform: translate(20px, -20px);
+  }
+}
+@keyframes step {
+  from {
+    transform: translate(var(--fx), var(--fy));
+  }
+}
+@keyframes hop {
+  to {
+    transform: translateY(-1.2px);
+  }
+}
+@keyframes stride {
+  from {
+    transform: translate(-0.7px, 0);
+  }
+  to {
+    transform: translate(0.7px, -1.8px);
+  }
+}
+@keyframes fan {
+  to {
+    transform: scaleX(0.93);
+  }
+}
+@keyframes visit {
+  0% {
+    opacity: 0;
+    transform: translate(var(--ax), var(--ay));
+    animation-timing-function: ease-out;
+  }
+  8%,
+  92% {
+    opacity: 1;
+  }
+  28%,
+  68% {
+    transform: none;
+  }
+  68% {
+    animation-timing-function: ease-in;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--lx), var(--ly));
+  }
+}
+@keyframes air {
+  0%,
+  27.9%,
+  68.1%,
+  100% {
+    opacity: 1;
+  }
+  28%,
+  68% {
+    opacity: 0;
+  }
+}
+@keyframes rest {
+  0%,
+  27.9%,
+  68.1%,
+  100% {
+    opacity: 0;
+  }
+  28%,
+  68% {
+    opacity: 1;
   }
 }
 @keyframes breathe {

@@ -80,3 +80,17 @@ The system SHALL keep animals still when the user's system asks for reduced moti
 - **GIVEN** the user's system asks for reduced motion
 - **WHEN** a Break is running
 - **THEN** animals are shown without movement
+
+## Changes
+
+### 2026-11-10 — pets walk
+
+"Pets SHALL NOT walk" and "stay on their plots" no longer hold. Pets now walk between open plots at the front of the garden; see `specs/koidoro-pets-walk/spec.md`. They still animate in place, and the buffalo and egret still stay still.
+
+### 2026-11-10 — animals and decorations
+
+The buffalo is now one of the walking animals, and a bear, monkey and elephant arrive at 21, 26 and 32 trees. Animals sit when idle and stand to walk. Flower beds, tall grass and boulders join the decorations. See `specs/koidoro-animals-and-decor/spec.md`.
+
+### 2026-11-10 — animals anywhere
+
+"Pets stay visible" no longer holds: animals start on random open grass anywhere in the garden and can pass behind trees. See `specs/koidoro-scattered-garden/spec.md`.

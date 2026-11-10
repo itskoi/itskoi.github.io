@@ -1,14 +1,34 @@
 import { memo } from 'react'
 import { SPECIES_IDS, type Species } from '../session'
 import { paint } from './cubes'
-import { buffalo, can, egret, meadow, plot, pond, rocks, small } from './decor'
-import { buildPet, PET_IDS, PETS, type PetId, partsOf } from './pets'
+import {
+  boulder,
+  can,
+  egret,
+  flowers,
+  meadow,
+  PLOT_KINDS,
+  plot,
+  pond,
+  reeds,
+  rocks,
+  small,
+} from './decor'
+import {
+  buildPet,
+  buildWalk,
+  PET_FRAME,
+  PET_IDS,
+  PETS,
+  type PetId,
+  partsOf,
+  WALK_PARTS,
+} from './pets'
 import { buildTree, SPECIES } from './trees'
 
 type Frame = { x: number; y: number; w: number; h: number; scale: number }
 
 const TREE_FRAME: Frame = { x: -60, y: -100, w: 120, h: 132, scale: 5 }
-const PET_FRAME: Frame = { x: -36, y: -46, w: 72, h: 62, scale: 6 }
 const TREE_CUBE = 2 // A tree cube is half a plot cube.
 
 function image(frame: Frame, draw: (ctx: CanvasRenderingContext2D) => void) {
@@ -51,26 +71,28 @@ function treeArt(id: Species, stage: number) {
 }
 
 function petArt(id: PetId) {
+  const shadow = PETS[id].tu * 15
   const base = image(PET_FRAME, (ctx) => {
     ctx.translate(3, 2)
     ctx.scale(1, 0.5)
-    const grad = ctx.createRadialGradient(0, 0, 3, 0, 0, 17)
+    const grad = ctx.createRadialGradient(0, 0, 3, 0, 0, shadow)
     grad.addColorStop(0, 'rgba(18,46,28,.42)')
     grad.addColorStop(1, 'rgba(18,46,28,0)')
     ctx.fillStyle = grad
     ctx.beginPath()
-    ctx.arc(0, 0, 17, 0, 6.3)
+    ctx.arc(0, 0, shadow, 0, 6.3)
     ctx.fill()
   })
-  const parts = buildPet(id)
+  const parts = buildPet(id),
+    walk = buildWalk(id)
+  const art = (name: string, grid: Parameters<typeof paint>[1]) =>
+    `<g id="pet-${id}-${name}">${image(PET_FRAME, (ctx) => paint(ctx, grid, PETS[id].tu))}</g>`
   return (
     `<g id="pet-${id}-base">${base}</g>` +
     partsOf(id)
-      .map(
-        (k) =>
-          `<g id="pet-${id}-${k}">${image(PET_FRAME, (ctx) => paint(ctx, parts[k], PETS[id].tu))}</g>`,
-      )
-      .join('')
+      .map((k) => art(k, parts[k]))
+      .join('') +
+    WALK_PARTS.map((k) => art(`walk-${k}`, walk[k])).join('')
   )
 }
 
@@ -78,8 +100,8 @@ function buildAll() {
   const trees = SPECIES_IDS.flatMap((id) =>
     [0, 1, 2, 3].map((st) => `<g id="tree-${id}-${st}">${treeArt(id, st)}</g>`),
   )
-  const plots = [0, 1, 2, 3].map((v) => `<g id="plot-${v}">${plot(v)}</g>`)
-  const decor = `<g id="pond-ground">${pond()}</g><g id="egret">${small(egret(), 3.1, -2.6)}</g><g id="rocks">${rocks()}</g><g id="meadow">${meadow()}</g><g id="buffalo">${buffalo()}</g><g id="can">${can()}</g>`
+  const plots = Array.from({ length: PLOT_KINDS }, (_, v) => `<g id="plot-${v}">${plot(v)}</g>`)
+  const decor = `<g id="pond-ground">${pond()}</g><g id="egret">${small(egret(), 3.1, -2.6)}</g><g id="rocks">${rocks()}</g><g id="meadow">${meadow()}</g><g id="flowers">${flowers()}</g><g id="reeds">${reeds()}</g><g id="boulder">${boulder()}</g><g id="can">${can()}</g>`
   return [...trees, ...plots, decor, ...PET_IDS.map(petArt)].join('')
 }
 

@@ -116,3 +116,9 @@ The system SHALL keep running if saving fails, and SHALL tell the user that prog
 - **GIVEN** the browser refuses to save data
 - **WHEN** a session ends
 - **THEN** the app keeps working and the page warns that progress may not be saved
+
+## Changes
+
+### 2026-11-10 — scattered trees
+
+Trees no longer take every next plot: about two in five spiral plots stay grass, and the island is a whole square. A planted tree still never moves as more are added. See `specs/koidoro-scattered-garden/spec.md`.

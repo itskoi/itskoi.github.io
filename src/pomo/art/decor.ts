@@ -95,29 +95,49 @@ export function plot(v: number) {
       rnd(i, v, 3) < 0.5 ? '#A3D678' : '#7FB85A',
     )
   }
-  const bits: [string, number][] = (
-    [
-      [],
-      [['#F6D84E', 3]],
-      [
-        ['#FBFBF4', 3],
-        ['#F29FB6', 2],
-      ],
-      [['#A9A79F', 3]],
-    ] as [string, number][][]
-  )[v]
-  bits.forEach(([c, count], b) => {
+  const bits: [string, number, Bit?][] = PLOT_BITS[v]
+  bits.forEach(([c, count, kind], b) => {
     for (let i = 0; i < count; i++) {
       const x = -3.5 + rnd(i, v, b, 7) * 6.5,
         y = -3.5 + rnd(i, v, b, 8) * 6.5
-      s +=
-        v === 3
-          ? box(x, y, 0, 0.7, 0.7, 0.4, c)
-          : box(x + 0.1, y + 0.1, 0, 0.15, 0.15, 0.7, '#5C9A42') + box(x, y, 0.7, 0.4, 0.4, 0.15, c)
+      if (kind === 'stone') s += box(x, y, 0, 0.7, 0.7, 0.4, c)
+      else if (kind === 'tuft')
+        for (let k = 0; k < 3; k++)
+          s += box(x + k * 0.22, y + (k % 2) * 0.2, 0, 0.14, 0.14, 0.5 + rnd(i, k, v, 9) * 0.6, c)
+      else
+        s +=
+          box(x + 0.1, y + 0.1, 0, 0.15, 0.15, 0.7, '#5C9A42') + box(x, y, 0.7, 0.4, 0.4, 0.15, c)
     }
   })
   return s
 }
+type Bit = 'stone' | 'tuft'
+// What is scattered on each kind of grass plot: a colour, how many, and what it is (a flower unless said).
+const PLOT_BITS: [string, number, Bit?][][] = [
+  [],
+  [['#F6D84E', 3]],
+  [
+    ['#FBFBF4', 3],
+    ['#F29FB6', 2],
+  ],
+  [['#A9A79F', 3, 'stone']],
+  [
+    ['#5C9A42', 5, 'tuft'],
+    ['#74AE52', 3, 'tuft'],
+  ],
+  [
+    ['#B58BE0', 3],
+    ['#F6D84E', 2],
+    ['#5C9A42', 3, 'tuft'],
+  ],
+  [
+    ['#A9A79F', 2, 'stone'],
+    ['#C2C0B8', 1, 'stone'],
+    ['#5C9A42', 4, 'tuft'],
+    ['#FBFBF4', 1],
+  ],
+]
+export const PLOT_KINDS = PLOT_BITS.length
 // Half-size cubes, so animals can have more detail than trees.
 export const small = (list: Voxel[], x: number, y: number, z = 0) => {
   const [sx, sy] = P(x, y, z)
@@ -212,37 +232,79 @@ export function meadow() {
   })
   return s
 }
-export function buffalo() {
-  const b = '#454A4F',
-    d = '#343A3E',
-    h = '#B9AE94',
-    v: Voxel[] = []
-  for (const [x, y] of [
-    [-2, -4],
-    [1, -4],
-    [-2, 3],
-    [1, 3],
-  ])
-    for (let z = 0; z < 3; z++) v.push([x, y, z, d])
-  for (let y = -5; y < 5; y++)
-    for (let x = -2; x < 2; x++) for (let z = 3; z < 7; z++) v.push([x, y, z, b])
-  for (let y = 5; y < 8; y++)
-    for (let x = -2; x < 2; x++)
-      for (let z = 3; z < 6; z++) v.push([x, y, z, y === 7 && z === 3 ? '#6A6F72' : b])
-  v.push(
-    [-3, 5, 6, h],
-    [-4, 5, 7, h],
-    [-4, 4, 8, h],
-    [2, 5, 6, h],
-    [3, 5, 7, h],
-    [3, 4, 8, h],
-    [-3, 5, 5, b],
-    [2, 5, 5, b],
-    [0, -6, 6, d],
-    [0, -7, 5, d],
-    [0, -7, 4, d],
+// Things standing on a plot, drawn back to front so nearer ones cover farther ones.
+const standing = (items: [number, number, string][]) =>
+  items
+    .sort((a, b) => a[0] + a[1] - b[0] - b[1])
+    .map(([, , s]) => s)
+    .join('')
+const BLOOMS = ['#E5484D', '#F6D84E', '#F29FB6', '#B58BE0', '#FBFBF4', '#F28A3C']
+// A flower bed: rows of tulips inside a low stone border.
+export function flowers() {
+  const items: [number, number, string][] = []
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * 6.283,
+      x = Math.cos(a) * 3.3 - 0.35,
+      y = Math.sin(a) * 3.3 - 0.35
+    items.push([x, y, box(x, y, 0, 0.7, 0.7, 0.4, i % 3 ? '#A9A79F' : '#C2C0B8')])
+  }
+  for (let r = 0; r < 4; r++)
+    for (let c = 0; c < 4; c++) {
+      const x = -2.2 + c * 1.35 + (rnd(r, c, 61) - 0.5) * 0.5,
+        y = -2.2 + r * 1.35 + (rnd(r, c, 62) - 0.5) * 0.5,
+        h = 1.3 + rnd(r, c, 63) * 0.9,
+        bloom = BLOOMS[Math.floor(rnd(r, c, 64) * BLOOMS.length)]
+      items.push([
+        x,
+        y,
+        box(x + 0.2, y + 0.2, 0, 0.16, 0.16, h, '#4F8F3F') +
+          box(x - 0.15, y + 0.2, h * 0.4, 0.5, 0.16, 0.16, '#5C9A42') +
+          box(x, y, h, 0.56, 0.56, 0.6, bloom) +
+          box(x + 0.14, y + 0.14, h + 0.6, 0.28, 0.28, 0.16, mix(bloom, 0.35)),
+      ])
+    }
+  return decal(-2.9, -2.9, 5.8, '#7A5A3C', 0.03) + standing(items)
+}
+// Tall grass in three clumps, with a few cattails.
+export function reeds() {
+  const items: [number, number, string][] = []
+  ;[
+    [-1.6, -1.2, 22, 4.2],
+    [1.5, 0.4, 16, 3.4],
+    [-0.4, 2, 12, 2.6],
+  ].forEach(([cx, cy, n, tall], clump) => {
+    for (let i = 0; i < n; i++) {
+      const a = rnd(i, clump, 71) * 6.283,
+        d = rnd(i, clump, 72) * 1.5,
+        x = cx + Math.cos(a) * d,
+        y = cy + Math.sin(a) * d,
+        h = tall * (0.45 + (1 - d / 1.5) * 0.4 + rnd(i, clump, 73) * 0.3)
+      let s = box(x, y, 0, 0.2, 0.2, h, ['#4F8F3F', '#5C9A42', '#74AE52', '#8FBF5A'][i % 4])
+      if (i % 7 === 0) s += box(x - 0.06, y - 0.06, h, 0.32, 0.32, 0.9, '#7A5230')
+      items.push([x, y, s])
+    }
+  })
+  return standing(items)
+}
+// One big mossy stone with smaller ones and a few flowers around it.
+export function boulder() {
+  const moss = '#7FAE5A'
+  return (
+    box(1.6, -2.6, 0, 1.1, 1.1, 0.7, '#8F8D86') +
+    box(-2.4, -1.8, 0, 3.6, 3.4, 2.6, '#9B9992') +
+    decal(-2.2, -1.6, 1.3, moss, 2.62) +
+    decal(-0.4, 0.2, 1, moss, 2.62) +
+    box(-1.9, -1.4, 2.6, 2.4, 2.2, 1.5, '#ABA9A1') +
+    decal(-1.7, -1.2, 1.2, moss, 4.12) +
+    box(-1.4, -1, 4.1, 1.2, 1.1, 0.7, '#BCBAB2') +
+    box(1.5, 0.4, 0, 1.6, 1.5, 1.2, '#A9A79F') +
+    decal(1.7, 0.6, 0.8, moss, 1.22) +
+    box(-0.6, 2.2, 0, 1.2, 1.1, 0.7, '#8F8D86') +
+    box(2.5, 2.4, 0, 0.16, 0.16, 1, '#4F8F3F') +
+    box(2.3, 2.2, 1, 0.55, 0.55, 0.2, '#FBFBF4') +
+    box(-3, 1.6, 0, 0.16, 0.16, 0.8, '#4F8F3F') +
+    box(-3.2, 1.4, 0.8, 0.55, 0.55, 0.2, '#F6D84E')
   )
-  return small(v, -0.4, -1)
 }
 export function can() {
   const red = '#C9442F',
@@ -282,6 +344,19 @@ export function petals(fallen: string, height: number, i: number) {
       return `<rect class="life petal" x="${n2(x)}" y="${n2(y)}" width="2.2" height="1.5" rx=".5" fill="${fill}" style="--drop:${n2(-y)}px;--drift:${n2(6 + rnd(i, n, 53) * 8)}px;animation-delay:${n2(-rnd(i, n, 54) * 11)}s"/>`
     })
     .join('')
+}
+const BEE_ART = (() => {
+  const v: Voxel[] = []
+  for (let x = -2; x < 3; x++)
+    for (let z = 0; z < 2; z++) v.push([x, 0, z, x === 2 || x % 2 ? '#2B2420' : '#F2C12E'])
+  return small(v, 0, 0)
+})()
+const BEE_SECONDS = 13
+// With its animation stopped a bee is simply on the ground, so reduced motion needs no special case.
+export function landingBee(x: number, y: number, i: number) {
+  const side = rnd(x, y, 81) < 0.5 ? -1 : 1, // Off to one side of the plot, where a walking pet's feet don't land.
+    turn = rnd(x, y, 82) < 0.5 ? -1 : 1
+  return `<g transform="translate(${n2(x + side * 18)} ${n2(y + (rnd(x, y, 83) - 0.5) * 6)}) scale(${turn} 1)"><g class="life visit bee" style="--ax:-70px;--ay:-60px;--lx:70px;--ly:-70px;--d:${BEE_SECONDS}s;--t:${n2(-rnd(x, y, i, 84) * BEE_SECONDS)}s"><g class="rest"><ellipse rx="3" ry="1.5" fill="#122E1C" opacity=".32"/></g><g transform="scale(.75)">${BEE_ART}<g class="air"><g transform="translate(-1 -5)"><g class="flap"><path d="M0 0L-5 -3L-4 1Z" fill="#DDF0FA"/></g><g class="flap"><path d="M0 0L5 -3L4 1Z" fill="#DDF0FA"/></g></g></g><g class="rest"><ellipse cx="-3" cy="-5" rx="2.8" ry="1.5" fill="#DDF0FA"/></g></g></g></g>`
 }
 export function flock(minX: number, top: number, width: number, height: number) {
   const scale = Math.max(1, width / 760),
