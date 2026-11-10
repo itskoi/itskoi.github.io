@@ -80,3 +80,9 @@ The system SHALL keep the tree of an abandoned Work session in the garden, perma
 #### Scenario: Abandoned immediately
 - **WHEN** the user abandons a Work session seconds after starting it
 - **THEN** a tree at the earliest growth stage enters the garden
+
+## Changes
+
+### 2026-11-10 — ten trees
+
+The picker now offers ten trees, adding Bằng lăng, Thông, Bàng and Chuối (`specs/koidoro-more-trees`). Read "six trees" above as those ten. Phượng stays the first-launch default.

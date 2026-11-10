@@ -38,7 +38,11 @@ function TreeScene({ species, stage }: { species: Species; stage: number }) {
       </g>
       <g className="tree-float">
         <use href="#plot-1" />
-        <use href={`#tree-${species}-${stage}`} />
+        <g key={`${species}-${stage}`} className="life grow">
+          <g className="breeze">
+            <use href={`#tree-${species}-${stage}`} />
+          </g>
+        </g>
       </g>
     </svg>
   )
@@ -219,7 +223,14 @@ export function App() {
         ) : session?.species ? (
           <TreeScene species={session.species} stage={stageAt(session, now)} />
         ) : kind === 'Work' ? (
-          <TreeScene species={species} stage={0} />
+          <div className="stages">
+            {STAGES.map((name, i) => (
+              <figure key={name}>
+                <TreeScene species={species} stage={i} />
+                <figcaption>{name}</figcaption>
+              </figure>
+            ))}
+          </div>
         ) : (
           <p className="stage-note">Time for a {kind.toLowerCase()}. Your garden is waiting.</p>
         )}

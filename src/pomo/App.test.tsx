@@ -163,7 +163,47 @@ describe('views', () => {
     expect(selectedKind()).toHaveTextContent('Work')
     const trees = treePicker() as HTMLElement
     expect(within(trees).getByRole('button', { pressed: true })).toHaveTextContent('Phượng')
-    expect(within(trees).getAllByRole('button', { pressed: false })).toHaveLength(5)
+    expect(within(trees).getAllByRole('button', { pressed: false })).toHaveLength(9)
+  })
+
+  it('sways the tree and pops it again when another tree is picked', async () => {
+    const { user, container } = setup()
+    const before = container.querySelector('.grow')
+    expect(before?.querySelector('.breeze use')).toHaveAttribute('href', '#tree-phuong-0')
+    await user.click(screen.getByRole('button', { name: /^Bàng/ }))
+    const after = container.querySelector('.grow')
+    expect(after?.querySelector('.breeze use')).toHaveAttribute('href', '#tree-bang-0')
+    expect(after).not.toBe(before)
+  })
+
+  it('pops the tree when it reaches a new stage, not on every tick', () => {
+    save(start(emptyState, 'mai', T0))
+    const { container } = setup()
+    const first = container.querySelector('.grow')
+    act(() => FakeWorker.live[0].onmessage?.(new MessageEvent('message')))
+    expect(container.querySelector('.grow')).toBe(first)
+    vi.setSystemTime(T0 + 9 * MIN)
+    act(() => FakeWorker.live[0].onmessage?.(new MessageEvent('message')))
+    expect(container.querySelector('.grow')).not.toBe(first)
+  })
+
+  it('previews all four stages of the picked tree before Work starts', async () => {
+    const { user } = setup()
+    const stages = (tree: string) =>
+      ['Seed', 'Sprout', 'Sapling', 'Mature'].map((stage) =>
+        screen.queryByRole('img', { name: `${tree} tree at the ${stage} stage` }),
+      )
+    expect(stages('Phượng')).not.toContain(null)
+    await user.click(screen.getByRole('button', { name: /^Mai/ }))
+    expect(stages('Mai')).not.toContain(null)
+    expect(stages('Phượng')).toEqual([null, null, null, null])
+  })
+
+  it('stops previewing the stages once Work starts', async () => {
+    const { user } = setup()
+    await user.click(startButton())
+    await user.click(screen.getByRole('button', { name: 'View tree' }))
+    expect(screen.queryByRole('img', { name: /Mature stage/ })).toBeNull()
   })
 
   it('preselects the tree started last, and starts with the one picked', async () => {

@@ -1,4 +1,15 @@
-export const SPECIES_IDS = ['phuong', 'mai', 'dao', 'da', 'tre', 'dua'] as const
+export const SPECIES_IDS = [
+  'phuong',
+  'mai',
+  'dao',
+  'da',
+  'tre',
+  'dua',
+  'banglang',
+  'thong',
+  'bang',
+  'chuoi',
+] as const
 export type Species = (typeof SPECIES_IDS)[number]
 export type Tree = { plantedAt: number; stage: number; species: Species } // stage 3 is mature; plantedAt also identifies it
 export type Session = { startedAt: number; endsAt: number; species: Species | null } // null during breaks

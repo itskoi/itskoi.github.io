@@ -25,6 +25,7 @@ export const PAL: Record<string, string[]> = {
   mai: ['#A8660F', '#D9941A', '#F2BE2B', '#FADD55', '#FFF4A8'],
   dao: ['#A84868', '#D3708F', '#EE97B2', '#F9C0D0', '#FFE9EE'],
   da: ['#143A2C', '#205C38', '#37803E', '#62A447', '#A6CC60'],
+  banglang: ['#4A2A78', '#6E43A8', '#9568CF', '#BE98E6', '#E8D6F8'],
   leaf: ['#1D472D', '#2C6936', '#478C3E', '#72AD4B', '#ABCF68'],
   bamboo: ['#1F5A33', '#2F7A3A', '#4F9C41', '#7FBF4E', '#C2E274'],
   palm: ['#17523A', '#277440', '#449845', '#78BA4E', '#BADB69'],

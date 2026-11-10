@@ -177,10 +177,49 @@ describe('floating', () => {
   })
 })
 
+describe('tree motion', () => {
+  const one = (species: Species, stage: number) => [{ plantedAt: 1, stage, species }]
+
+  it('sways trees past the seed stage', () => {
+    expect(show(one('da', 1)).container.querySelector('.t .breeze use')).not.toBeNull()
+    expect(show(one('da', 0)).container.querySelector('.breeze')).toBeNull()
+  })
+
+  it('only sways the oldest 24 trees of a big garden', () => {
+    const { container } = show(makeTrees(60))
+    expect(container.querySelectorAll('.breeze')).toHaveLength(24)
+    expect(container.querySelector('[data-i="23"] .breeze')).not.toBeNull()
+    expect(container.querySelector('[data-i="24"] .breeze')).toBeNull()
+  })
+
+  it.each(['phuong', 'mai', 'dao', 'banglang', 'bang'] as const)('sheds from a mature %s', (id) => {
+    expect(show(one(id, 3)).container.querySelector('.t .petal')).not.toBeNull()
+  })
+
+  it('sheds nothing from a young tree or an evergreen', () => {
+    expect(show(one('mai', 2)).container.querySelector('.petal')).toBeNull()
+    expect(show(one('thong', 3)).container.querySelector('.petal')).toBeNull()
+  })
+
+  it('only sheds from the oldest 24 trees', () => {
+    const trees = Array.from(
+      { length: 30 },
+      (_, i): Tree => ({
+        plantedAt: i,
+        stage: 3,
+        species: 'mai',
+      }),
+    )
+    const { container } = show(trees)
+    expect(container.querySelector('[data-i="23"] .petal')).not.toBeNull()
+    expect(container.querySelector('[data-i="24"] .petal')).toBeNull()
+  })
+})
+
 describe('reduced motion', () => {
   it('marks every moving part so one rule can stop them all', () => {
     const { container } = show(makeTrees(20))
-    for (const selector of ['.fly', '.swim', '.flap', '.breathe', '.blink']) {
+    for (const selector of ['.fly', '.swim', '.flap', '.breathe', '.blink', '.breeze', '.petal']) {
       for (const el of container.querySelectorAll(selector)) {
         expect(el.closest('.life')).not.toBeNull()
       }

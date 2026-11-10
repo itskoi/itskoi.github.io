@@ -1,4 +1,4 @@
-import { rnd } from './cubes'
+import { PAL, rnd } from './cubes'
 
 type Voxel = [number, number, number, string]
 
@@ -272,6 +272,16 @@ export function butterfly(x: number, y: number, i: number, scale = 1) {
   const wing = (dir: number) =>
     `<g class="flap" style="animation-delay:${i * 37}ms"><path d="M0 0L${dir * 4.6} -3.6L${dir * 3.8} .6Z" fill="${a}"/><path d="M0 0L${dir * 3.4} .6L${dir * 2.4} 3Z" fill="${b}"/></g>`
   return `<g transform="translate(${x} ${y}) scale(${scale})"><g class="life w${(i % 3) + 1}" style="animation-delay:${-i * 2.3}s">${wing(-1)}${wing(1)}<rect x="-.5" y="-1.8" width="1" height="3.6" fill="#2E2A26"/></g></g>`
+}
+export function petals(fallen: string, height: number, i: number) {
+  const fill = PAL[fallen][2]
+  return [0, 1, 2]
+    .map((n) => {
+      const x = (rnd(i, n, 51) - 0.5) * 44,
+        y = -height * (0.5 + rnd(i, n, 52) * 0.35)
+      return `<rect class="life petal" x="${n2(x)}" y="${n2(y)}" width="2.2" height="1.5" rx=".5" fill="${fill}" style="--drop:${n2(-y)}px;--drift:${n2(6 + rnd(i, n, 53) * 8)}px;animation-delay:${n2(-rnd(i, n, 54) * 11)}s"/>`
+    })
+    .join('')
 }
 export function flock(minX: number, top: number, width: number, height: number) {
   const scale = Math.max(1, width / 760),

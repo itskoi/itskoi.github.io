@@ -59,9 +59,48 @@ export const SPECIES: Record<Species, SpeciesInfo> = {
     seed: '#5A3D24',
     shadow: 26,
   },
+  banglang: {
+    name: 'Bằng lăng',
+    en: 'Crape myrtle',
+    note: 'The purple blossom that lines the streets in early summer.',
+    seed: '#7A5A3C',
+    bud: 'banglang',
+    fallen: 'banglang',
+    shadow: 30,
+  },
+  thong: {
+    name: 'Thông',
+    en: 'Pine',
+    note: 'The pines of the Đà Lạt highlands.',
+    seed: '#6B4A2D',
+    shadow: 24,
+  },
+  bang: {
+    name: 'Bàng',
+    en: 'Indian almond',
+    note: 'The schoolyard shade tree, its leaves turning red before they fall.',
+    seed: '#8A6A48',
+    fallen: 'phuong',
+    shadow: 34,
+  },
+  chuoi: {
+    name: 'Chuối',
+    en: 'Banana',
+    note: 'The banana clump behind every country kitchen.',
+    seed: '#7E6A34',
+    shadow: 24,
+  },
 }
 export const STAGES = ['Seed', 'Sprout', 'Sapling', 'Mature']
 export const HEIGHT = [18, 34, 54, 78]
+const limbsOf = (g: Grid, k: number, p: string) => (pts: number[][], a: number, b: number) =>
+  limb(
+    g,
+    pts.map((q) => q.map((n) => n * k)),
+    Math.max(a * k, 0.72),
+    Math.max(b * k, 0.72),
+    p,
+  )
 const SHAPES: Record<Species, (g: Grid, k: number) => void> = {
   phuong(g, k) {
     const L = (pts: number[][], a: number, b: number) =>
@@ -554,6 +593,127 @@ const SHAPES: Record<Species, (g: Grid, k: number) => void> = {
       ].forEach(([dx, dy], i) => {
         lump(g, T[0] + dx, T[1] + dy, T[2] - 1.6 - (i % 2), 1.45, 1.45, 'coco', { fluff: 0.02 })
       })
+  },
+  banglang(g, k) {
+    const L = limbsOf(g, k, 'bark')
+    L(
+      [
+        [0, 0, 0],
+        [0, 0, 11],
+      ],
+      2.2,
+      1.4,
+    )
+    for (const [x, y] of [
+      [5, -3],
+      [-5, 3],
+      [2, 5],
+      [-2, -5],
+    ])
+      L(
+        [
+          [0, 0, 9],
+          [x, y, 17],
+        ],
+        1,
+        0.72,
+      )
+    for (const [x, y, z, r, rz, lift] of [
+      [5.5, -3.5, 19, 4, 4.4, 0],
+      [-5.5, 3.5, 19, 4, 4.4, 0],
+      [2, 6, 18, 4, 4.2, 0],
+      [-2, -6, 19, 4, 4.4, 0],
+      [0, 0, 23, 5.6, 6, 0.04],
+      [3, -2, 29, 2.6, 3.6, 0.1],
+      [-3, 2, 28.5, 2.6, 3.6, 0.1],
+    ])
+      lump(g, x * k, y * k, z * k, r * k, rz * k, 'banglang', {
+        under: 'leaf',
+        bloom: 0.26,
+        speck: ['leaf', 0.1],
+        lift,
+      })
+  },
+  thong(g, k) {
+    limbsOf(g, k, 'bark')(
+      [
+        [0, 0, 0],
+        [0, 0, 36],
+      ],
+      1.9,
+      0.72,
+    )
+    for (let t = 0; t < 6; t++)
+      lump(g, 0, 0, (10 + t * 5) * k, (10.5 - t * 1.5) * k, 2.6 * k, 'da', {
+        fluff: 0.3,
+        lift: t * 0.03,
+      })
+    lump(g, 0, 0, 38 * k, 1.6 * k, 2.4 * k, 'da', { fluff: 0.05, lift: 0.2 })
+  },
+  bang(g, k) {
+    limbsOf(g, k, 'bark')(
+      [
+        [0, 0, 0],
+        [0, 0, 30],
+      ],
+      2.4,
+      0.8,
+    )
+    ;[
+      [11, 14],
+      [19, 11],
+      [26.5, 7.5],
+      [32, 3.5],
+    ].forEach(([z, r], t) => {
+      lump(g, 0, 0, z * k, r * k, 1.3 * k, 'leaf', {
+        fluff: 0.35,
+        holes: 0.08,
+        speck: ['phuong', 0.07],
+        lift: t * 0.04,
+      })
+    })
+  },
+  chuoi(g, k) {
+    const top = 23 * k,
+      kk = Math.max(k, 0.55),
+      leaves = k < 1 ? 5 : 8
+    limbsOf(g, k, 'culm')(
+      [
+        [0, 0, 0],
+        [0, 0, 23],
+      ],
+      2.6,
+      1.5,
+    )
+    for (let i = 0; i < leaves; i++) {
+      const a = (i * 6.283) / leaves + rnd(i, 61) * 0.4,
+        ca = Math.cos(a),
+        sa = Math.sin(a),
+        len = (10 + rnd(i, 62) * 3) * kk,
+        rise = (10 + rnd(i, 63) * 4) * kk,
+        fall = (12 + rnd(i, 64) * 3) * kk,
+        steps = Math.ceil(len * 1.5)
+      for (let s = 0; s <= steps; s++) {
+        const t = s / steps,
+          x = ca * len * t,
+          y = sa * len * t,
+          z = top + rise * t - fall * t * t,
+          w = Math.round(3.4 * kk * Math.sin(Math.PI * Math.min(1, t * 0.92 + 0.08)))
+        for (let e = -w; e <= w; e++)
+          put(
+            g,
+            Math.round(x - sa * e),
+            Math.round(y + ca * e),
+            Math.round(z - Math.abs(e) * 0.25),
+            'bamboo',
+            e ? 0.36 + t * 0.2 + rnd(i, s, e) * 0.2 + (e > 0 ? 0.08 : -0.04) : 0.74,
+          )
+      }
+    }
+    if (k === 1) {
+      lump(g, 3, -3, 17, 2.2, 3, 'mai', { fluff: 0.1 })
+      lump(g, 3, -3, 12.5, 1.1, 1.7, 'banglang', { fluff: 0.02 })
+    }
   },
 }
 const soilBed = (g: Grid, r: number) => {
