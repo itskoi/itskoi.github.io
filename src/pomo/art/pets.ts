@@ -1,4 +1,4 @@
-import { type Grid, type LumpOptions, limb, lump, put } from './cubes'
+import { type Grid, type LumpOptions, limb, lump, put, rnd } from './cubes'
 
 export const PET_IDS = [
   'corgi',
@@ -66,6 +66,30 @@ function standing(p: WalkParts, coat: string, chest: string, s: Stance) {
   lump(p.body, 0, s.y1, zc + 0.2, s.r, s.rz, coat, soft)
   lump(p.body, 0, s.y1 + s.r * 0.75, zc - 0.6, s.r * 0.84, s.rz, chest, { fluff: 0.2 })
 }
+// A box with its edges cut off, for shapes that must stay flat and square where a lump would go round.
+function block(
+  g: Grid,
+  [x0, x1]: number[],
+  [y0, y1]: number[],
+  [z0, z1]: number[],
+  p: string,
+  lift = 0,
+) {
+  for (let z = z0; z < z1; z++)
+    for (let y = y0; y < y1; y++)
+      for (let x = x0; x < x1; x++) {
+        const edges = [x === x0 || x === x1 - 1, y === y0 || y === y1 - 1, z === z0 || z === z1 - 1]
+        if (edges.filter(Boolean).length > 1) continue
+        put(
+          g,
+          x,
+          y,
+          z,
+          p,
+          0.5 + lift + ((z - z0) / (z1 - z0)) * 0.14 + (rnd(x, y, z, 3) - 0.5) * 0.12,
+        )
+      }
+}
 // A flat ear, facing the viewer.
 function disc(g: Grid, cx: number, y: number, cz: number, rx: number, rz: number, p: string) {
   for (let z = Math.floor(cz - rz); z <= cz + rz; z++)
@@ -114,10 +138,8 @@ function earPair(
         lump(g, s * x, y + r * 0.55, z0 + i + 0.5, Math.max(r * 0.5, 0.6), 0.7, inner, { fluff: 0 })
     }
 }
-function sittingDog(parts: PetParts, coat: string, chest: string, muzzle: string) {
-  const b = parts.body,
-    h = parts.head,
-    soft = { fluff: 0.12 }
+function dogBody(b: Grid, coat: string, chest: string) {
+  const soft = { fluff: 0.12 }
   lump(b, 0, -3.5, 4, 5, 4.2, coat, soft)
   for (const s of [-1, 1]) lump(b, s * 3.6, -0.5, 1.3, 2.1, 1.4, chest, soft)
   lump(b, 0, -1, 9.5, 4.4, 6.6, coat, soft)
@@ -136,6 +158,10 @@ function sittingDog(parts: PetParts, coat: string, chest: string, muzzle: string
     )
     lump(b, s * 2, 4.2, 1, 1.8, 1.2, chest, soft)
   }
+}
+function sittingDog(parts: PetParts, coat: string, chest: string, muzzle: string) {
+  const h = parts.head
+  dogBody(parts.body, coat, chest)
   lump(h, 0, 2, 18.5, 6, 5.4, coat, { fluff: 0.08, lift: 0.04 })
   lump(h, 0, 7, 16.4, 3, 2.4, muzzle, { fluff: 0, lift: 0.08 })
   for (const x of [-1, 0]) put(h, x, 10, 17, '#1B1A1E', 0.5)
@@ -261,7 +287,7 @@ export const PETS: Record<PetId, Pet> = {
     },
   },
   golden: {
-    // Broad head, long muzzle, ears hanging past the jaw, a feathered neck and chest, and a long plume of a tail.
+    // The head is square on purpose: a flat skull, a broad muzzle below it, and folded ears. A round head reads as a poodle.
     name: 'Golden retriever',
     tu: 0.98,
     tailAt: [2, -6, 2],
@@ -269,58 +295,46 @@ export const PETS: Record<PetId, Pet> = {
     headAt: [0, 1, 14],
     headMove: 'pant',
     draw(p) {
-      const b = p.body,
-        h = p.head,
+      const h = p.head,
         fur = 'goldenRich',
-        light = 'goldenLight',
-        coat: LumpOptions = { fluff: 0.22, speck: ['goldenEar', 0.07] }
+        light = 'goldenLight'
+      limb(
+        p.tail,
+        [
+          [3, -6.5, 1.2],
+          [8, -9, 0.8],
+          [13, -8.5, 2],
+        ],
+        2,
+        0.8,
+        light,
+      )
       limb(
         p.tail,
         [
           [2, -6, 2],
-          [6, -8, 2.5],
-          [11, -7, 4],
+          [7, -8.5, 2],
+          [12.5, -8, 3.4],
         ],
-        1.6,
-        1.1,
+        1.5,
+        0.8,
         fur,
       )
-      lump(p.tail, 5, -8, 2, 2.6, 2, light, { fluff: 0.45 })
-      lump(p.tail, 9, -7.6, 2.8, 2.4, 1.8, light, { fluff: 0.45 })
-      lump(p.tail, 12, -6.8, 4.4, 1.6, 1.4, light, { fluff: 0.3 })
-      lump(b, 0, -3.5, 4.2, 5.4, 4.4, fur, coat)
-      for (const s of [-1, 1]) lump(b, s * 4, -0.5, 1.3, 2.2, 1.4, light, { fluff: 0.1 })
-      lump(b, 0, -1, 10, 4.8, 7, fur, coat)
-      for (const s of [-1, 1]) {
-        limb(
-          b,
-          [
-            [s * 2.2, 3.2, 0],
-            [s * 2.2, 2.8, 8],
-          ],
-          1.7,
-          1.5,
-          fur,
-          { lift: 0.06 },
-        )
-        lump(b, s * 2.6, 1.6, 4, 1.5, 3, light, { fluff: 0.45 })
-        lump(b, s * 2.2, 4.4, 1, 2, 1.2, light, { fluff: 0.08 })
-      }
-      lump(b, 0, 1, 14, 5.2, 4, fur, { ...coat, fluff: 0.3 })
-      lump(b, 0, 4.2, 11, 4.4, 4.6, light, { fluff: 0.42, lift: 0.06 })
-      lump(b, 0, 5, 7.6, 3, 3.6, light, { fluff: 0.5, lift: 0.06 })
-      lump(h, 0, 2, 19.4, 5.5, 4.5, fur, { fluff: 0.1, lift: 0.03 })
-      lump(h, 0, 7.4, 17.4, 3.1, 2.3, light, { fluff: 0.02, lift: 0.02 })
-      lump(h, 0, 9.2, 16.9, 2.3, 1.7, light, { fluff: 0.02 })
-      for (const x of [-1, 0]) put(h, x, 11, 17, '#1B1A1E', 0.5)
-      for (const x of [-2, -1, 0, 1]) put(h, x, 10, 15, '#3B2418', 0.5)
-      eyes(p, 7, 20, 2, DARK, fur)
-      for (const s of [-1, 1]) {
-        lump(h, s * 5.4, 2.6, 20.5, 2.3, 1.6, 'goldenEar', { fluff: 0.18 })
-        lump(h, s * 6.6, 3.4, 17.8, 2.5, 2.6, 'goldenEar', { fluff: 0.18 })
-        lump(h, s * 6.6, 3.8, 15, 1.8, 2.2, 'goldenEar', { fluff: 0.18 })
-      }
-      lump(p.tongue, -0.5, 10, 13.4, 1.2, 1.7, 'pink', { fluff: 0, lift: 0.1 })
+      dogBody(p.body, fur, light)
+      block(h, [-5, 5], [-3, 5], [15, 21], fur)
+      block(h, [-4, 4], [-2, 4], [20, 23], fur, 0.1)
+      block(h, [-3, 3], [5, 9], [14, 18], light, 0.08)
+      for (const x of [-1, 0]) for (const z of [16, 17]) put(h, x, 9, z, '#1B1A1E', 0.5)
+      for (const x of [-2, -1, 0, 1]) put(h, x, 8, 15, '#3B2418', 0.5)
+      eyes(p, 4, 19, 2, DARK, fur)
+      // Each ear starts level with the eyes and hangs in a narrowing flap beside the cheek.
+      for (const x of [5, 6, -6, -7])
+        for (let z = 14; z <= 20; z++) {
+          const down = (20 - z) / 6
+          for (let y = Math.round(down * 2); y <= Math.round(3 - down * 1); y++)
+            put(h, x, y, z, 'goldenEar', 0.66 - down * 0.08 + (rnd(x, y, z, 7) - 0.5) * 0.1)
+        }
+      lump(p.tongue, -0.5, 9, 13.6, 1.1, 1.5, 'pink', { fluff: 0, lift: 0.1 })
     },
     walk: {
       head: [3.5, -2.5],
@@ -334,23 +348,31 @@ export const PETS: Record<PetId, Pet> = {
           rz: 4.2,
           legR: 1.6,
           w: 2.6,
-          paw: 'goldenRich',
-          coat: { fluff: 0.22, speck: ['goldenEar', 0.07] },
+          paw: 'goldenLight',
+          coat: { fluff: 0.1 },
         })
-        lump(p.body, 0, -3.5, 7, 4, 2.4, 'goldenLight', { fluff: 0.5 }) // feathered belly
+        limb(
+          p.tail,
+          [
+            [0, -10.5, 10],
+            [0, -14, 9.4],
+            [0, -17.5, 11],
+          ],
+          2,
+          0.8,
+          'goldenLight',
+        )
         limb(
           p.tail,
           [
             [0, -10, 11],
-            [0, -13, 12],
-            [0, -16, 14],
+            [0, -14, 11],
+            [0, -17.5, 12.6],
           ],
-          1.6,
-          1.1,
+          1.5,
+          0.8,
           'goldenRich',
         )
-        lump(p.tail, 0, -13, 10.6, 2.2, 1.8, 'goldenLight', { fluff: 0.45 })
-        lump(p.tail, 0, -15.5, 12.4, 1.7, 1.5, 'goldenLight', { fluff: 0.3 })
       },
     },
   },
