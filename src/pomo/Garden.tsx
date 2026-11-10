@@ -23,9 +23,18 @@ const MAX_LIVELY_TREES = 24 // Each one repaints the island, so a huge garden mu
 const BREEZE_PHASES = 4 // Trees sharing a phase repaint in the same frame.
 const WIDEST_SCREEN = 2.4 // width over height
 
-const place = (gx: number, gy: number) => [(gx - gy) * 32, (gx + gy) * 16]
+// view is how many quarter turns the island has made.
+const place = ({ gx, gy }: Plot, view: number) => {
+  const [a, b] = [
+    [gx, gy],
+    [-gy, gx],
+    [-gx, -gy],
+    [gy, -gx],
+  ][view]
+  return [(a - b) * 32, (a + b) * 16]
+}
 const use = (id: string) => `<use href="#${id}"/>`
-const depthOf = (p: Plot) => p.gx + p.gy
+const depthOf = (p: Plot, view: number) => place(p, view)[1] / 16
 
 function treeLabel({ species, stage }: Tree) {
   const name = `${SPECIES[species].name} ${STAGES[stage].toLowerCase()}`
@@ -33,8 +42,8 @@ function treeLabel({ species, stage }: Tree) {
 }
 
 // Everything that stays put between renders, as markup, so the page never rebuilds it.
-function drawScene(plots: Plot[], trees: readonly Tree[]) {
-  const xs = plots.map((p) => place(p.gx, p.gy))
+function drawScene(plots: Plot[], trees: readonly Tree[], view: number) {
+  const xs = plots.map((p) => place(p, view))
   const minX = Math.min(...xs.map(([x]) => x)) - 32
   const maxX = Math.max(...xs.map(([x]) => x)) + 32
   const minY = Math.min(...xs.map(([, y]) => y)) - 16
@@ -42,14 +51,14 @@ function drawScene(plots: Plot[], trees: readonly Tree[]) {
 
   let top = minY + 16 + PET_FRAME.y // Room for an animal standing on the back row.
   let cast = ''
-  let ground = ''
   let flutter = ''
   let butterflies = 0
   for (const p of plots) {
-    const [x, y] = place(p.gx, p.gy)
+    const [x, y] = place(p, view)
     cast += `M${x} ${y + 12}L${x + 32} ${y + 28}L${x} ${y + 44}L${x - 32} ${y + 28}Z`
-    ground += `<use href="#${p.ground}" x="${x}" y="${y}"/>`
-    if (p.kind === 'tree') top = Math.min(top, y - HEIGHT[p.tree.stage] - 22)
+    // The highest this tree stands from any side, so the frame holds still as the garden turns.
+    const backmost = -(Math.abs(p.gx) + Math.abs(p.gy)) * 16
+    if (p.kind === 'tree') top = Math.min(top, backmost - HEIGHT[p.tree.stage] - 22)
     if (p.kind === 'decoration' && (p.decoration === 'meadow' || p.decoration === 'flowers')) {
       for (let b = 0; b < 3 && butterflies < MAX_BUTTERFLIES; b++) {
         flutter += butterfly(x + (b - 1) * 18, y - 14 - b * 5, butterflies++)
@@ -57,10 +66,19 @@ function drawScene(plots: Plot[], trees: readonly Tree[]) {
     }
   }
 
+  const ground = [...plots]
+    .sort((a, b) => depthOf(a, view) - depthOf(b, view))
+    .map((p) => {
+      const [x, y] = place(p, view)
+      return `<use href="#${p.ground}" x="${x}" y="${y}"/>`
+    })
+    .join('')
+
   const visiting = new Map<number, string>()
   beeSpots(plots, trees.length).forEach((plot, i) => {
-    const [x, y] = place(plot.gx, plot.gy)
-    visiting.set(depthOf(plot), (visiting.get(depthOf(plot)) ?? '') + landingBee(x, y, i))
+    const [x, y] = place(plot, view)
+    const depth = depthOf(plot, view)
+    visiting.set(depth, (visiting.get(depth) ?? '') + landingBee(x, y, i))
   })
 
   const margin = 16
@@ -104,15 +122,22 @@ type Props = { trees: readonly Tree[]; canWater?: boolean }
 
 export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
   const plots = useMemo(() => layout(trees), [trees])
-  const scene = useMemo(() => (trees.length ? drawScene(plots, trees) : null), [plots, trees])
+  const [view, setView] = useState(0)
+  const scene = useMemo(
+    () => (trees.length ? drawScene(plots, trees, view) : null),
+    [plots, trees, view],
+  )
   const [active, setActive] = useState(0)
   const [watering, setWatering] = useState<ReadonlySet<number>>(new Set())
   const [announcement, setAnnouncement] = useState('')
   const rows = useMemo(() => {
     const byDepth = new Map<number, Plot[]>()
-    for (const p of plots) byDepth.set(depthOf(p), [...(byDepth.get(depthOf(p)) ?? []), p])
-    return [...byDepth]
-  }, [plots])
+    for (const p of plots) {
+      const depth = depthOf(p, view)
+      byDepth.set(depth, [...(byDepth.get(depth) ?? []), p])
+    }
+    return [...byDepth].sort(([a], [b]) => a - b)
+  }, [plots, view])
   const [roam, setRoam] = useState<Roam>(() => ({
     plots,
     at: settlePets(plots, trees.length),
@@ -152,7 +177,7 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
         if (!free.length) return was
         const next = free[Math.floor(pick * free.length)]
         // Pets are drawn facing left, so one heading right is mirrored, and stays that way when it sits.
-        const right = next.gx - next.gy - here.gx + here.gy
+        const right = place(next, view)[0] - place(here, view)[0]
         return {
           plots,
           at: { ...was.at, [pet]: next },
@@ -162,7 +187,7 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
       })
     }, STEP_MS)
     return () => clearInterval(timer)
-  }, [plots, trees.length])
+  }, [plots, trees.length, view])
 
   function water(i: number) {
     setActive(i)
@@ -200,7 +225,7 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
   const petsAt = (depth: number) =>
     (Object.entries(roam.at) as [PetId, Plot][]).filter(([id, spot]) => {
       const from = roam.walking?.pet === id ? roam.walking.from : spot
-      return Math.max(depthOf(spot), depthOf(from)) === depth
+      return Math.max(depthOf(spot, view), depthOf(from, view)) === depth
     })
 
   if (!scene) {
@@ -229,7 +254,7 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
               <g key={depth} data-depth={depth}>
                 {row.map((p) => {
                   if (p.kind === 'grass') return null
-                  const [x, y] = place(p.gx, p.gy)
+                  const [x, y] = place(p, view)
                   const transform = `translate(${x} ${y})`
                   if (p.kind !== 'tree') {
                     return (
@@ -306,9 +331,9 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
                   <Markup style={NO_POINTER} html={scene.visiting.get(depth) as string} />
                 )}
                 {petsAt(depth).map(([id, spot]) => {
-                  const [x, y] = place(spot.gx, spot.gy)
+                  const [x, y] = place(spot, view)
                   const from = roam.walking?.pet === id ? roam.walking.from : null
-                  const [fx, fy] = from ? place(from.gx, from.gy) : [x, y]
+                  const [fx, fy] = from ? place(from, view) : [x, y]
                   return (
                     <g
                       key={id}
@@ -341,6 +366,9 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
           </svg>
         </div>
       </div>
+      <button type="button" className="rotate" onClick={() => setView((v) => (v + 1) % 4)}>
+        Rotate garden
+      </button>
       <p className="sr" aria-live="polite">
         {announcement}
       </p>

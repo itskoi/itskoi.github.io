@@ -149,6 +149,14 @@ hr {
   position: relative;
   height: 100%;
 }
+.rotate {
+  position: absolute;
+  z-index: 1;
+  right: 16px;
+  bottom: 16px;
+  color: var(--on-scene);
+  border-color: var(--on-scene);
+}
 .scroller {
   height: 100%;
   overflow: auto;

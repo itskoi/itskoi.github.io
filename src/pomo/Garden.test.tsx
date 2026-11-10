@@ -112,6 +112,8 @@ describe('keyboard', () => {
     await user.tab()
     expect(document.activeElement).toBe(stops[0])
     await user.tab()
+    expect(screen.getByRole('button', { name: 'Rotate garden' })).toHaveFocus()
+    await user.tab()
     expect(screen.getByRole('button', { name: 'After the garden' })).toHaveFocus()
   })
 
@@ -179,12 +181,103 @@ describe('watering', () => {
 describe('view only', () => {
   it('shows the trees with their labels but cannot focus or water them', () => {
     const { container } = render(<Garden trees={makeTrees(3)} canWater={false} />)
-    expect(screen.queryAllByRole('button')).toEqual([])
+    expect(screen.queryAllByRole('button', { name: /^Water/ })).toEqual([])
+    screen.getByRole('button', { name: 'Rotate garden' })
     expect(screen.getByRole('img', { name: 'Phượng mature' })).toBeInTheDocument()
     expect(container.querySelector('[tabindex]')).toBeNull()
     fireEvent.click(screen.getByRole('img', { name: 'Phượng mature' }))
     expect(container.querySelector('.can')).toBeNull()
     expect(playWaterSound).not.toHaveBeenCalled()
+  })
+})
+
+const rotate = () => fireEvent.click(screen.getByRole('button', { name: 'Rotate garden' }))
+const numbers = (text: string | null) => (String(text).match(/-?[\d.]+/g) as string[]).map(Number)
+const quarterTurn = ([x, y]: number[]) => [0 - 2 * y, x / 2]
+
+describe('rotating', () => {
+  const trees = () =>
+    treeButtons()
+      .sort((a, b) => Number(a.dataset.i) - Number(b.dataset.i))
+      .map((t) => numbers(t.getAttribute('transform')))
+
+  it('has nothing to rotate in an empty garden', () => {
+    show([])
+    expect(screen.queryByRole('button', { name: 'Rotate garden' })).toBeNull()
+  })
+
+  it('moves every tree a quarter turn, and home after four', () => {
+    show(makeTrees(12))
+    const home = trees()
+    rotate()
+    expect(trees()).toEqual(home.map(quarterTurn))
+    rotate()
+    rotate()
+    rotate()
+    expect(trees()).toEqual(home)
+  })
+
+  it.each([1, 2, 3])('draws nearer things over farther ones after %i turns', (turns) => {
+    const { container } = show(makeTrees(40))
+    for (let i = 0; i < turns; i++) rotate()
+    const ascending = (values: number[]) =>
+      expect(values).toEqual([...values].sort((a, b) => a - b))
+    ascending(
+      [...container.querySelectorAll('[data-i]')].map(
+        (t) => numbers(t.getAttribute('transform'))[1],
+      ),
+    )
+    ascending(
+      [...container.querySelectorAll('.island > g:first-child use')].map((u) =>
+        Number(u.getAttribute('y')),
+      ),
+    )
+  })
+
+  it('keeps the frame still from every side', () => {
+    show(makeTrees(12))
+    const frame = () => screen.getByRole('group', { name: /^Garden/ }).getAttribute('viewBox')
+    const first = frame()
+    for (let i = 0; i < 3; i++) {
+      rotate()
+      expect(frame()).toBe(first)
+    }
+  })
+
+  it('leaves animals on their plots, drawn at their new depth', () => {
+    const { container } = show(makeTrees(20))
+    const pets = () =>
+      [...container.querySelectorAll<SVGGElement>('[data-pet]')]
+        .sort((a, b) => (a.dataset.pet as string).localeCompare(b.dataset.pet as string))
+        .map((el) => numbers(el.style.transform))
+    const home = pets()
+    rotate()
+    expect(pets()).toEqual(home.map(quarterTurn))
+    for (const el of container.querySelectorAll<SVGGElement>('[data-pet]')) {
+      expect(el.closest('[data-depth]')).toHaveAttribute(
+        'data-depth',
+        `${numbers(el.style.transform)[1] / 16}`,
+      )
+    }
+  })
+
+  it('turns a pet to face where it walks on screen', () => {
+    vi.useFakeTimers()
+    try {
+      const { container } = show(makeTrees(3))
+      rotate()
+      const corgi = () => container.querySelector('[data-pet="corgi"]') as SVGGElement
+      const x = () => numbers(corgi().style.transform)[0]
+      for (let step = 0; step < 60; step++) {
+        const before = x()
+        act(() => void vi.advanceTimersByTime(STEP_MS))
+        if (x() === before) continue
+        const turned = corgi().querySelector('[transform="scale(-1 1)"]') !== null
+        expect(turned).toBe(x() > before)
+      }
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })
 
