@@ -71,6 +71,21 @@ describe('drawing', () => {
     expect(after.container.querySelector(selector)).not.toBeNull()
   })
 
+  it('sends flocks across the sky in every direction, each bird facing its way', () => {
+    const { container } = show(makeTrees(10))
+    const birds = [...container.querySelectorAll<SVGGElement>('.fly')]
+    const ways = new Set(
+      birds.map((bird) => {
+        const dx = Number.parseFloat(bird.style.getPropertyValue('--dx'))
+        const dy = Number.parseFloat(bird.style.getPropertyValue('--dy'))
+        const facing = bird.firstElementChild?.getAttribute('transform')?.match(/scale\((-?)/)?.[1]
+        expect(facing === '-').toBe(dx < 0)
+        return `${Math.sign(dx)},${Math.sign(dy)}`
+      }),
+    )
+    expect(ways).toEqual(new Set(['1,-1', '1,1', '-1,1', '-1,-1']))
+  })
+
   it('never lets the garden shrink below 28 pixels a plot', () => {
     const { container } = show(makeTrees(300))
     const svg = screen.getByRole('group', { name: /^Garden/ })
@@ -287,6 +302,19 @@ describe('pets walking', () => {
     const depths = items.map((item) => item.depth)
     expect(depths).toEqual([...depths].sort((a, b) => a - b))
     expect(items.some((item, i) => item.pet && items[i + 1]?.pet === false)).toBe(true)
+  })
+
+  it('leaves every other animation running when one pet takes a step', () => {
+    const { container } = show(makeTrees(40))
+    const running = [...container.querySelectorAll('.fly, .swim, .flap, .visit, .breathe')].filter(
+      (el) => !el.closest('[data-pet="corgi"]'),
+    )
+    expect(running.length).toBeGreaterThan(10)
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0)
+    act(() => void vi.advanceTimersByTime(STEP_MS))
+    random.mockRestore()
+    expect(container.querySelector('[data-pet="corgi"].step')).not.toBeNull()
+    expect(running.filter((el) => !el.isConnected)).toEqual([])
   })
 
   it('stops walking when the step ends', () => {

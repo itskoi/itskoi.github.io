@@ -94,3 +94,7 @@ The buffalo is now one of the walking animals, and a bear, monkey and elephant a
 ### 2026-11-10 — animals anywhere
 
 "Pets stay visible" no longer holds: animals start on random open grass anywhere in the garden and can pass behind trees. See `specs/koidoro-scattered-garden/spec.md`.
+
+### 2026-11-10 — flock directions
+
+Birds in the sky now cross in four directions: left and right, rising and falling, each facing the way it flies. A new flock sets off every 13 seconds — `src/pomo/Garden.test.tsx`.

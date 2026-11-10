@@ -382,7 +382,7 @@ hr {
   animation: w3 10s ease-in-out infinite alternate;
 }
 .fly {
-  animation: cross 26s linear infinite;
+  animation: cross 52s linear infinite;
 }
 /* An animation, not a transition: it still plays when the pet's element is moved to redraw it nearer. */
 .step {
@@ -788,8 +788,10 @@ hr {
     opacity: 1;
   }
 }
+/* Across the sky in the first half, then out of sight until the next pass. */
 @keyframes cross {
-  to {
+  50%,
+  100% {
     transform: translate(var(--dx), var(--dy));
   }
 }

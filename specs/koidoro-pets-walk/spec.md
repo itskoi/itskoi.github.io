@@ -34,3 +34,7 @@ Pets are drawn back to front, so the one lower on the screen covers the one behi
 ### 2026-11-10 — among the trees
 
 Animals now walk on any open grass, not only at the front, and start from random plots. See `specs/koidoro-scattered-garden/spec.md`.
+
+### 2026-11-10 — animations no longer restart on a step
+
+Each step re-rendered the garden, and React 19 rewrites injected markup on every render, so all pets, koi, butterflies, birds, petals and bees restarted together every 2.4s. One pet's step now leaves every other animation running — `src/pomo/Garden.test.tsx`.

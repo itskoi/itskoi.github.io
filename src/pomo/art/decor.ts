@@ -358,19 +358,29 @@ export function landingBee(x: number, y: number, i: number) {
     turn = rnd(x, y, 82) < 0.5 ? -1 : 1
   return `<g transform="translate(${n2(x + side * 18)} ${n2(y + (rnd(x, y, 83) - 0.5) * 6)}) scale(${turn} 1)"><g class="life visit bee" style="--ax:-70px;--ay:-60px;--lx:70px;--ly:-70px;--d:${BEE_SECONDS}s;--t:${n2(-rnd(x, y, i, 84) * BEE_SECONDS)}s"><g class="rest"><ellipse rx="3" ry="1.5" fill="#122E1C" opacity=".32"/></g><g transform="scale(.75)">${BEE_ART}<g class="air"><g transform="translate(-1 -5)"><g class="flap"><path d="M0 0L-5 -3L-4 1Z" fill="#DDF0FA"/></g><g class="flap"><path d="M0 0L5 -3L4 1Z" fill="#DDF0FA"/></g></g></g><g class="rest"><ellipse cx="-3" cy="-5" rx="2.8" ry="1.5" fill="#DDF0FA"/></g></g></g></g>`
 }
+// Each flock's start and end height, as shares of the sky, and its way across: 1 is left to right.
+const ROUTES = [
+  [0.42, 0.12, 1],
+  [0.18, 0.5, -1],
+  [0.08, 0.72, 1],
+  [0.8, 0.15, -1],
+]
+const ROUTE_GAP = 13 // Seconds apart, a quarter of a .fly cycle, so a flock is always crossing.
+
 export function flock(minX: number, top: number, width: number, height: number) {
   const scale = Math.max(1, width / 760),
-    dx = width + 120 * scale,
-    dy = -dx * 0.16
-  const y0 = top + height * 0.42
-  return [
-    [0, 0, 0],
-    [-20, -9, 0.12],
-    [-26, 9, 0.2],
-  ]
-    .map(
+    span = width + 120 * scale
+  return ROUTES.flatMap(([from, to, way], r) => {
+    const dy = height * (to - from),
+      startX = minX + width / 2 - (way * span) / 2,
+      tilt = (Math.atan2(dy, span) * 180) / Math.PI
+    return [
+      [0, 0, 0],
+      [-20, -9, 0.12],
+      [-26, 9, 0.2],
+    ].map(
       ([ox, oy, lag]) =>
-        `<g class="life fly" style="--dx:${dx}px;--dy:${dy}px;animation-delay:${-4 - lag}s"><g transform="translate(${minX - 60 * scale + ox * scale} ${y0 + oy * scale}) scale(${scale})"><path d="M-3.4 0L3.6 -.6L-.2 1.8Z" style="fill:var(--bird)"/><g class="beat" style="animation-delay:${lag * 900}ms"><path d="M-1.6 0L-3.8 -5L1.6 -.2Z" style="fill:var(--bird)"/></g></g></g>`,
+        `<g class="life fly" style="--dx:${n2(way * span)}px;--dy:${n2(dy)}px;animation-delay:${n2(-4 - r * ROUTE_GAP - lag)}s"><g transform="translate(${n2(startX + way * ox * scale)} ${n2(top + height * from + oy * scale)}) scale(${n2(way * scale)} ${n2(scale)}) rotate(${n2(tilt)})"><path d="M-3.4 0L3.6 -.6L-.2 1.8Z" style="fill:var(--bird)"/><g class="beat" style="animation-delay:${lag * 900}ms"><path d="M-1.6 0L-3.8 -5L1.6 -.2Z" style="fill:var(--bird)"/></g></g></g>`,
     )
-    .join('')
+  }).join('')
 }
