@@ -406,6 +406,22 @@ describe('views', () => {
   })
 })
 
+describe('panel', () => {
+  it('hides the sidebar and brings it back', async () => {
+    const { user } = setup()
+    await user.click(screen.getByRole('button', { name: 'Hide panel' }))
+    expect(screen.queryByRole('heading', { name: 'Koidoro' })).toBeNull()
+    const show = screen.getByRole('button', { name: 'Show panel' })
+    expect(show).toHaveAttribute('aria-expanded', 'false')
+    await user.click(show)
+    screen.getByRole('heading', { name: 'Koidoro' })
+    expect(screen.getByRole('button', { name: 'Hide panel' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    )
+  })
+})
+
 describe('warnings', () => {
   it('warns on a failed save and keeps working', async () => {
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {

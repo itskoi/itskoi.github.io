@@ -114,6 +114,8 @@ describe('keyboard', () => {
     await user.tab()
     expect(screen.getByRole('button', { name: 'Rotate garden' })).toHaveFocus()
     await user.tab()
+    expect(screen.getByRole('button', { name: 'Zoom in' })).toHaveFocus()
+    await user.tab()
     expect(screen.getByRole('button', { name: 'After the garden' })).toHaveFocus()
   })
 
@@ -476,5 +478,63 @@ describe('reduced motion', () => {
         expect(el.closest('.life')).not.toBeNull()
       }
     }
+  })
+})
+
+describe('tree count', () => {
+  it('shows how many trees the garden has', () => {
+    const { rerender } = show(makeTrees(1))
+    screen.getByText('1 tree')
+    rerender(<Garden trees={makeTrees(30)} />)
+    screen.getByText('30 trees')
+  })
+})
+
+describe('zooming', () => {
+  const world = (container: HTMLElement) => container.querySelector('.world') as HTMLElement
+  const zoomIn = () => screen.getByRole('button', { name: 'Zoom in' })
+  const zoomOut = () => screen.getByRole('button', { name: 'Zoom out' })
+
+  it('zooms in and out with the buttons, between 1x and 4x', () => {
+    const { container } = show(makeTrees(3))
+    expect(world(container).style.width).toBe('100%')
+    expect(zoomOut()).toBeDisabled()
+    fireEvent.click(zoomIn())
+    expect(world(container).style.width).toBe('125%')
+    for (let i = 0; i < 10; i++) fireEvent.click(zoomIn())
+    expect(world(container).style.width).toBe('400%')
+    expect(zoomIn()).toBeDisabled()
+    for (let i = 0; i < 10; i++) fireEvent.click(zoomOut())
+    expect(world(container).style.width).toBe('100%')
+  })
+
+  it('zooms with the wheel instead of scrolling the page', () => {
+    const { container } = show(makeTrees(3))
+    const scroller = container.querySelector('.scroller') as HTMLElement
+    const up = new WheelEvent('wheel', { deltaY: -100, cancelable: true, bubbles: true })
+    act(() => {
+      scroller.dispatchEvent(up)
+    })
+    expect(up.defaultPrevented).toBe(true)
+    expect(Number.parseFloat(world(container).style.width)).toBeGreaterThan(100)
+    act(() => {
+      scroller.dispatchEvent(new WheelEvent('wheel', { deltaY: 1000, bubbles: true }))
+    })
+    expect(world(container).style.width).toBe('100%')
+  })
+
+  it('pans on a mouse drag without watering the tree it ends on', () => {
+    // jsdom has no PointerEvent, so fireEvent would drop the mouse fields.
+    vi.stubGlobal('PointerEvent', MouseEvent)
+    const { container } = show(makeTrees(3))
+    const scroller = container.querySelector('.scroller') as HTMLElement
+    const tree = treeButtons()[0]
+    fireEvent.pointerDown(scroller, { pointerType: 'mouse', button: 0, clientX: 50, clientY: 50 })
+    fireEvent.pointerMove(scroller, { pointerType: 'mouse', buttons: 1, clientX: 20, clientY: 40 })
+    fireEvent.click(tree)
+    expect(playWaterSound).not.toHaveBeenCalled()
+    fireEvent.click(tree)
+    expect(playWaterSound).toHaveBeenCalledTimes(1)
+    vi.unstubAllGlobals()
   })
 })

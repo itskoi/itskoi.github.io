@@ -149,17 +149,52 @@ hr {
   position: relative;
   height: 100%;
 }
-.rotate {
+.tree-count {
+  position: absolute;
+  z-index: 1;
+  left: 16px;
+  bottom: 20px;
+  color: var(--on-scene);
+  font: 700 17px var(--body);
+  text-shadow: 0 0 6px var(--halo);
+  pointer-events: none;
+}
+.garden-tools {
   position: absolute;
   z-index: 1;
   right: 16px;
   bottom: 16px;
+  display: flex;
+  gap: 6px;
+}
+.garden-tools > *,
+.panel-toggle {
   color: var(--on-scene);
   border-color: var(--on-scene);
+}
+.garden-tools > :disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.panel-toggle {
+  position: absolute;
+  z-index: 2;
+  top: 16px;
+  left: 16px;
+}
+.app[data-panel="closed"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.sidebar[hidden] {
+  display: none;
 }
 .scroller {
   height: 100%;
   overflow: auto;
+  cursor: grab;
+}
+.scroller:active {
+  cursor: grabbing;
 }
 .world {
   position: relative;

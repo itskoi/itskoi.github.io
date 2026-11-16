@@ -1,4 +1,12 @@
-import { type CSSProperties, memo, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  type CSSProperties,
+  memo,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { playWaterSound } from './alert'
 import { butterfly, flock, koi, landingBee, petals } from './art/decor'
 import { PET_FRAME, type PetId, petMarkup } from './art/pets'
@@ -22,6 +30,9 @@ const MAX_BUTTERFLIES = 14
 const MAX_LIVELY_TREES = 24 // Each one repaints the island, so a huge garden must not sway every tree.
 const BREEZE_PHASES = 4 // Trees sharing a phase repaint in the same frame.
 const WIDEST_SCREEN = 2.4 // width over height
+const MAX_ZOOM = 4
+const ZOOM_STEP = 1.25
+const DRAG_PX = 4
 
 // view is how many quarter turns the island has made.
 const place = ({ gx, gy }: Plot, view: number) => {
@@ -147,6 +158,13 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
     setRoam({ plots, at: settlePets(plots, trees.length, roam.at), turned: roam.turned })
   }
   const svg = useRef<SVGSVGElement>(null)
+  const [scroller, setScroller] = useState<HTMLDivElement | null>(null)
+  const [zoom, setZoom] = useState(1)
+  const shownZoom = useRef(1)
+  const anchor = useRef<[number, number] | null>(null) // The point in the scroller that holds still while zooming.
+  const drag = useRef<{ x: number; y: number; left: number; top: number; moved: boolean } | null>(
+    null,
+  )
   const timers = useRef(new Set<ReturnType<typeof setTimeout>>())
 
   useEffect(() => {
@@ -188,6 +206,38 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
     }, STEP_MS)
     return () => clearInterval(timer)
   }, [plots, trees.length, view])
+
+  function zoomBy(factor: number, at: [number, number] | null = null) {
+    anchor.current = at
+    setZoom((z) => Math.min(MAX_ZOOM, Math.max(1, z * factor)))
+  }
+
+  useLayoutEffect(() => {
+    const el = scroller
+    const ratio = zoom / shownZoom.current
+    shownZoom.current = zoom
+    if (!el || ratio === 1) return
+    const [cx, cy] = anchor.current ?? [el.clientWidth / 2, el.clientHeight / 2]
+    el.scrollLeft = (el.scrollLeft + cx) * ratio - cx
+    el.scrollTop = (el.scrollTop + cy) * ratio - cy
+  }, [zoom, scroller])
+
+  useEffect(() => {
+    const el = scroller
+    if (!el) return
+    // React's onWheel is passive, so it could not stop the page from scrolling.
+    const onWheel = (ev: WheelEvent) => {
+      ev.preventDefault()
+      const dy = ev.deltaY * (ev.deltaMode === 1 ? 33 : 1)
+      const box = el.getBoundingClientRect()
+      anchor.current = [ev.clientX - box.left, ev.clientY - box.top]
+      // A trackpad pinch arrives as a ctrl+wheel with small deltas.
+      const factor = Math.exp(-dy * (ev.ctrlKey ? 0.01 : 0.002))
+      setZoom((z) => Math.min(MAX_ZOOM, Math.max(1, z * factor)))
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => el.removeEventListener('wheel', onWheel)
+  }, [scroller])
 
   function water(i: number) {
     setActive(i)
@@ -234,8 +284,49 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
 
   return (
     <div className="garden">
-      <div className="scroller">
-        <div className="world" style={scene.style}>
+      <div
+        ref={setScroller}
+        className="scroller"
+        onPointerDown={(ev) => {
+          const el = scroller
+          if (ev.pointerType === 'touch' || ev.button !== 0 || !el) return
+          drag.current = {
+            x: ev.clientX,
+            y: ev.clientY,
+            left: el.scrollLeft,
+            top: el.scrollTop,
+            moved: false,
+          }
+        }}
+        onPointerMove={(ev) => {
+          const d = drag.current
+          const el = scroller
+          if (!d || !el) return
+          if (!(ev.buttons & 1)) {
+            drag.current = null
+            return
+          }
+          const dx = ev.clientX - d.x
+          const dy = ev.clientY - d.y
+          if (Math.hypot(dx, dy) > DRAG_PX) d.moved = true
+          if (!d.moved) return
+          el.scrollLeft = d.left - dx
+          el.scrollTop = d.top - dy
+        }}
+        onClickCapture={(ev) => {
+          if (drag.current?.moved) ev.stopPropagation()
+          drag.current = null
+        }}
+      >
+        <div
+          className="world"
+          style={{
+            width: `${zoom * 100}%`,
+            height: `${zoom * 100}%`,
+            minWidth: scene.style.minWidth * zoom,
+            minHeight: scene.style.minHeight * zoom,
+          }}
+        >
           {/* The shadow is its own layer, so it stays on the ground while the island floats above it. */}
           <svg className="island-shadow" viewBox={scene.viewBox} aria-hidden="true">
             <path d={scene.cast} style={{ fill: 'var(--cast)' }} opacity=".55" />
@@ -366,9 +457,30 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
           </svg>
         </div>
       </div>
-      <button type="button" className="rotate" onClick={() => setView((v) => (v + 1) % 4)}>
-        Rotate garden
-      </button>
+      <p className="tree-count">
+        {trees.length} {trees.length === 1 ? 'tree' : 'trees'}
+      </p>
+      <div className="garden-tools">
+        <button type="button" onClick={() => setView((v) => (v + 1) % 4)}>
+          Rotate garden
+        </button>
+        <button
+          type="button"
+          aria-label="Zoom out"
+          disabled={zoom <= 1}
+          onClick={() => zoomBy(1 / ZOOM_STEP)}
+        >
+          −
+        </button>
+        <button
+          type="button"
+          aria-label="Zoom in"
+          disabled={zoom >= MAX_ZOOM}
+          onClick={() => zoomBy(ZOOM_STEP)}
+        >
+          +
+        </button>
+      </div>
       <p className="sr" aria-live="polite">
         {announcement}
       </p>

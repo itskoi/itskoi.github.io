@@ -57,6 +57,7 @@ export function App() {
   const [picked, setPicked] = useState<Species | null>(null)
   const [pickedKind, setPickedKind] = useState<Kind | null>(null)
   const [viewGarden, setViewGarden] = useState(false)
+  const [panelOpen, setPanelOpen] = useState(true)
   const [, redraw] = useReducer((n: number) => n + 1, 0)
   const { session, step } = state
   const endsAt = session?.endsAt
@@ -123,9 +124,9 @@ export function App() {
   const problems = new Set([loaded.problem, saveProblem, settingsProblem].filter((p) => p !== null))
 
   return (
-    <main className="app" data-scheme={settings.scheme}>
+    <main className="app" data-scheme={settings.scheme} data-panel={panelOpen ? 'open' : 'closed'}>
       <Sprites />
-      <aside className="sidebar">
+      <aside id="panel" className="sidebar" hidden={!panelOpen}>
         <h1>Koidoro</h1>
         {[...problems].map((problem) => (
           <p key={problem} className="notice" role="alert">
@@ -215,6 +216,15 @@ export function App() {
       </aside>
 
       <div className="stage">
+        <button
+          type="button"
+          className="panel-toggle"
+          aria-controls="panel"
+          aria-expanded={panelOpen}
+          onClick={() => setPanelOpen((open) => !open)}
+        >
+          {panelOpen ? 'Hide panel' : 'Show panel'}
+        </button>
         <div className="count" role={session ? 'timer' : undefined}>
           {time}
         </div>
