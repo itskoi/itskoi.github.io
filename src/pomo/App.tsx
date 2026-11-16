@@ -107,9 +107,15 @@ export function App() {
     document.title = title
   }, [title])
 
-  function startSession() {
+  function startSession(k: Kind = kind) {
     prepareAlerts()
-    dispatch({ type: 'start', species, now: Date.now(), kind, duration })
+    dispatch({
+      type: 'start',
+      species,
+      now: Date.now(),
+      kind: k,
+      duration: settings.minutes[k] * MINUTE,
+    })
     setPicked(null)
     setPickedKind(null)
   }
@@ -175,7 +181,7 @@ export function App() {
         )}
 
         {!session && (
-          <button type="button" className="primary" onClick={startSession}>
+          <button type="button" className="primary" onClick={() => startSession()}>
             Start {kind}
           </button>
         )}
@@ -225,8 +231,33 @@ export function App() {
         >
           {panelOpen ? 'Hide panel' : 'Show panel'}
         </button>
-        <div className="count" role={session ? 'timer' : undefined}>
-          {time}
+        <div className="top">
+          <div className="count" role={session ? 'timer' : undefined}>
+            {time}
+          </div>
+          {!panelOpen && (
+            <div className="quick">
+              {session ? (
+                <button
+                  type="button"
+                  onClick={session.species ? abandonSession : () => dispatch({ type: 'endBreak' })}
+                >
+                  {session.species ? 'Abandon' : 'End break'}
+                </button>
+              ) : (
+                KINDS.map((k) => (
+                  <button
+                    key={k}
+                    type="button"
+                    className={k === kind ? 'primary' : undefined}
+                    onClick={() => startSession(k)}
+                  >
+                    Start {k}
+                  </button>
+                ))
+              )}
+            </div>
+          )}
         </div>
         {viewGarden ? (
           <Garden trees={state.trees} canWater={!!session && !session.species} />

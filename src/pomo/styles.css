@@ -112,20 +112,39 @@ button.primary {
   padding: 16px;
   text-align: center;
 }
-.count {
-  color: var(--on-scene);
+.top {
   position: absolute;
   z-index: 1;
   top: 16px;
   inset-inline: 0;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  /* The garden can grow behind the timer, and clicks must still reach the trees. */
+  pointer-events: none;
+}
+.quick {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  padding-inline: 16px;
+}
+.quick > * {
+  pointer-events: auto;
+}
+.quick > :not(.primary) {
+  color: var(--on-scene);
+  border-color: var(--on-scene);
+}
+.count {
+  color: var(--on-scene);
   text-align: center;
   font: 500 clamp(2rem, 5vw, 3.25rem) var(--mono);
   font-variant-numeric: tabular-nums;
-  /* The garden can grow behind the timer, and clicks must still reach the trees. */
   text-shadow:
     0 0 8px var(--halo),
     0 0 2px var(--halo);
-  pointer-events: none;
 }
 .picker {
   display: grid;
@@ -335,6 +354,10 @@ hr {
   .stages .tree-scene {
     max-height: max(96px, calc(30dvh - 74px));
   }
+}
+/* Room for the quick buttons under the timer. */
+.app[data-panel="closed"] .stages {
+  padding-top: 128px;
 }
 .tree-card {
   align-self: stretch;

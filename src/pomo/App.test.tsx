@@ -422,6 +422,42 @@ describe('panel', () => {
   })
 })
 
+describe('quick buttons', () => {
+  const quick = (container: HTMLElement) => container.querySelector('.quick') as HTMLElement
+
+  it('only shows while the panel is hidden', async () => {
+    const { user, container } = setup()
+    expect(quick(container)).toBeNull()
+    await user.click(screen.getByRole('button', { name: 'Hide panel' }))
+    expect(
+      within(quick(container))
+        .getAllByRole('button')
+        .map((b) => b.textContent),
+    ).toEqual(['Start Work', 'Start Break', 'Start Long break'])
+  })
+
+  it('starts the chosen kind and ends it, without the panel', async () => {
+    saveSettings({ ...defaultSettings, minutes: { ...defaultSettings.minutes, Break: 7 } })
+    const { user, container } = setup()
+    await user.click(screen.getByRole('button', { name: 'Hide panel' }))
+    await user.click(within(quick(container)).getByRole('button', { name: 'Start Break' }))
+    expect(timer()).toBe('07:00')
+    await user.click(within(quick(container)).getByRole('button', { name: 'End break' }))
+    expect(screen.queryByRole('timer')).toBeNull()
+  })
+
+  it('starts Work with the tree picked last, and can abandon it', async () => {
+    save(waitingOnBreak)
+    vi.spyOn(window, 'confirm').mockReturnValue(true)
+    const { user, container } = setup()
+    await user.click(screen.getByRole('button', { name: 'Hide panel' }))
+    await user.click(within(quick(container)).getByRole('button', { name: 'Start Work' }))
+    expect(savedState().session?.species).toBe('mai')
+    await user.click(within(quick(container)).getByRole('button', { name: 'Abandon' }))
+    expect(savedState().session).toBeNull()
+  })
+})
+
 describe('warnings', () => {
   it('warns on a failed save and keeps working', async () => {
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
