@@ -405,7 +405,8 @@ function veg() {
 const BLOCK = 1.4 // A tower block and the gap under it, in cubes.
 const roofOf = (floors: number) => 0.35 + floors * BLOCK
 // How far above its plot the tower reaches, searchlights included, in screen units.
-export const towerHeight = (floors: number) => (roofOf(floors) + 0.3) * 4 + 40
+const TOWER_SCALE = 2.5 // Times the garden's cube size, so it stands over grown trees; past this the podium leaves its plot.
+export const towerHeight = (floors: number) => ((roofOf(floors) + 0.3) * 4 + 40) * TOWER_SCALE
 
 // A brutalist tower: raw concrete blocks stacked off-centre around a service core, overgrown, flag on top.
 function tower(floors: number) {
@@ -421,7 +422,6 @@ function tower(floors: number) {
       [-0.25, 0.35],
     ]
   let s =
-    flower(-3.3, -1.6, '#FBFBF4') +
     box(-1.9, -1.9, 0, 3.8, 3.8, 0.35, dark) +
     flat(-1.8, 1, 1.2, 0.8, GREEN[2], 0.37) +
     flat(1, -1.8, 0.8, 1.4, GREEN[1], 0.37) +
@@ -514,6 +514,7 @@ function tower(floors: number) {
     return `<circle class="life pulse" cx="${n2(wx)}" cy="${n2(wy)}" r="9" fill="url(#tower-wash)"/>`
   }
   return (
+    `<g transform="scale(${TOWER_SCALE})">` +
     s +
     box(-1.75, 1.5, 0.35, 0.3, 0.3, 0.2, INK) +
     box(1.5, -1.75, 0.35, 0.3, 0.3, 0.2, INK) +
@@ -526,11 +527,9 @@ function tower(floors: number) {
     box(rx + 0.8, ry + 0.4, top + 1.4, 0.45, 0.45, 0.3, GREEN[3]) +
     box(-1.36, -1.36, pole, 0.12, 0.12, 2, '#55514B') +
     `<g class="life wave">${wallL(-1.24, -1.3, pole + 1.1, 1.3, 0.9, '#DA251D')}<path transform="matrix(4 2 0 -4 ${n2(fx)} ${n2(fy)})" d="M${star}Z" fill="#FFDD00"/></g>` +
-    butterfly(-15, -top * 2.2, 0, 0.5) +
-    butterfly(14, -top * 1.4 - 6, 2, 0.5) +
-    box(2, 2.2, 0, 0.9, 0.5, 0.35, con) +
-    box(2.1, 2.3, 0.35, 0.7, 0.3, 0.3, GREEN[1]) +
-    flower(2.8, 0.6, '#F6D84E')
+    '</g>' +
+    butterfly(-15 * TOWER_SCALE, -top * 2.2 * TOWER_SCALE, 0, 0.5) +
+    butterfly(14 * TOWER_SCALE, (-top * 1.4 - 6) * TOWER_SCALE, 2, 0.5)
   )
 }
 
