@@ -450,6 +450,39 @@ hr {
 .fly {
   animation: cross 52s linear infinite;
 }
+.pulse {
+  animation: pulse 2.2s ease-in-out infinite alternate;
+}
+.tip {
+  animation: tip 6s ease-in-out infinite;
+}
+.drip {
+  animation: drip 0.9s linear infinite;
+}
+.bob {
+  animation: bob 5s ease-in-out infinite;
+}
+/* Hidden until animated, so reduced motion leaves the tower's own few lit windows. */
+.lamp {
+  opacity: 0;
+  animation: lamp 9s steps(1) infinite;
+}
+.sweep {
+  opacity: 0;
+  animation: sweep 7s linear infinite;
+}
+.beam {
+  animation: beam 7s ease-in-out infinite alternate;
+}
+.wave {
+  animation: wave 2.4s ease-in-out infinite alternate;
+}
+.night {
+  display: none;
+}
+[data-scheme="night"] .night {
+  display: inline;
+}
 /* An animation, not a transition: it still plays when the pet's element is moved to redraw it nearer. */
 .step {
   animation: step 2s linear;
@@ -638,6 +671,72 @@ hr {
   }
   100% {
     opacity: 0;
+  }
+}
+@keyframes pulse {
+  from {
+    opacity: 0.45;
+  }
+}
+@keyframes tip {
+  0%,
+  62%,
+  80% {
+    transform: none;
+  }
+  72% {
+    transform: rotate(24deg);
+  }
+}
+@keyframes drip {
+  to {
+    opacity: 0.2;
+    transform: translateY(3px);
+  }
+}
+@keyframes bob {
+  93% {
+    transform: translateY(-3px);
+  }
+  0%,
+  86%,
+  100% {
+    transform: none;
+  }
+}
+@keyframes lamp {
+  45% {
+    opacity: 1;
+  }
+}
+@keyframes sweep {
+  4% {
+    opacity: 0.75;
+  }
+  22% {
+    opacity: 0.75;
+    transform: translate(var(--gx), var(--gy));
+  }
+  26%,
+  100% {
+    opacity: 0;
+    transform: translate(var(--gx), var(--gy));
+  }
+}
+@keyframes beam {
+  from {
+    transform: rotate(-20deg);
+  }
+  to {
+    transform: rotate(20deg);
+  }
+}
+@keyframes wave {
+  from {
+    transform: skewY(-2deg);
+  }
+  to {
+    transform: skewY(2deg);
   }
 }
 @keyframes swim {

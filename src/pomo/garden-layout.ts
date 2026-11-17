@@ -1,9 +1,10 @@
 import { rnd } from './art/cubes'
 import { PLOT_KINDS } from './art/decor'
+import type { FeatureId } from './art/features'
 import type { PetId } from './art/pets'
 import type { Tree } from './session'
 
-export type Decoration = 'pond' | 'rocks' | 'meadow' | 'flowers' | 'reeds' | 'boulder'
+export type Decoration = 'pond' | 'rocks' | 'meadow' | 'flowers' | 'reeds' | 'boulder' | FeatureId
 type Spot = { gx: number; gy: number; ground: string }
 export type Plot = Spot &
   (
@@ -35,20 +36,20 @@ const FEATURES: Record<number, [Decoration, number]> = {
   16: ['pond', 16],
   18: ['flowers', 17],
   20: ['rocks', 18],
-  33: ['meadow', 30],
-  35: ['rocks', 31],
+  33: ['tower', 25],
+  35: ['lantern', 31],
   37: ['reeds', 32],
   39: ['boulder', 33],
-  41: ['pond', 34],
-  43: ['flowers', 35],
-  59: ['flowers', 50],
-  61: ['meadow', 51],
-  63: ['pond', 52],
-  65: ['reeds', 53],
-  68: ['boulder', 55],
-  70: ['rocks', 56],
-  72: ['pond', 57],
-  93: ['reeds', 77],
+  41: ['lilypond', 34],
+  43: ['hive', 35],
+  59: ['zen', 50],
+  61: ['bench', 51],
+  63: ['bridge', 52],
+  65: ['bamboo', 53],
+  68: ['log', 55],
+  70: ['birdbath', 56],
+  72: ['veg', 57],
+  93: ['torii', 77],
   95: ['meadow', 78],
   98: ['rocks', 80],
   100: ['flowers', 81],
@@ -63,7 +64,21 @@ const GROUND: Record<Decoration, string> = {
   flowers: 'plot-0',
   reeds: 'plot-4',
   boulder: 'plot-3',
+  lantern: 'plot-0',
+  lilypond: 'pond-ground',
+  hive: 'plot-1',
+  zen: 'plot-0',
+  bamboo: 'plot-4',
+  bridge: 'plot-0',
+  torii: 'plot-2',
+  log: 'plot-4',
+  bench: 'plot-1',
+  birdbath: 'plot-2',
+  veg: 'plot-0',
+  tower: 'plot-0',
 }
+
+export const towerFloors = (treeCount: number) => (treeCount >= 100 ? 5 : treeCount >= 50 ? 3 : 2)
 
 // Ring by ring from the centre. A tree's place depends only on its order, so it never moves.
 function* spiral(): Generator<[number, number]> {

@@ -63,6 +63,12 @@ describe('drawing', () => {
     ['a flower bed', 'use[href="#flowers"]', 17],
     ['tall grass', 'use[href="#reeds"]', 32],
     ['a boulder', 'use[href="#boulder"]', 33],
+    ['the tower', '[data-feature="tower"]', 25],
+    ['a stone lantern', '[data-feature="lantern"]', 31],
+    ['a lily pond', '[data-feature="lilypond"] .bob', 34],
+    ['a torii gate', '[data-feature="torii"]', 77],
+    ['fireflies', '.night.firefly', 7],
+    ['dragonflies', '.dragonfly', 32],
   ])('brings %s (%s) only once they have arrived', (_, selector, count) => {
     const before = show(makeTrees(count - 1))
     expect(before.container.querySelector(selector)).toBeNull()
@@ -310,9 +316,12 @@ describe('tree motion', () => {
     expect(container.querySelector('[data-i="24"] .breeze')).toBeNull()
   })
 
-  it.each(['phuong', 'mai', 'dao', 'banglang', 'bang'] as const)('sheds from a mature %s', (id) => {
-    expect(show(one(id, 3)).container.querySelector('.t .petal')).not.toBeNull()
-  })
+  it.each(['phuong', 'mai', 'dao', 'da', 'banglang', 'bang'] as const)(
+    'sheds from a mature %s',
+    (id) => {
+      expect(show(one(id, 3)).container.querySelector('.t .petal')).not.toBeNull()
+    },
+  )
 
   it('sheds nothing from a young tree or an evergreen', () => {
     expect(show(one('mai', 2)).container.querySelector('.petal')).toBeNull()
@@ -477,6 +486,40 @@ describe('reduced motion', () => {
       for (const el of container.querySelectorAll(selector)) {
         expect(el.closest('.life')).not.toBeNull()
       }
+    }
+  })
+})
+
+describe('the tower', () => {
+  const blocks = (n: number) => show(makeTrees(n)).container.querySelectorAll('.sweep').length
+  const top = (n: number) =>
+    Number(
+      show(makeTrees(n)).container.querySelector('.island')?.getAttribute('viewBox')?.split(' ')[1],
+    )
+
+  it('stands two blocks tall at 25 trees, three at 50 and five at 100', () => {
+    expect([blocks(25), blocks(50), blocks(100)]).toEqual([2, 3, 5])
+  })
+
+  it('makes room in the frame for its searchlights', () => {
+    expect(top(25)).toBeLessThan(top(24))
+  })
+
+  it('marks every new moving part so reduced motion stops it', () => {
+    const { container } = show(makeTrees(100))
+    for (const selector of [
+      '.pulse',
+      '.tip',
+      '.drip',
+      '.bob',
+      '.lamp',
+      '.sweep',
+      '.beam',
+      '.wave',
+    ]) {
+      const parts = [...container.querySelectorAll(selector)]
+      expect(parts.length).toBeGreaterThan(0)
+      for (const el of parts) expect(el.closest('.life')).not.toBeNull()
     }
   })
 })

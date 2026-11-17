@@ -1,4 +1,12 @@
-import { beeSpots, layout, PET_ARRIVAL, PET_ORDER, type Plot, settlePets } from './garden-layout'
+import {
+  beeSpots,
+  layout,
+  PET_ARRIVAL,
+  PET_ORDER,
+  type Plot,
+  settlePets,
+  towerFloors,
+} from './garden-layout'
 import type { Tree } from './session'
 
 const makeTrees = (n: number): Tree[] =>
@@ -42,6 +50,33 @@ it('brings the first meadow, pond, and rocks at 7, 16, and 18 trees', () => {
   expect(first('reeds')).toBe(32)
   expect(first('boulder')).toBe(33)
   expect(first('rocks')).toBe(18)
+})
+
+it('brings each new decoration once, at its tree count', () => {
+  const arrives = {
+    tower: 25,
+    lantern: 31,
+    lilypond: 34,
+    hive: 35,
+    zen: 50,
+    bench: 51,
+    bridge: 52,
+    bamboo: 53,
+    log: 55,
+    birdbath: 56,
+    veg: 57,
+    torii: 77,
+  }
+  for (const [decoration, count] of Object.entries(arrives)) {
+    const has = (n: number) => decorations(layout(makeTrees(n))).filter((d) => d === decoration)
+    expect(has(count - 1)).toHaveLength(0)
+    expect(has(count)).toHaveLength(1)
+    expect(has(300)).toHaveLength(1)
+  }
+})
+
+it('grows the tower at 50 and 100 trees', () => {
+  expect([25, 49, 50, 99, 100, 300].map(towerFloors)).toEqual([2, 2, 3, 3, 5, 5])
 })
 
 it('brings each pet at its specified count and keeps it after', () => {

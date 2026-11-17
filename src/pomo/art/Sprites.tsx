@@ -101,8 +101,9 @@ function buildAll() {
     [0, 1, 2, 3].map((st) => `<g id="tree-${id}-${st}">${treeArt(id, st)}</g>`),
   )
   const plots = Array.from({ length: PLOT_KINDS }, (_, v) => `<g id="plot-${v}">${plot(v)}</g>`)
+  const glows = `<radialGradient id="lamp-glow"><stop offset="0" stop-color="#FFE08A" stop-opacity=".75"/><stop offset=".45" stop-color="#FFC95A" stop-opacity=".28"/><stop offset="1" stop-color="#FFC95A" stop-opacity="0"/></radialGradient><radialGradient id="firefly-glow"><stop offset="0" stop-color="#F4FF9A" stop-opacity=".9"/><stop offset="1" stop-color="#C8F25A" stop-opacity="0"/></radialGradient><linearGradient id="tower-beam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFF6C8" stop-opacity=".7"/><stop offset="1" stop-color="#FFF6C8" stop-opacity="0"/></linearGradient><radialGradient id="tower-wash"><stop offset="0" stop-color="#FFE9A8" stop-opacity=".6"/><stop offset="1" stop-color="#FFE9A8" stop-opacity="0"/></radialGradient>`
   const decor = `<g id="pond-ground">${pond()}</g><g id="egret">${small(egret(), 3.1, -2.6)}</g><g id="rocks">${rocks()}</g><g id="meadow">${meadow()}</g><g id="flowers">${flowers()}</g><g id="reeds">${reeds()}</g><g id="boulder">${boulder()}</g><g id="can">${can()}</g>`
-  return [...trees, ...plots, decor, ...PET_IDS.map(petArt)].join('')
+  return [...trees, ...plots, decor, glows, ...PET_IDS.map(petArt)].join('')
 }
 
 let markup: string | null = null

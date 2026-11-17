@@ -4,14 +4,14 @@ type Voxel = [number, number, number, string]
 
 // A plot is 8 x 8 cubes, and each cube is 4 units on the screen.
 const U = 4
-const P = (a: number, b: number, c: number): [number, number] => [
+export const P = (a: number, b: number, c: number): [number, number] => [
   (a - b) * U,
   ((a + b) * U) / 2 - c * U,
 ]
-const n2 = (v: number) => +v.toFixed(1)
-const quad = (ps: number[][], fill: string, extra = '') =>
+export const n2 = (v: number) => +v.toFixed(1)
+export const quad = (ps: number[][], fill: string, extra = '') =>
   `<path d="M${ps.map(([x, y]) => `${n2(x)} ${n2(y)}`).join('L')}Z" fill="${fill}" stroke="${fill}" stroke-width=".3"${extra}/>`
-const mix = (hex: string, t: number) => {
+export const mix = (hex: string, t: number) => {
   const n = parseInt(hex.slice(1), 16),
     to = t < 0 ? 0 : 255,
     a = Math.abs(t)
@@ -24,7 +24,7 @@ const mix = (hex: string, t: number) => {
 const TOP = 1,
   LEFT = 2,
   RIGHT = 4
-function box(
+export function box(
   x: number,
   y: number,
   z: number,

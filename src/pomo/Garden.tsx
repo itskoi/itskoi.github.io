@@ -9,6 +9,14 @@ import {
 } from 'react'
 import { playWaterSound } from './alert'
 import { butterfly, flock, koi, landingBee, petals } from './art/decor'
+import {
+  dragonfly,
+  FEATURE_IDS,
+  type FeatureId,
+  feature,
+  fireflies,
+  towerHeight,
+} from './art/features'
 import { PET_FRAME, type PetId, petMarkup } from './art/pets'
 import { HEIGHT, SPECIES, STAGES } from './art/trees'
 import {
@@ -19,6 +27,7 @@ import {
   type PetSpots,
   type Plot,
   settlePets,
+  towerFloors,
 } from './garden-layout'
 import { MATURE, type Tree } from './session'
 
@@ -27,6 +36,7 @@ export const STEP_MS = 2400 // Longer than the 2s hop in styles.css, so one pet 
 const MIN_PLOT_PX = 28
 const PLOT_UNITS = 64
 const MAX_BUTTERFLIES = 14
+const MAX_DRAGONFLIES = 6
 const MAX_LIVELY_TREES = 24 // Each one repaints the island, so a huge garden must not sway every tree.
 const BREEZE_PHASES = 4 // Trees sharing a phase repaint in the same frame.
 const WIDEST_SCREEN = 2.4 // width over height
@@ -64,13 +74,20 @@ function drawScene(plots: Plot[], trees: readonly Tree[], view: number) {
   let cast = ''
   let flutter = ''
   let butterflies = 0
+  let dragonflies = 0
   for (const p of plots) {
     const [x, y] = place(p, view)
     cast += `M${x} ${y + 12}L${x + 32} ${y + 28}L${x} ${y + 44}L${x - 32} ${y + 28}Z`
     // The highest this tree stands from any side, so the frame holds still as the garden turns.
     const backmost = -(Math.abs(p.gx) + Math.abs(p.gy)) * 16
     if (p.kind === 'tree') top = Math.min(top, backmost - HEIGHT[p.tree.stage] - 22)
-    if (p.kind === 'decoration' && (p.decoration === 'meadow' || p.decoration === 'flowers')) {
+    if (p.kind !== 'decoration') continue
+    if (p.decoration === 'tower')
+      top = Math.min(top, backmost - towerHeight(towerFloors(trees.length)))
+    if (p.decoration === 'meadow') flutter += fireflies(x, y, p.gx * 31 + p.gy)
+    if (p.decoration === 'reeds' && dragonflies < MAX_DRAGONFLIES)
+      flutter += dragonfly(x - 14, y - 22, dragonflies++) + dragonfly(x + 12, y - 14, dragonflies++)
+    if (p.decoration === 'meadow' || p.decoration === 'flowers') {
       for (let b = 0; b < 3 && butterflies < MAX_BUTTERFLIES; b++) {
         flutter += butterfly(x + (b - 1) * 18, y - 14 - b * 5, butterflies++)
       }
@@ -117,8 +134,13 @@ type Roam = {
   walking?: { pet: PetId; from: Plot }
 }
 
-const decorationMarkup = (p: Plot & { kind: 'decoration' }) =>
-  p.decoration === 'pond' ? koi() + use('egret') : use(p.decoration)
+const isFeature = (id: string): id is FeatureId => (FEATURE_IDS as readonly string[]).includes(id)
+const decorationMarkup = ({ decoration }: Plot & { kind: 'decoration' }, treeCount: number) =>
+  decoration === 'pond'
+    ? koi() + use('egret')
+    : isFeature(decoration)
+      ? feature(decoration, towerFloors(treeCount))
+      : use(decoration)
 
 type MarkupProps = { html: string; transform?: string; style?: CSSProperties }
 const NO_POINTER: CSSProperties = { pointerEvents: 'none' }
@@ -352,7 +374,7 @@ export const Garden = memo(function Garden({ trees, canWater = true }: Props) {
                       <Markup
                         key={`${p.gx},${p.gy}`}
                         transform={transform}
-                        html={decorationMarkup(p)}
+                        html={decorationMarkup(p, trees.length)}
                       />
                     )
                   }

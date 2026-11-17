@@ -43,6 +43,7 @@ export const SPECIES: Record<Species, SpeciesInfo> = {
     en: 'Banyan',
     note: 'The great tree that shades the village gate.',
     seed: '#5E7A3A',
+    fallen: 'sheath',
     shadow: 40,
   },
   tre: {

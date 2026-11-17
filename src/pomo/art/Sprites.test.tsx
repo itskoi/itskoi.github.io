@@ -23,6 +23,7 @@ it('defines every sprite the garden and Work view refer to, only once', () => {
     ...SPECIES_IDS.flatMap((id) => [0, 1, 2, 3].map((st) => `tree-${id}-${st}`)),
     ...Array.from({ length: PLOT_KINDS }, (_, v) => `plot-${v}`),
     ...['pond-ground', 'egret', 'rocks', 'meadow', 'flowers', 'reeds', 'boulder', 'can'],
+    ...['lamp-glow', 'firefly-glow', 'tower-beam', 'tower-wash'],
     ...PET_IDS.flatMap((id) => [
       `pet-${id}-base`,
       ...partsOf(id).map((k) => `pet-${id}-${k}`),
