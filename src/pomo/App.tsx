@@ -4,6 +4,7 @@ import { Sprites } from './art/Sprites'
 import { SPECIES, STAGES } from './art/trees'
 import { Garden } from './Garden'
 import { SettingsPanel } from './SettingsPanel'
+import { Sky } from './Sky'
 import {
   KINDS,
   type Kind,
@@ -222,6 +223,7 @@ export function App() {
       </aside>
 
       <div className="stage">
+        <Sky />
         <button
           type="button"
           className="panel-toggle"

@@ -576,6 +576,11 @@ describe('settings', () => {
     expect(savedState().session?.endsAt).toBe(T0 + 25 * MIN)
   })
 
+  it('puts the sky behind the stage', () => {
+    const { container } = render(<App />)
+    expect(container.querySelector('.stage > .sky .sun')).toBeInTheDocument()
+  })
+
   it('applies the background scheme and remembers it after a reload', async () => {
     const { user, container, unmount } = setup()
     const app = () => container.querySelector('.app') as HTMLElement

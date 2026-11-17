@@ -48,8 +48,44 @@ body {
 }
 .stage {
   position: relative;
+  /* Keeps the sky, at z-index -1, in front of the app's background. */
+  isolation: isolate;
   min-width: 0;
   min-height: 0;
+}
+.sky {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* Over the garden, and under the timer and buttons, which share this level but come later. */
+.sky.front {
+  z-index: 1;
+}
+.sun {
+  position: absolute;
+  top: 12%;
+  right: 12%;
+  width: clamp(48px, 8%, 88px);
+  fill: var(--sun);
+  filter: drop-shadow(0 0 14px var(--sun));
+}
+.cloud {
+  position: absolute;
+  top: var(--y);
+  left: 0;
+  width: 100%;
+  animation: drift var(--d) linear var(--t) infinite;
+}
+.cloud svg {
+  display: block;
+  margin-left: var(--x);
+  width: min(var(--w), 22%);
+  fill: var(--cloud);
+  opacity: 0.85;
+  filter: blur(3px);
 }
 h1,
 h2 {
@@ -237,6 +273,8 @@ hr {
   --halo: #e6f6fb;
   --cast: #5f8ea3;
   --bird: #2c4552;
+  --sun: #ffe27a;
+  --cloud: #ffffff;
 }
 [data-scheme="dawn"] {
   --scene: linear-gradient(170deg, #a9b4ea 0%, #e7a6c4 48%, #ffd7a8 100%);
@@ -244,6 +282,8 @@ hr {
   --halo: #ffeedd;
   --cast: #8d7a9e;
   --bird: #3a2f55;
+  --sun: #fff0c0;
+  --cloud: #fff3ea;
 }
 [data-scheme="sunset"] {
   --scene: linear-gradient(175deg, #3a2463 0%, #a83e72 42%, #f28a5e 75%, #ffd28a 100%);
@@ -251,6 +291,8 @@ hr {
   --halo: #3a2463;
   --cast: #5b2a55;
   --bird: #201236;
+  --sun: #ffc46e;
+  --cloud: #ffb9a0;
 }
 [data-scheme="lagoon"] {
   --scene: linear-gradient(170deg, #0e6e78 0%, #2fb7a8 50%, #c5f2df 100%);
@@ -258,6 +300,8 @@ hr {
   --halo: #0b5560;
   --cast: #2c8b88;
   --bird: #083d45;
+  --sun: #fff6c0;
+  --cloud: #e4fff6;
 }
 [data-scheme="blossom"] {
   --scene: linear-gradient(165deg, #f9d5e5 0%, #f6b9cf 50%, #d9c4f2 100%);
@@ -265,6 +309,8 @@ hr {
   --halo: #fff0f6;
   --cast: #b98aa8;
   --bird: #5a2a4a;
+  --sun: #fff6d8;
+  --cloud: #ffffff;
 }
 [data-scheme="night"] {
   --scene: linear-gradient(180deg, #070b20 0%, #141d4a 55%, #3a3275 100%);
@@ -272,6 +318,8 @@ hr {
   --halo: #070b20;
   --cast: #02040e;
   --bird: #c9d3ff;
+  --sun: #f1efd8;
+  --cloud: #2c3470;
 }
 /* Pushes itself and the settings below it to the bottom of the sidebar. */
 .view-toggle {
@@ -482,6 +530,9 @@ hr {
 }
 [data-scheme="night"] .night {
   display: inline;
+}
+[data-scheme="night"] .day {
+  display: none;
 }
 /* An animation, not a transition: it still plays when the pet's element is moved to redraw it nearer. */
 .step {
@@ -951,6 +1002,15 @@ hr {
   94%,
   97% {
     opacity: 1;
+  }
+}
+/* From just out of sight on the left to just out of sight on the right. */
+@keyframes drift {
+  from {
+    transform: translateX(calc(-40% - var(--x)));
+  }
+  to {
+    transform: translateX(calc(100% - var(--x)));
   }
 }
 /* Across the sky in the first half, then out of sight until the next pass. */
